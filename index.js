@@ -77,19 +77,24 @@ class Pokemon {
             }
 
         } else {
-            this.battlesStats[stat] *= changeFactor;
+            this.battleStats[stat] *= changeFactor;
+
+            let prefix = '';
+            if (!this.isPlayer) {
+                prefix += 'The Enemy ';
+            }            
 
             if (changeFactor < 1) {
-                console.log(`${this.name}'s ${stat.toUpperCase()} fell!`);
+                console.log(`${prefix + this.name}'s ${stat.toUpperCase()} fell!`);
             } else {
-                console.log(`${this.name}'s ${stat.toUpperCase()} rose!`)
+                console.log(`${prefix + this.name}'s ${stat.toUpperCase()} rose!`)
             }
         }
     }
 
 
     statusReport = function () {
-        console.log(`Name: ${this.name}`);
+        console.log(`\n\nName: ${this.name}`);
         console.log(`HP: ${this.battleStats.hp} / ${this.stats.hp}`);
         console.log(`Status: ${this.status}`);
         console.log("Current Stats:");
@@ -163,19 +168,18 @@ class Move {
     applyEffect (target) {
         // Rolls for each effect and applies the successfull ones in order
         for (let effect of this.effect) {
-            if (Math.ceil(Math.random()) > this.probability) {
+            if (Math.ceil(Math.random()*100) < effect.probability) {
+                console.log('Effect roll won')
                 // Accounts for all effect types
-                if (this.statChange) {
-                    target.battleStats[statChange] *= this.changeFactor;
-                    
-                    console.log(`${target.name}'s ${statChange} changed!`);
+                if (effect.changedStat) {
+                    target.statChange(effect.changedStat, effect.changeFactor);
 
                 }
                 
 
-                if (this.statusChange) {
+                if (effect.statusChange) {
                     target.status = effect.statusChange;
-                    console.log(`${target.name} was inflicted with ${this.statusChange.toUpperCase()}!`);
+                    console.log(`${target.name} was inflicted with ${effect.statusChange.toUpperCase()}!`);
                 }
 
             }
@@ -239,9 +243,7 @@ function battle(player, enemy) {
 
 
     while (!winner) {
-        console.log('\n\n');
         player.activeMon.statusReport();
-        console.log('\n\n');
         enemy.activeMon.statusReport();
         // console.log(`Player:\nName: ${player.activeMon.name}\nHP: ${player.activeMon.battleStats.hp} / ${player.activeMon.stats.hp}`);
         // console.log(`Enemy:\nName: ${enemy.activeMon.name}\nHP: ${enemy.activeMon.battleStats.hp} / ${enemy.activeMon.stats.hp}`);
@@ -364,9 +366,9 @@ const growl = new Move('Growl', 'Normal', 'Physical', 0, 100, 15, 1)
 growl.effect = [
     {
         target: 'enemy',
-        statChange: 'atk',
+        changedStat: 'atk',
         changeFactor: 0.9,
-        probability: 1,
+        probability: 100,
     }
 ]
 
@@ -374,7 +376,7 @@ const vineWhip = new Move ('Vine Whip', 'Grass', 'Physical', 10, 100, 15, 1);
 vineWhip.effect = [
     {
         target: 'enemy',
-        statusChange: 'BRN',
+        changedStatus: 'BRN',
         probability: 0.1
     }
 ]
@@ -406,4 +408,4 @@ const p2 = new Player('Jill', false);
 p2.addToParty(charmander2);
 p2.addToParty(bulbasaur2);
 
-// battle(player1, player2)
+// battle(p1, p2)
