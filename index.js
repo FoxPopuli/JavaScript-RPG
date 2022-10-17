@@ -57,6 +57,12 @@ class Pokemon {
  
         this.stats = {};
         this.status = 'OK';
+        this.prefix = '';
+
+        if (!this.isPlayer) {
+            this.prefix = 'The Enemy ';
+        }
+
 
         for (let stat in baseStats) {
             this.stats[stat] = baseStats[stat] * 0.5 * this.level;
@@ -77,24 +83,27 @@ class Pokemon {
             }
 
         } else {
-            this.battleStats[stat] *= changeFactor;
+            this.battleStats[stat] *= changeFactor;        
 
-            let prefix = '';
-            if (!this.isPlayer) {
-                prefix += 'The Enemy ';
-            }            
-
+            let suffix;
             if (changeFactor < 1) {
-                console.log(`${prefix + this.name}'s ${stat.toUpperCase()} fell!`);
+                suffix = ' fell!'
             } else {
-                console.log(`${prefix + this.name}'s ${stat.toUpperCase()} rose!`)
+                suffix = ' rose!'
             }
+            console.log(`${this.prefix + this.name}'s ${stat.toUpperCase() + suffix}`);
         }
     }
 
+    setStat = function(stat) {
+        if (stat === 'hp') {
+            this.stats[stat] = (2 * this.baseStats[stat] * )
+        }
+        this.stats[stat]
+    }
 
     statusReport = function () {
-        console.log(`\n\nName: ${this.name}`);
+        console.log(`\n\nName: ${this.prefix + this.name}`);
         console.log(`HP: ${this.battleStats.hp} / ${this.stats.hp}`);
         console.log(`Status: ${this.status}`);
         console.log("Current Stats:");
@@ -104,13 +113,8 @@ class Pokemon {
     }
     
     attack = function(enemy, move) {
-        if (this.isPlayer) {
-            console.log(`${this.name} used ${move.name}!`);
-        } else {
-            console.log(`The enemy ${this.name} used ${move.name}!`);
-        }
 
-        
+        console.log(`${this.prefix + this.name} used ${move.name}!`)
         // Calculate damage
         const damage = damageCalc(this, enemy, move);
 
@@ -205,11 +209,11 @@ function damageCalc(attackingMon, defendingMon, move) {
     let A; // effective attack stat
     let D; // effective defense stat
     if (move.attackType === 'Physical') {
-        A = attackingMon.stats.atk;
-        D = defendingMon.stats.def;
+        A = attackingMon.battleStats.atk;
+        D = defendingMon.battleStats.def;
     } else {
-        A = attackingMon.stats.spatk;
-        D = defendingMon.stats.spdef;
+        A = attackingMon.battleStats.spatk;
+        D = defendingMon.battleStats.spdef;
     }
 
     const random = 1; // Placeholder
@@ -282,7 +286,7 @@ function battle(player, enemy) {
                     promptText2 += `${itemIndex}: ${player.inventory[itemIndex][0].name} * ${player.inventory[itemIndex][1]}\n`;
                 }
                 player.action.item = player.inventory[+prompt(promptText2)];
-                player.action.priority = infinity;
+                player.action.priority = 100;
                 break;
 
             case 2:
@@ -290,7 +294,7 @@ function battle(player, enemy) {
                     promptText2 += `${monIndex}: ${player.party[monIndex].name}`;
                 }
                 player.action.switch = true;
-                player.action.priority = infinity;
+                player.action.priority = 100;
                 break;
 
         }
@@ -337,6 +341,7 @@ function battle(player, enemy) {
             }
 
             if (passivePlayer.activeMon.status === 'Faint') {
+                console.log()
                 passivePlayer.activeMon = passivePlayer.switchMon()
             }
 
@@ -357,8 +362,9 @@ function battle(player, enemy) {
     }
 }
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+// Define moves
 const tackle = new Move ('Tackle', 'Normal', 'Physical', 10, 100, 15, 1)
 tackle.effect = null;
 
@@ -381,19 +387,30 @@ vineWhip.effect = [
     }
 ]
 
-exampleStats = {
-    hp: 10,
-    atk: 10,
-    def: 10,
-    spatk: 10,
-    spdef: 10,
-    spd: 10
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------
+// Define Pokemon
+
+function BaseStats(hp, atk, def, spatk, spdef, spd) {
+    this.hp = hp;
+    this.atk = atk;
+    this.def = def;
+    this.spatk = spatk;
+    this.spdef = spdef;
+    this.spd = spd;
 }
+const exampleStats = new BaseStats (10, 10, 10, 10, 10, 10, 10);
+const charmanderBaseStats = new BaseStats (39, 52, 43, 60, 50, 65);
+const bulbasaurBaseStats = new BaseStats (45, 49, 49, 65, 65, 45);
+const squirtleBaseStats = new BaseStats (44, 48, 65, 50, 64, 43);
+const mewBaseStats = new BaseStats (100, 100, 100, 100, 100, 100);
 
-const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], exampleStats, [tackle, growl], true);
-const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], exampleStats, [tackle, vineWhip], true);
+const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl], true);
+const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip], true);
 
-const p1 = new Player('Jack', true);
+const p1 = new Player('Bob', true);
 
 
 p1.addToParty(charmander1);
@@ -404,7 +421,7 @@ p1.inventory.push([potion, 5]);
 const bulbasaur2 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], exampleStats, [tackle, vineWhip], false);
 const charmander2 = new Pokemon ('Charmander', 5, ['Fire'], exampleStats, [tackle, growl], false);
 
-const p2 = new Player('Jill', false);
+const p2 = new Player('Mary', false);
 p2.addToParty(charmander2);
 p2.addToParty(bulbasaur2);
 
