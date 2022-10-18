@@ -97,7 +97,7 @@ class Pokemon {
 
     setStat = function(stat) {
         if (stat === 'hp') {
-            this.stats[stat] = (2 * this.baseStats[stat] * )
+            this.stats[stat] = (2 * this.baseStats[stat] )
         }
         this.stats[stat]
     }
@@ -238,6 +238,8 @@ function damageCalc(attackingMon, defendingMon, move) {
 
 }
 
+
+
 function battle(player, enemy) {
     player.activeMon = player.party[0];
     enemy.activeMon = enemy.party[0];
@@ -245,8 +247,14 @@ function battle(player, enemy) {
     let turnNumber = 1;
     let winner;
 
+    // document.addEventListener("keyup", (e) => {
+    //     if (e.key === 'Escape') {
+    //         break gameLoop;
+    //     }
+    // })
 
-    while (!winner) {
+    s
+    gameLoop: while (!winner) {
         player.activeMon.statusReport();
         enemy.activeMon.statusReport();
         // console.log(`Player:\nName: ${player.activeMon.name}\nHP: ${player.activeMon.battleStats.hp} / ${player.activeMon.stats.hp}`);
