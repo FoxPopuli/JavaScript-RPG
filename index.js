@@ -1,3 +1,15 @@
+const kyrpticTeam = ['Charizard X', 'Raichu', 'Gyarados', 'Vensaur', 'Gala Rapidash', 'Alakazam']
+const krypticUberTeam = ['Zapdos', 'Mega Rayquasa', 'Suicune', 'Mew', 'Entei', 'Dialga']
+const voxTeam = ['Gengar', '', 'Jolteon', 'Swampert', 'Metagross']
+const voxUberTeam = ['Regieleci', 'Mewtwo', 'Arceus', 'Darkrai', 'Xerneas', 'Groudon'];
+function roll(n) {
+    return Math.floor(Math.random()*n)
+}
+for (let i; i < 20; i++) {
+    console.log(roll(100))
+}
+
+
 class Player {
     constructor (name, isPlayer) {
         this.name = name;
@@ -18,7 +30,6 @@ class Player {
     }
 
 
-
     switchMon = function () {
         console.log('switchMon() called')
         let availableMon = this.party.filter(mon => mon.status !== 'Faint');
@@ -29,7 +40,6 @@ class Player {
 
         let partyIndex;
         if (this.isPlayer) {
-            console.log("is player");
             // Try use Array.prototype.reduce here
             let selectionString = '';
             for (let monIndex in availableMon) {
@@ -74,7 +84,7 @@ class Pokemon {
         this.battleStats = Object.create(this.stats);
     }
 
-    statChange (stat, changeFactor) {
+    changeStat (stat, changeFactor) {
         if (stat === 'hp') {
             const missingHP = this.stats.hp - this.battleStats.hp;
             if (changeFactor > missingHP){
@@ -98,14 +108,13 @@ class Pokemon {
         }
     }
 
-    statusChange (newStatus) {
+    changeStatus (newStatus) {
         if (this.status === 'OK' && newStatus === 'OK' || this.status === 'Faint') {
             return;
         }
 
-        let flavorText = `${this.prefix + this.name} was `;
+
         let suffix;
-        
         switch (newStatus.toUpperCase()) {
             case 'PSN':
                 suffix = 'poisoned!';
@@ -120,11 +129,13 @@ class Pokemon {
                 suffix = 'paralyzd!'
                 break;
 
-        }
+        };
 
         this.status = newStatus;
-        console.log()
+        console.log(`${this.prefix + this.name} was ${suffix}`);
     } 
+
+
 
     setStat = function(stat) {
         if (stat === 'hp') {
@@ -134,7 +145,7 @@ class Pokemon {
     }
 
     statusReport = function () {
-        console.log(`\n\nName: ${this.prefix + this.name}`);
+        console.log(`\nName: ${this.prefix + this.name}`);
         console.log(`HP: ${this.battleStats.hp} / ${this.stats.hp}`);
         console.log(`Status: ${this.status}`);
         console.log("Current Stats:");
@@ -142,7 +153,7 @@ class Pokemon {
             console.log(`${stat}: ${this.battleStats[stat]} / ${this.stats[stat]}`);
         }
     }
-    
+
     attack = function(enemy, move) {
 
         console.log(`${this.prefix + this.name} used ${move.name}!`)
@@ -150,41 +161,45 @@ class Pokemon {
         const damage = damageCalc(this, enemy, move);
 
 
+
         if (damage >= enemy.battleStats.hp) {
             enemy.battleStats.hp = 0;
             enemy.status = 'Faint';
+            console.log(`${enemy.prefix + enemy.name} fainted!`);
         } else {
+            
             enemy.battleStats.hp -= damage;
+            if (damage) {
+                console.log(`${enemy.prefix + enemy.name} took ${damage} damage.`);
+            }
 
             if (move.effect) {
-                for (let effect of move.effect) {
+                if (roll(100) < move.effect.probability) {
                     let target;
-                    if (effect.target === 'enemy') {
+                    if (move.effect.target === 'enemy') {
                         target = enemy;
-                    } else if (effect.target === 'self') {
+                    } else if (move.effect.target === 'self') {
                         target = this;
                     }
-                    move.applyEffect(target);
+        
+                    move.effect.apply(target);
                 }
             }
+
         }
     }
 }
 
 class Item {
-    constructor (name, statChange, changeFactor) {
+    constructor (name, statMod, changeFactor) {
         this.name = name;
-        this.statChange = statChange;
+        this.statMod = statMod;
         this.changeFactor = changeFactor;
     }
 
     use (target) {
-        if (this.statChange) {
-            target.statChange(this.statChange, this.changeFactor);
-        }
-
-        if (this.statusChange) {
-            target.statusChange
+        if (this.statMod) {
+            target.changeStat(this.statChange, this.changeFactor);
         }
     }
 }
@@ -202,28 +217,7 @@ class Move {
         this.totalPP = totalPP;
         this.currentPP = totalPP;
         this.priority = priority;
-    }
-
-    applyEffect (target) {
-        // Rolls for each effect and applies the successfull ones in order
-        for (let effect of this.effect) {
-            if (Math.ceil(Math.random()*100) < effect.probability) {
-                // Accounts for all effect types
-                if (effect.changedStat) {
-                    target.statChange(effect.changedStat, effect.changeFactor);
-
-                }
-                
-
-                if (effect.changedStatus) {
-                    target.status = effect.changedStatus;
-                    console.log(`${target.name} was inflicted with ${effect.statusChange.toUpperCase()}!`);
-                }
-
-            }
-        }
-    }
-    
+    }    
 }
 
 
@@ -283,27 +277,21 @@ function battle(player, enemy) {
     let turnNumber = 1;
     let winner;
 
-    // document.addEventListener("keyup", (e) => {
-    //     if (e.key === 'Escape') {
-    //         break gameLoop;
-    //     }
-    // })
 
     
-    gameLoop: while (!winner) {
+    while (!winner) {
+        console.log('------------------------------------------------------------------------------------------------------------------------');
         player.activeMon.statusReport();
         enemy.activeMon.statusReport();
-        // console.log(`Player:\nName: ${player.activeMon.name}\nHP: ${player.activeMon.battleStats.hp} / ${player.activeMon.stats.hp}`);
-        // console.log(`Enemy:\nName: ${enemy.activeMon.name}\nHP: ${enemy.activeMon.battleStats.hp} / ${enemy.activeMon.stats.hp}`);
 
 
-        player.action = {
-            monSpd: player.activeMon.battleStats.spd,
-        };
+        // Initialize battle properties
+        player.action = {};
+        player.skipTurn = false;
+        enemy.action = {};
+        enemy.skipTurn = false;
+        // BATTLE STATS INIT
 
-        enemy.action = {
-            monSpd: enemy.activeMon.battleStats.spd,
-        };
 
         // First choice
         const promptText1 = '0: Fight\n1: Use Item\n2: Switch\nWhat do you want to do?: ';
@@ -316,7 +304,6 @@ function battle(player, enemy) {
 
         switch (player.action.choice1) {
             case 0:
-
                 for (let moveIndex in player.activeMon.moves) {
                     promptText2 += `${moveIndex}: ${player.activeMon.moves[moveIndex].name} (PP: ${player.activeMon.moves[moveIndex].currentPP} / ${player.activeMon.moves[moveIndex].totalPP})\n`
                 }
@@ -375,7 +362,6 @@ function battle(player, enemy) {
 
 
         function hasLost(player) {
-            console.log('hasLost() called');
             let availableMon = player.party.filter(mon => mon.status !== 'Faint');
             console.log(availableMon);
             console.log(!availableMon.length);
@@ -387,24 +373,70 @@ function battle(player, enemy) {
             }
         }
 
-        let skipTurn;
         function execute (activePlayer, passivePlayer) {
-            if (activePlayer.action.item) {
-                activePlayer.action.item.use(activePlayer.activeMon);
-            } else if (activePlayer.action.switch) {
-                activePlayer.activeMon = activePlayer.switchMon();
+            // Executes one half of the turn, ie activePlayer's move against passivePlayer
+            // Who is activePlayer first is determined by action.priority;
+
+
+            const monA = activePlayer.activeMon;
+            const monB = passivePlayer.activeMon;
+            const action = activePlayer.action;
+
+            if (activePlayer.skipTurn) {
+                // console.log(activePlayer.skipText);
+                return;
+            };
+
+
+
+            if (action.item) {
+                action.item.use(monA);
+            } else if (action.switch) {
+                monA = activePlayer.switchMon();
+
             } else {
-                activePlayer.activeMon.attack(passivePlayer.activeMon, activePlayer.action.move);
+
+                // Status check and rolls
+                switch (monA.status) {
+                    case 'PAR':
+                        if (roll(100) < 25) {
+                            console.log(`${monA.prefix + monA.name} is fully paralyzed!`);
+                            return;
+                        };
+                        break;
+
+                    
+                    case 'SLP':
+                        if (!monA.sleepCounter) {
+                            monA.sleepCounter = 1;
+                        };
+    
+                        if ((monA.sleepCounter/3)*100 > roll(100)) {
+                            console.log(`${monA.prefix + monA.name} is fast asleep.`);
+                            monA.sleepCounter += 1
+                            return;
+                        } else {
+                            console.log(`${monA.prefix + monA.name} woke up!`);
+                            monA.status = 'OK';
+                            delete monA.sleepCounter;
+                        }
+
+                }
+
+
+
+                monA.attack(monB, activePlayer.action.move);
+
             }
 
-            if (passivePlayer.activeMon.status === 'Faint') {
+            if (monB.status === 'Faint') {
                 // console.log()
                 if (hasLost(passivePlayer)) {
                     winner = activePlayer;
                     console.log(`${winner.prefix + winner.name} has `);
                     return;
                 }
-                passivePlayer.activeMon = passivePlayer.switchMon();
+                monB = passivePlayer.switchMon();
                 skipTurn = true;
                 
             }
@@ -413,12 +445,10 @@ function battle(player, enemy) {
 
         // Executes each players moves in order of priority
         for (let playerIndex in players) {
-
-            if (skipTurn) {
-                continue;
-            }
-
-            execute(players[playerIndex], players[ Math.abs((playerIndex - 1)) ]);
+            const p1 = players[playerIndex];
+            const p2 = players[Math.abs((playerIndex - 1))];
+            console.log('\n\n')
+            execute(p1, p2);
             if (winner) {
                 return;
             }
@@ -440,25 +470,27 @@ const tackle = new Move ('Tackle', 'Normal', 'Physical', 10, 100, 15, 1)
 tackle.effect = null;
 
 const growl = new Move('Growl', 'Normal', 'Physical', 0, 100, 15, 1)
-growl.effect = [
-    {
-        target: 'enemy',
-        changedStat: 'atk',
-        changeFactor: 0.9,
-        probability: 100,
+growl.effect = {
+    target: 'enemy',
+    probability: 100,
+    apply: function (target) {
+        target.changeStat('atk', 0.9)
     }
-]
+}
 
 const vineWhip = new Move ('Vine Whip', 'Grass', 'Physical', 10, 100, 15, 1);
-vineWhip.effect = [
-    {
-        target: 'enemy',
-        changedStatus: 'BRN',
-        probability: 0.1
-    }
-]
 
-const megaBeam = new Move ('Mega Beam', 'Dragon', 'Special', 500, 100, 15, 3)
+const megaBeam = new Move ('Mega Beam', 'Dragon', 'Special', 500, 100, 15, 3);
+
+const hypnosis = new Move ('Hypnosis', 'Normal', 'Physical', 0, 100, 15, 1);
+hypnosis.effect = {
+    target: 'enemy',
+    probability: 100,
+    apply: function (target) {
+        target.changeStatus('SLP');
+    } 
+}
+
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------
 // Define Items
@@ -483,7 +515,7 @@ const bulbasaurBaseStats = new BaseStats (45, 49, 49, 65, 65, 45);
 const squirtleBaseStats = new BaseStats (44, 48, 65, 50, 64, 43);
 const mewBaseStats = new BaseStats (100, 100, 100, 100, 100, 100);
 
-const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl, megaBeam], true);
+const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl, megaBeam, hypnosis], true);
 const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip, megaBeam], true);
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
