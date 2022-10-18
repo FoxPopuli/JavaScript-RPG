@@ -2,13 +2,13 @@ const kyrpticTeam = ['Charizard X', 'Raichu', 'Gyarados', 'Vensaur', 'Gala Rapid
 const krypticUberTeam = ['Zapdos', 'Mega Rayquasa', 'Suicune', 'Mew', 'Entei', 'Dialga']
 const voxTeam = ['Gengar', '', 'Jolteon', 'Swampert', 'Metagross']
 const voxUberTeam = ['Regieleci', 'Mewtwo', 'Arceus', 'Darkrai', 'Xerneas', 'Groudon'];
+
 function roll(n) {
     return Math.floor(Math.random()*n)
 }
 for (let i; i < 20; i++) {
     console.log(roll(100))
 }
-
 
 class Player {
     constructor (name, isPlayer) {
@@ -54,6 +54,7 @@ class Player {
             partyIndex = Math.floor(Math.random()*availableMon.length);
         }
 
+        console.log(`switching to ${availableMon[partyIndex].name}`);
         return availableMon[partyIndex];
     }
 }
@@ -67,7 +68,6 @@ class Pokemon {
         this.moves = moves;
         this.isPlayer = isPlayer;
 
- 
         this.stats = {};
         this.status = 'OK';
         this.prefix = '';
@@ -75,7 +75,6 @@ class Pokemon {
         if (!this.isPlayer) {
             this.prefix = 'The Enemy ';
         }
-
 
         for (let stat in baseStats) {
             this.stats[stat] = baseStats[stat] * 0.5 * this.level;
@@ -113,7 +112,6 @@ class Pokemon {
             return;
         }
 
-
         let suffix;
         switch (newStatus.toUpperCase()) {
             case 'PSN':
@@ -135,8 +133,6 @@ class Pokemon {
         console.log(`${this.prefix + this.name} was ${suffix}`);
     } 
 
-
-
     setStat = function(stat) {
         if (stat === 'hp') {
             this.stats[stat] = (2 * this.baseStats[stat] )
@@ -155,12 +151,9 @@ class Pokemon {
     }
 
     attack = function(enemy, move) {
-
         console.log(`${this.prefix + this.name} used ${move.name}!`)
         // Calculate damage
         const damage = damageCalc(this, enemy, move);
-
-
 
         if (damage >= enemy.battleStats.hp) {
             enemy.battleStats.hp = 0;
@@ -181,7 +174,7 @@ class Pokemon {
                     } else if (move.effect.target === 'self') {
                         target = this;
                     }
-        
+                    console.log('about to appl effect');
                     move.effect.apply(target);
                 }
             }
@@ -204,8 +197,6 @@ class Item {
     }
 }
 
-
-
 class Move {
     constructor (name, elementalType, attackType, power, accuracy, totalPP, priority) {
         this.name = name;
@@ -220,7 +211,6 @@ class Move {
     }    
 }
 
-
 function effectiveCheck(atkType, defMon) {
     // Placeholder
     return 1;
@@ -229,7 +219,7 @@ function effectiveCheck(atkType, defMon) {
 function damageCalc(attackingMon, defendingMon, move) {
     
     let crit = 1;
-    if (Math.random() <= 0.1) {
+    if (roll(100) < 10) {
         crit = 2;
     }
 
@@ -260,10 +250,7 @@ function damageCalc(attackingMon, defendingMon, move) {
     effectiveness = effectiveCheck(move.type, defendingMon)
 
     const damage = ((( (2*level/5) + 2 ) * power * (A/D) / 50) + 2) * random * crit * stab * effectiveness;
-
     return damage;
-
-
 }
 
 
@@ -277,8 +264,6 @@ function battle(player, enemy) {
     let turnNumber = 1;
     let winner;
 
-
-    
     while (!winner) {
         console.log('------------------------------------------------------------------------------------------------------------------------');
         player.activeMon.statusReport();
@@ -327,7 +312,6 @@ function battle(player, enemy) {
                 player.action.switch = true;
                 player.action.priority = 100;
                 break;
-
         }
 
         // Enemy will always attack (for now)
@@ -336,7 +320,6 @@ function battle(player, enemy) {
         enemy.action.priority += enemy.action.move.priority;
 
         if (player.action.priority === enemy.action.priority) {
-            
 
             if (player.action.monSpd === enemy.action.monSpd) {
 
@@ -345,13 +328,9 @@ function battle(player, enemy) {
                 enemy.action.priority += 1 - zeroOrOne;
             
             } else if (player.action.monSpd > enemy.action.monSpd) {
-        
                 player.action.priority += 1;
-         
             } else {
-         
                 enemy.action.priority += 1;
-         
             }
 
         }
@@ -373,29 +352,26 @@ function battle(player, enemy) {
             }
         }
 
-        function execute (activePlayer, passivePlayer) {
-            // Executes one half of the turn, ie activePlayer's move against passivePlayer
-            // Who is activePlayer first is determined by action.priority;
+        function execute (p1, p2) {
+            // Executes one half of the turn, ie p1's move against p2
+            // Who is p1 first is determined by action.priority;
 
+            let monA = p1.activeMon;
+            let monB = p2.activeMon;
+            let action = p1.action;
 
-            const monA = activePlayer.activeMon;
-            const monB = passivePlayer.activeMon;
-            const action = activePlayer.action;
-
-            if (activePlayer.skipTurn) {
-                // console.log(activePlayer.skipText);
+            if (p1.skipTurn) {
+                // console.log(p1.skipText);
+                p1.skipTurn = false;
                 return;
             };
-
-
 
             if (action.item) {
                 action.item.use(monA);
             } else if (action.switch) {
-                monA = activePlayer.switchMon();
-
+                player.activeMon = p1.switchMon();
+                monA = player.activeMon;
             } else {
-
                 // Status check and rolls
                 switch (monA.status) {
                     case 'PAR':
@@ -408,10 +384,10 @@ function battle(player, enemy) {
                     
                     case 'SLP':
                         if (!monA.sleepCounter) {
-                            monA.sleepCounter = 1;
+                            monA.sleepCounter = 0;
                         };
     
-                        if ((monA.sleepCounter/3)*100 > roll(100)) {
+                        if ((monA.sleepCounter/3)*100 < roll(100)) {
                             console.log(`${monA.prefix + monA.name} is fast asleep.`);
                             monA.sleepCounter += 1
                             return;
@@ -420,27 +396,21 @@ function battle(player, enemy) {
                             monA.status = 'OK';
                             delete monA.sleepCounter;
                         }
-
                 }
-
-
-
-                monA.attack(monB, activePlayer.action.move);
-
+                monA.attack(monB, p1.action.move);
             }
 
             if (monB.status === 'Faint') {
                 // console.log()
-                if (hasLost(passivePlayer)) {
-                    winner = activePlayer;
+                if (hasLost(p2)) {
+                    winner = p1;
                     console.log(`${winner.prefix + winner.name} has `);
                     return;
                 }
-                monB = passivePlayer.switchMon();
-                skipTurn = true;
-                
+                enemy.activeMon = p2.switchMon();
+                monB = enemy.activeMon;
+                p2.skipTurn = true;   
             }
-
         }
 
         // Executes each players moves in order of priority
@@ -466,15 +436,14 @@ function battle(player, enemy) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 // Define moves
-const tackle = new Move ('Tackle', 'Normal', 'Physical', 10, 100, 15, 1)
-tackle.effect = null;
+const tackle = new Move ('Tackle', 'Normal', 'Physical', 10, 100, 15, 1);
 
-const growl = new Move('Growl', 'Normal', 'Physical', 0, 100, 15, 1)
+const growl = new Move('Growl', 'Normal', 'Physical', 0, 100, 15, 1);
 growl.effect = {
     target: 'enemy',
     probability: 100,
     apply: function (target) {
-        target.changeStat('atk', 0.9)
+        target.changeStat('atk', 0.9);
     }
 }
 
@@ -487,10 +456,19 @@ hypnosis.effect = {
     target: 'enemy',
     probability: 100,
     apply: function (target) {
+        console.log('hypnosis effect applied');
         target.changeStatus('SLP');
     } 
 }
 
+const stunSpore = new Move ('Stun Spore', 'Normal', 'Physical', 0, 100, 15, 1);
+stunSpore.effect = {
+    target: 'enemy',
+    probability: 100,
+    apply: function (target) {
+        target.changeStatus('PAR');
+    }
+}
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------
 // Define Items
@@ -516,7 +494,8 @@ const squirtleBaseStats = new BaseStats (44, 48, 65, 50, 64, 43);
 const mewBaseStats = new BaseStats (100, 100, 100, 100, 100, 100);
 
 const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl, megaBeam, hypnosis], true);
-const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip, megaBeam], true);
+const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip, megaBeam, stunSpore], true);
+bulbasaur1.status = 'PAR';
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Define players
