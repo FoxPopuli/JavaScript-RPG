@@ -3,8 +3,8 @@ class Player {
         this.name = name;
         this.party = [];
         this.currency = 0;
-        this.isAI = !isPlayer;
         this.inventory = [];
+        this.isPlayer = isPlayer;
 
     }
 
@@ -19,19 +19,21 @@ class Player {
 
 
     switchMon = function () {
+        console.log('switchMon() called')
         let availableMon = this.party.filter(mon => mon.status !== 'Faint');
-
+        console.log(availableMon);
         if (availableMon === []) {
             return null;
         }
 
         let partyIndex;
         if (this.isPlayer) {
+            console.log("is player");
             // Try use Array.prototype.reduce here
-            const selectionString = '';
+            let selectionString = '';
             for (let monIndex in availableMon) {
                 if (this.party[monIndex].battleStats.hp) {
-                    selectionString += `${monIndex}: ${this.party[monIndex]}\n`;
+                    selectionString += `${monIndex}: ${this.party[monIndex].name}\n`;
                 }
 
             }
@@ -154,7 +156,6 @@ class Item {
 }
 
 
-let potion = new Item ('Potion', 'hp', 20);
 
 class Move {
     constructor (name, elementalType, attackType, power, accuracy, totalPP, priority) {
@@ -241,6 +242,8 @@ function damageCalc(attackingMon, defendingMon, move) {
 
 
 function battle(player, enemy) {
+    console.log(`Pokemon Trainer ${enemy.name} wants to battle!`);
+
     player.activeMon = player.party[0];
     enemy.activeMon = enemy.party[0];
 
@@ -253,7 +256,7 @@ function battle(player, enemy) {
     //     }
     // })
 
-    s
+    
     gameLoop: while (!winner) {
         player.activeMon.statusReport();
         enemy.activeMon.statusReport();
@@ -285,7 +288,7 @@ function battle(player, enemy) {
                     promptText2 += `${moveIndex}: ${player.activeMon.moves[moveIndex].name} (PP: ${player.activeMon.moves[moveIndex].currentPP} / ${player.activeMon.moves[moveIndex].totalPP})\n`
                 }
                 player.action.move = player.activeMon.moves[+prompt(promptText2)];
-                player.action.priority = 0;
+                player.action.priority += player.action.move.priority;
                 break;
 
             case 1:
@@ -308,10 +311,8 @@ function battle(player, enemy) {
         }
 
         // Enemy will always attack (for now)
-        // Random enemy moves 
+        // Random enemy moves (for now)
         enemy.action.move = enemy.activeMon.moves[Math.floor(Math.random()*enemy.activeMon.moves.length)];
-
-        player.action.priority += player.action.move.priority;
         enemy.action.priority += enemy.action.move.priority;
 
         if (player.action.priority === enemy.action.priority) {
@@ -343,6 +344,7 @@ function battle(player, enemy) {
             if (activePlayer.action.item) {
                 activePlayer.action.item.use(activePlayer.activeMon);
             } else if (activePlayer.action.switch) {
+                console.log('Switch in battle function');
                 activePlayer.activeMon = activePlayer.switchMon();
             } else {
                 activePlayer.activeMon.attack(passivePlayer.activeMon, activePlayer.action.move);
@@ -395,7 +397,10 @@ vineWhip.effect = [
     }
 ]
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------
+// Define Items
 
+let potion = new Item ('Potion', 'hp', 20);
 
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -417,6 +422,9 @@ const mewBaseStats = new BaseStats (100, 100, 100, 100, 100, 100);
 
 const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl], true);
 const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip], true);
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// Define players
 
 const p1 = new Player('Bob', true);
 
