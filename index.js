@@ -5,6 +5,7 @@ class Player {
         this.currency = 0;
         this.inventory = [];
         this.isPlayer = isPlayer;
+        this.prefix = 'Pokemon Trainer ';
 
     }
 
@@ -97,6 +98,34 @@ class Pokemon {
         }
     }
 
+    statusChange (newStatus) {
+        if (this.status === 'OK' && newStatus === 'OK' || this.status === 'Faint') {
+            return;
+        }
+
+        let flavorText = `${this.prefix + this.name} was `;
+        let suffix;
+        
+        switch (newStatus.toUpperCase()) {
+            case 'PSN':
+                suffix = 'poisoned!';
+                break;
+            case 'TOX':
+                suffix = 'badly poisoned!';
+                break;
+            case 'BRN':
+                suffix = 'burned!'
+                break;
+            case 'PAR':
+                suffix = 'paralyzd!'
+                break;
+
+        }
+
+        this.status = newStatus;
+        console.log()
+    } 
+
     setStat = function(stat) {
         if (stat === 'hp') {
             this.stats[stat] = (2 * this.baseStats[stat] )
@@ -128,7 +157,6 @@ class Pokemon {
             enemy.battleStats.hp -= damage;
 
             if (move.effect) {
-                console.log('Has an effect');
                 for (let effect of move.effect) {
                     let target;
                     if (effect.target === 'enemy') {
@@ -151,7 +179,13 @@ class Item {
     }
 
     use (target) {
-        target.statChange(this.statChange, this.changeFactor);
+        if (this.statChange) {
+            target.statChange(this.statChange, this.changeFactor);
+        }
+
+        if (this.statusChange) {
+            target.statusChange
+        }
     }
 }
 
@@ -174,7 +208,6 @@ class Move {
         // Rolls for each effect and applies the successfull ones in order
         for (let effect of this.effect) {
             if (Math.ceil(Math.random()*100) < effect.probability) {
-                console.log('Effect roll won')
                 // Accounts for all effect types
                 if (effect.changedStat) {
                     target.statChange(effect.changedStat, effect.changeFactor);
@@ -182,8 +215,8 @@ class Move {
                 }
                 
 
-                if (effect.statusChange) {
-                    target.status = effect.statusChange;
+                if (effect.changedStatus) {
+                    target.status = effect.changedStatus;
                     console.log(`${target.name} was inflicted with ${effect.statusChange.toUpperCase()}!`);
                 }
 
@@ -242,7 +275,7 @@ function damageCalc(attackingMon, defendingMon, move) {
 
 
 function battle(player, enemy) {
-    console.log(`Pokemon Trainer ${enemy.name} wants to battle!`);
+    console.log(`Pokemon Trainer ${enemy.prefix + enemy.name} wants to battle!`);
 
     player.activeMon = player.party[0];
     enemy.activeMon = enemy.party[0];
@@ -340,28 +373,56 @@ function battle(player, enemy) {
             a.action.priotity > b.action.priority ? 1 : -1;
         });
 
+
+        function hasLost(player) {
+            console.log('hasLost() called');
+            let availableMon = player.party.filter(mon => mon.status !== 'Faint');
+            console.log(availableMon);
+            console.log(!availableMon.length);
+            if (!availableMon.length) {
+                console.log(`${player.prefix + player.name} has no more useable Pokemon!`)
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        let skipTurn;
         function execute (activePlayer, passivePlayer) {
             if (activePlayer.action.item) {
                 activePlayer.action.item.use(activePlayer.activeMon);
             } else if (activePlayer.action.switch) {
-                console.log('Switch in battle function');
                 activePlayer.activeMon = activePlayer.switchMon();
             } else {
                 activePlayer.activeMon.attack(passivePlayer.activeMon, activePlayer.action.move);
             }
 
             if (passivePlayer.activeMon.status === 'Faint') {
-                console.log()
-                passivePlayer.activeMon = passivePlayer.switchMon()
+                // console.log()
+                if (hasLost(passivePlayer)) {
+                    winner = activePlayer;
+                    console.log(`${winner.prefix + winner.name} has `);
+                    return;
+                }
+                passivePlayer.activeMon = passivePlayer.switchMon();
+                skipTurn = true;
+                
             }
 
-            if (!passivePlayer.activeMon) {
-                winner = activePlayer;
-            }
         }
 
+        // Executes each players moves in order of priority
         for (let playerIndex in players) {
-            execute (players[playerIndex], players[ Math.abs((playerIndex - 1)) ]);
+
+            if (skipTurn) {
+                continue;
+            }
+
+            execute(players[playerIndex], players[ Math.abs((playerIndex - 1)) ]);
+            if (winner) {
+                return;
+            }
+
         }
 
         turnNumber += 1;
@@ -397,6 +458,8 @@ vineWhip.effect = [
     }
 ]
 
+const megaBeam = new Move ('Mega Beam', 'Dragon', 'Special', 500, 100, 15, 3)
+
 // --------------------------------------------------------------------------------------------------------------------------------------------------
 // Define Items
 
@@ -420,8 +483,8 @@ const bulbasaurBaseStats = new BaseStats (45, 49, 49, 65, 65, 45);
 const squirtleBaseStats = new BaseStats (44, 48, 65, 50, 64, 43);
 const mewBaseStats = new BaseStats (100, 100, 100, 100, 100, 100);
 
-const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl], true);
-const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip], true);
+const charmander1 = new Pokemon ('Charmander', 5, ['Fire'], charmanderBaseStats, [tackle, growl, megaBeam], true);
+const bulbasaur1 = new Pokemon ('Bulbasaur', 5, ['Grass', 'Poison'], bulbasaurBaseStats, [tackle, vineWhip, megaBeam], true);
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Define players
