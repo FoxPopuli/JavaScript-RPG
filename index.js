@@ -43,7 +43,7 @@ class Player {
             // Try use Array.prototype.reduce here
             let selectionString = '';
             for (let monIndex in availableMon) {
-                if (this.party[monIndex].battleStats.hp) {
+                if (this.party[monIndex].currentHP) {
                     selectionString += `${monIndex}: ${this.party[monIndex].name}\n`;
                 }
 
@@ -80,17 +80,20 @@ class Pokemon {
             this.stats[stat] = baseStats[stat] * 0.5 * this.level;
         }
 
-        this.battleStats = Object.create(this.stats);
+        this.currentHP = this.stats.hp;
+
+        
+
     }
 
     changeStat (stat, changeFactor) {
         if (stat === 'hp') {
-            const missingHP = this.stats.hp - this.battleStats.hp;
+            const missingHP = this.stats.hp - this.currentHP;
             if (changeFactor > missingHP){
-                this.battleStats.hp = this.stats.hp;
+                this.currentHP = this.stats.hp;
                 console.log(`${this.name} healed for ${missingHP}!`); 
             } else {
-                this.battleStats.hp += changeFactor;
+                this.currentHP += changeFactor;
                 console.log(`${this.name} healed for ${changeFactor}`);
             }
 
@@ -140,9 +143,20 @@ class Pokemon {
         this.stats[stat]
     }
 
+    battleInit = function() {
+        this.battleStats = Object.create(this.stats);
+        delete this.battleStats.hp;
+        this.subStatus = null;
+    }
+
+    removeBattleProps = function() {
+        delete this.battleStats;
+        delete this.subStatus;
+    }
+
     statusReport = function () {
         console.log(`\nName: ${this.prefix + this.name}`);
-        console.log(`HP: ${this.battleStats.hp} / ${this.stats.hp}`);
+        console.log(`HP: ${this.currentHP} / ${this.stats.hp}`);
         console.log(`Status: ${this.status}`);
         console.log("Current Stats:");
         for (let stat in this.battleStats) {
@@ -155,13 +169,13 @@ class Pokemon {
         // Calculate damage
         const damage = damageCalc(this, enemy, move);
 
-        if (damage >= enemy.battleStats.hp) {
-            enemy.battleStats.hp = 0;
+        if (damage >= enemy.currentHP) {
+            enemy.currentHP = 0;
             enemy.status = 'Faint';
             console.log(`${enemy.prefix + enemy.name} fainted!`);
         } else {
             
-            enemy.battleStats.hp -= damage;
+            enemy.currentHP -= damage;
             if (damage) {
                 console.log(`${enemy.prefix + enemy.name} took ${damage} damage.`);
             }
@@ -264,19 +278,23 @@ function battle(player, enemy) {
     let turnNumber = 1;
     let winner;
 
+    // Set battle
+    player.activeMon.battleInit();
+    enemy.activeMon.battleInit();
+
     while (!winner) {
         console.log('------------------------------------------------------------------------------------------------------------------------');
-        player.activeMon.statusReport();
-        enemy.activeMon.statusReport();
-
 
         // Initialize battle properties
         player.action = {};
         player.skipTurn = false;
         enemy.action = {};
         enemy.skipTurn = false;
-        // BATTLE STATS INIT
 
+
+
+        player.activeMon.statusReport();
+        enemy.activeMon.statusReport();
 
         // First choice
         const promptText1 = '0: Fight\n1: Use Item\n2: Switch\nWhat do you want to do?: ';
@@ -361,7 +379,7 @@ function battle(player, enemy) {
             let action = p1.action;
 
             if (p1.skipTurn) {
-                // console.log(p1.skipText);
+                console.log('turn Skipped');
                 p1.skipTurn = false;
                 return;
             };
@@ -370,6 +388,7 @@ function battle(player, enemy) {
                 action.item.use(monA);
             } else if (action.switch) {
                 player.activeMon = p1.switchMon();
+                player.activeMon.battleInit()
                 monA = player.activeMon;
             } else {
                 // Status check and rolls
@@ -401,6 +420,7 @@ function battle(player, enemy) {
             }
 
             if (monB.status === 'Faint') {
+                monB.removeBattleProps();
                 // console.log()
                 if (hasLost(p2)) {
                     winner = p1;
@@ -408,6 +428,7 @@ function battle(player, enemy) {
                     return;
                 }
                 enemy.activeMon = p2.switchMon();
+                enemy.activeMon.battleInit();
                 monB = enemy.activeMon;
                 p2.skipTurn = true;   
             }
