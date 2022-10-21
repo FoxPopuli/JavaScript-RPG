@@ -1,0 +1,74 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "maps/demo-town.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 357.66666666666663,
+                "y": 403
+            }
+        },
+        "maps/five-island-medow.tsx": {
+            "scaleInDock": 1
+        },
+        "maps/pallet-town-bg.tsx": {
+            "scaleInDock": 1
+        },
+        "maps/the-clearing-demo.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 484.66666666666663,
+                "y": 482.66666666666663
+            }
+        },
+        "maps/tutorial-town.tmx": {
+            "scale": 0.6344642857142856,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 561.1032929918381,
+                "y": 321.531100478469
+            }
+        },
+        "tilesets/rpg-tileset-32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/rpg-tileset-6.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 4
+        },
+        "tilesets/rpg-tileset.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 5.5
+        }
+    },
+    "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/tilesets",
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/bg",
+    "map.height": 70,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 70,
+    "openFiles": [
+    ],
+    "project": "pokemon.tiled-project",
+    "recentFiles": [
+        "tilesets/rpg-tileset-6.tsx",
+        "tilesets/rpg-tileset-32.tsx",
+        "tilesets/rpg-tileset.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
