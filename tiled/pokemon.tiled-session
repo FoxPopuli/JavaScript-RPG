@@ -3,9 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "maps/the-clearing-demo.tmx",
     "expandedProjectPaths": [
+        "maps",
+        "tilesets",
+        "."
     ],
+    "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "maps/demo-town.tmx": {
@@ -24,10 +28,10 @@
         },
         "maps/the-clearing-demo.tmx": {
             "scale": 1.5,
-            "selectedLayer": 1,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 484.66666666666663,
-                "y": 482.66666666666663
+                "x": 471,
+                "y": 477.33333333333326
             }
         },
         "maps/tutorial-town.tmx": {
@@ -37,6 +41,27 @@
                 "x": 561.1032929918381,
                 "y": 321.531100478469
             }
+        },
+        "maps/vermilion-city.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/cape-brink.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/five-island-medow.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/green-path.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/pallet-town-bg.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/pewter-city.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/route-14.tsx": {
+            "scaleInDock": 1
         },
         "tilesets/rpg-tileset-32.tsx": {
             "scaleInDock": 1,
@@ -59,9 +84,11 @@
     "map.tileWidth": 16,
     "map.width": 70,
     "openFiles": [
+        "maps/the-clearing-demo.tmx"
     ],
     "project": "pokemon.tiled-project",
     "recentFiles": [
+        "maps/the-clearing-demo.tmx",
         "tilesets/rpg-tileset-6.tsx",
         "tilesets/rpg-tileset-32.tsx",
         "tilesets/rpg-tileset.tsx"
