@@ -102,6 +102,8 @@ export class Pokemon {
             statObj[stat] = ((( 2 * this.baseStats[stat] + this.ivs[stat] + this.evs[stat]/4)*this.level)/100 + 5)*this.nature[stat];
 
         }
+
+        return statObj;
     }
 
     battleInit = function() {

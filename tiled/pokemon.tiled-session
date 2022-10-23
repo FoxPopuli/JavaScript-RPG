@@ -27,11 +27,11 @@
             "scaleInDock": 1
         },
         "maps/the-clearing-demo.tmx": {
-            "scale": 1.5,
+            "scale": 4,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 471,
-                "y": 477.33333333333326
+                "x": 72.625,
+                "y": 175.75
             }
         },
         "maps/tutorial-town.tmx": {
@@ -77,12 +77,12 @@
         }
     },
     "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/tilesets",
-    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/bg",
-    "map.height": 70,
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites",
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 70,
+    "map.width": 20,
     "openFiles": [
         "maps/the-clearing-demo.tmx"
     ],
@@ -97,5 +97,7 @@
     "tileset.tileSize": {
         "height": 16,
         "width": 16
-    }
+    },
+    "tileset.transparentColor": "#ffc86a",
+    "tileset.useTransparentColor": true
 }

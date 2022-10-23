@@ -1,17 +1,47 @@
-
+import {ctx} from '../index.js';
 export class Player {
-    constructor ({name, isPlayer, prefix, imgPath}) {
+    constructor ({name, isPlayer, prefix, gender}) {
         this.name = name;
         this.party = [];
         this.currency = 0;
         this.inventory = [];
         this.isPlayer = isPlayer;
         this.prefix = prefix;
-        this.imgPath = imgPath;
-        this.img = new Image();
-        this.img.src = this.imgPath;
+        this.gender = gender;
+        
+        this.position = {
+            x: 0,
+            y: 0
+        }
+        this.sprites = this.genSprites();
+        
+
+        this.direction = 'down';
+        this.isRunning = false;
 
     }
+
+    genSprites = function() {
+        const sprites = {};
+        sprites.walking = new Image();
+        if (this.isPlayer) {
+
+            sprites.walking.src = `./img/sprites/player-walking-${this.gender}.png`
+
+        } else {
+            return;
+        }
+
+        return sprites;
+    }
+
+
+    // move = function(dir) {
+    //     switch (dir) {
+    //         case 'down':
+
+    //     }
+    // }
 
     addToParty = function (pokemon) {
         if (typeof pokemon === 'object') {
@@ -51,9 +81,11 @@ export class Player {
     }
 
     draw () {
-        this.img.onload( () => {
-            ctx.drawImage(this.img, this.position.x, this.position.y);
-        })
+
+
+        this.sprites.walking.onload = () => {
+            ctx.drawImage(this.sprites.walking, this.position.x, this.position.y);
+        }
         return;
     }
 }
