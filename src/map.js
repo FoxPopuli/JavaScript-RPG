@@ -1,5 +1,6 @@
 import {ctx} from '../index.js';
 
+
 export class Map {
     constructor({ position, imgPath}) {
         this.position = position;
