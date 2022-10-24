@@ -7,7 +7,7 @@ export const ctx = canvas.getContext('2d');
 
 // 16:9
 
-canvas.height = 1080;
+canvas.height = 720;
 canvas.width = (canvas.height/9)*16;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -51,35 +51,79 @@ const mon = new Pokemon ({
 // player.draw()
 let currentMap = clearing;
 let currentSprite = player.sprites.walk.down;
-ctx.drawImage(currentSprite, 0, 0);
-console.log(currentSprite)
 
-// Overworld controls 
+// Overworld controls
+const binds = {
+    up: 'w',
+    left: 'a',
+    down: 's',
+    right: 'd'
+} 
+
+const keys = {
+    w: {
+        pressed: false
+    },
+
+    a: {
+        pressed: false
+    },
+
+    s: {
+        pressed: false
+    },
+
+    d: {
+        pressed: false
+    }
+}
+
 window.addEventListener('keydown', (e) => {
     let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
-        case 's':
-            currentMap.position.y -= 16;
-            currentSprite = player.sprites[walkOrRun].down;
-            break;
-        case 'w': 
-            currentMap.position.y += 16;
+        case 'w':
+            keys.w.pressed = true; 
+            // currentMap.position.y += 16;
             currentSprite = player.sprites[walkOrRun].up;
             break;
 
         case 'a': 
-            currentMap.position.x += 16;
+            keys.a.pressed = true;
+            // currentMap.position.x += 16;
             currentSprite = player.sprites[walkOrRun].left;
             break;
-        
+
+        case 's':
+            keys.s.pressed= true;
+            // currentMap.position.y -= 16;
+            currentSprite = player.sprites[walkOrRun].down;
+            break;
+
         case 'd':
-            currentMap.position.x -= 16;
+            keys.d.pressed = true;
+            // currentMap.position.x -= 16;
             currentSprite = player.sprites[walkOrRun].right;
             break;
 
     }
 })
 
+window.addEventListener( 'keyup', (e) => {
+    switch (e.key) {
+        case 'w':
+            keys.w.pressed = false;
+            break;
+        case 'a':
+            keys.a.pressed = false;
+            break;
+        case 's':
+            keys.s.pressed = false;
+            break;
+        case 'd':
+            keys.d.pressed = false;
+            break;
+    }
+})
 
 let i = 0;
 
@@ -92,18 +136,24 @@ currentMap.img.onload = () => {
 
 }
 
-
+let moveSpeed = 5;
 function animate() {
     // console.log(i)
     window.requestAnimationFrame(animate);
+
+    if (keys.w.pressed) {currentMap.position.y += moveSpeed}
+    if (keys.a.pressed) {currentMap.position.x += moveSpeed}
+    if (keys.s.pressed) {currentMap.position.y -= moveSpeed}
+    if (keys.d.pressed) {currentMap.position.x -= moveSpeed}
+
     ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
 
 
     let scaleWidth = currentSprite.width / 3;
-    let scaleFactor = 1;
-    if (scaleFactor === 3) {
-        scaleFactor = 0;
-    }
+    // let scaleFactor = 1;
+    // if (scaleFactor === 3) {
+    //     scaleFactor = 0;
+    // }
 
     ctx.drawImage(
         currentSprite,
