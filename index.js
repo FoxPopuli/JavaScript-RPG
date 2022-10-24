@@ -118,7 +118,8 @@ let walkOrRun = player.isRunning ? 'run' : 'walk';
 let moveSpeed = 5;
 function animate() {
     window.requestAnimationFrame(animate);
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     // Movement
     if (testArr[testArr.length - 1] === 'w') {
         
@@ -142,27 +143,6 @@ function animate() {
 
     }
 
-    // if (keys.w.pressed && testArr[testArr.length - 1] === 'w') {
-        
-    //     currentMap.position.y += moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].up;
-    
-    // } else if (keys.a.pressed && testArr[testArr.length - 1] === 'a') {
-        
-    //     currentMap.position.x += moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].left;
-    
-    // } else if (keys.s.pressed && testArr[testArr.length - 1] === 's') {
-        
-    //     currentMap.position.y -= moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].down;
-    
-    // } else if (keys.d.pressed && testArr[testArr.length - 1] === 'd') {
-        
-    //     currentMap.position.x -= moveSpeed
-    //     player.currentSprite = player.sprites[walkOrRun].right;
-
-    // }
 
     currentMap.draw();
     player.draw();
