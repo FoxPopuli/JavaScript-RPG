@@ -12,6 +12,14 @@
     "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "/home/john/repos/pokemon/male-player-walk-up.tmx": {
+            "scale": 2.7253125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160.1651186790506,
+                "y": 160.34858387799568
+            }
+        },
         "maps/demo-town.tmx": {
             "scale": 3,
             "selectedLayer": 0,
@@ -26,12 +34,20 @@
         "maps/pallet-town-bg.tsx": {
             "scaleInDock": 1
         },
+        "maps/player-walk-down-male.tmx": {
+            "scale": 2.838125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 150.80378771195774,
+                "y": 160.14093811935697
+            }
+        },
         "maps/the-clearing-demo.tmx": {
             "scale": 4,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 72.625,
-                "y": 175.75
+                "x": 219.875,
+                "y": -95.5
             }
         },
         "maps/tutorial-town.tmx": {
@@ -43,6 +59,49 @@
             }
         },
         "maps/vermilion-city.tsx": {
+            "scaleInDock": 1
+        },
+        "spites/sprite-maps/male-player-walk-down.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 24.125,
+                "y": 24
+            }
+        },
+        "spites/sprite-maps/male-player-walk-left.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 65.9090909090909,
+                "y": 85.45454545454547
+            }
+        },
+        "spites/sprite-maps/male-player-walk-right.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 51.125,
+                "y": 41.5
+            }
+        },
+        "spites/sprite-maps/male-player-walk-up.tmx": {
+            "scale": 18.148958333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 24.050967112437583,
+                "y": 23.968317740917183
+            }
+        },
+        "spites/sprite-maps/player-walk-down-male.tmx": {
+            "scale": 8,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 31.1875,
+                "y": 46.625
+            }
+        },
+        "spites/sprite-maps/tiled/spites/sprite-tilesets/player-walking.tsx": {
             "scaleInDock": 1
         },
         "tilesets/cape-brink.tsx": {
@@ -76,7 +135,7 @@
             "scaleInEditor": 5.5
         }
     },
-    "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/tilesets",
+    "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/spites/sprite-tilesets",
     "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites",
     "map.height": 20,
     "map.lastUsedFormat": "tmx",
