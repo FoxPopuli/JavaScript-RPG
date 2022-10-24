@@ -6,8 +6,7 @@ export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
 
 // 16:9
-
-canvas.height = 1080;
+canvas.height = 720;
 canvas.width = (canvas.height/9)*16;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -19,7 +18,6 @@ const clearing = new Map({
     imgPath: './img/maps/the-clearing-demo.png'
 })
 
-// clearing.draw();
 
 
 
@@ -48,84 +46,92 @@ const mon = new Pokemon ({
     isPlayer: true
 })
 
-// player.draw()
-let currentMap = clearing;
-let currentSprite = player.sprites.walk.down;
-ctx.drawImage(currentSprite, 0, 0);
-console.log(currentSprite)
 
-// Overworld controls 
+let currentMap = clearing;
+
+// Overworld controls
+const binds = {
+    up: 'w',
+    left: 'a',
+    down: 's',
+    right: 'd'
+} 
+
+const keys = {
+    w: {pressed: false},
+    a: {pressed: false},
+    s: {pressed: false},
+    d: {pressed: false}
+}
+
+let lastKey;
+// let testArr = [];
 window.addEventListener('keydown', (e) => {
     let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
-        case 's':
-            currentMap.position.y -= 16;
-            currentSprite = player.sprites[walkOrRun].down;
-            break;
-        case 'w': 
-            currentMap.position.y += 16;
-            currentSprite = player.sprites[walkOrRun].up;
+        case 'w':
+            keys.w.pressed = true; 
+            lastKey = 'w';
+            player.currentSprite = player.sprites[walkOrRun].up;
             break;
 
         case 'a': 
-            currentMap.position.x += 16;
-            currentSprite = player.sprites[walkOrRun].left;
+            keys.a.pressed = true;
+            lastKey = 'a';
+            player.currentSprite = player.sprites[walkOrRun].left;
             break;
-        
+
+        case 's':
+            keys.s.pressed= true;
+            lastKey = 's';
+            player.currentSprite = player.sprites[walkOrRun].down;
+            break;
+
         case 'd':
-            currentMap.position.x -= 16;
-            currentSprite = player.sprites[walkOrRun].right;
+            keys.d.pressed = true;
+            lastKey = 'd';
+            player.currentSprite = player.sprites[walkOrRun].right;
             break;
 
     }
 })
 
+window.addEventListener( 'keyup', (e) => {
+    switch (e.key) {
+        case 'w':
+            keys.w.pressed = false;
+            break;
+        case 'a':
+            keys.a.pressed = false;
+            break;
+        case 's':
+            keys.s.pressed = false;
+            break;
+        case 'd':
+            keys.d.pressed = false;
+            break;
+    }
+})
 
 let i = 0;
 
 currentMap.img.onload = () => {
-
-    console.log('map loaded')
-    console.log(currentMap.img, currentSprite)
-    ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
-    ctx.drawImage(currentSprite, canvas.width / 2, canvas.height / 2);
+    currentMap.draw()
+    player.draw()
 
 }
 
-
+let moveSpeed = 5;
 function animate() {
-    // console.log(i)
     window.requestAnimationFrame(animate);
-    ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
 
+    if (keys.w.pressed && lastKey === 'w') {currentMap.position.y += moveSpeed}
+    else if (keys.a.pressed && lastKey === 'a') {currentMap.position.x += moveSpeed}
+    else if (keys.s.pressed && lastKey === 's') {currentMap.position.y -= moveSpeed}
+    else if (keys.d.pressed && lastKey === 'd') {currentMap.position.x -= moveSpeed}
 
-    let scaleWidth = currentSprite.width / 3;
-    let scaleFactor = 1;
-    if (scaleFactor === 3) {
-        scaleFactor = 0;
-    }
-
-    ctx.drawImage(
-        currentSprite,
-
-        scaleWidth,
-        // 0,
-        0,
-
-        scaleWidth,
-        currentSprite.height,
-
-        canvas.width / 2 - currentSprite.width / 3  + scaleWidth / 2, 
-        canvas.height / 2 - currentSprite.height / 2 - 16,
-
-        scaleWidth,
-        currentSprite.height
-        );
-    // ctx.drawImage(player.sprites.walking, 0, 0);
-
-
-
-    scaleFactor++;
+    currentMap.draw();
+    player.draw();
 }
 
 animate()

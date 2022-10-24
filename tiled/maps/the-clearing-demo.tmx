@@ -6,7 +6,7 @@
  <tileset firstgid="3025" source="../tilesets/green-path.tsx"/>
  <tileset firstgid="4753" source="../tilesets/pewter-city.tsx"/>
  <tileset firstgid="8449" source="../tilesets/cape-brink.tsx"/>
- <tileset firstgid="9625" source="vermilion-city.tsx"/>
+ <tileset firstgid="9625" source="../tilesets/vermilion-city.tsx"/>
  <layer id="6" name="base" width="45" height="38">
   <data encoding="csv">
 469,472,438,438,474,474,436,471,472,438,468,438,439,436,436,435,439,469,472,468,471,437,472,439,474,474,472,471,473,468,436,470,470,439,438,437,436,473,473,435,472,472,438,470,439,

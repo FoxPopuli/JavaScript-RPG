@@ -9,10 +9,7 @@ export class Map {
     }
 
     draw () {
-        this.img.onload = () => {
-            ctx.drawImage(this.img, this.position.x, this.position.y);
-        }
-        
+        ctx.drawImage(this.img, this.position.x, this.position.y);
     }
 
 }
