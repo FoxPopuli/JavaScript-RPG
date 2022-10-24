@@ -78,30 +78,31 @@ const keys = {
     }
 }
 
+let lastKey;
 window.addEventListener('keydown', (e) => {
     let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
         case 'w':
             keys.w.pressed = true; 
-            // currentMap.position.y += 16;
+            lastKey = 'w';
             currentSprite = player.sprites[walkOrRun].up;
             break;
 
         case 'a': 
             keys.a.pressed = true;
-            // currentMap.position.x += 16;
+            lastKey = 'a';
             currentSprite = player.sprites[walkOrRun].left;
             break;
 
         case 's':
             keys.s.pressed= true;
-            // currentMap.position.y -= 16;
+            lastKey = 's';
             currentSprite = player.sprites[walkOrRun].down;
             break;
 
         case 'd':
             keys.d.pressed = true;
-            // currentMap.position.x -= 16;
+            lastKey = 'd';
             currentSprite = player.sprites[walkOrRun].right;
             break;
 
@@ -141,10 +142,10 @@ function animate() {
     // console.log(i)
     window.requestAnimationFrame(animate);
 
-    if (keys.w.pressed) {currentMap.position.y += moveSpeed}
-    if (keys.a.pressed) {currentMap.position.x += moveSpeed}
-    if (keys.s.pressed) {currentMap.position.y -= moveSpeed}
-    if (keys.d.pressed) {currentMap.position.x -= moveSpeed}
+    if (keys.w.pressed && lastKey === 'w') {currentMap.position.y += moveSpeed}
+    else if (keys.a.pressed && lastKey === 'a') {currentMap.position.x += moveSpeed}
+    else if (keys.s.pressed && lastKey === 's') {currentMap.position.y -= moveSpeed}
+    else if (keys.d.pressed && lastKey === 'd') {currentMap.position.x -= moveSpeed}
 
     ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
 
