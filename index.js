@@ -57,40 +57,33 @@ const binds = {
     right: 'd'
 } 
 
-const keys = {
-    w: {pressed: false},
-    a: {pressed: false},
-    s: {pressed: false},
-    d: {pressed: false}
+let testArr = [];
+
+
+// Pushes the key to the array if the last element in the array isn't already that key
+Array.prototype.pushOnce = function(key) {
+    if (this[this.length - 1] !== key) {
+        this.push(key);
+    }
 }
 
-let lastKey;
-// let testArr = [];
+
 window.addEventListener('keydown', (e) => {
-    let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
         case 'w':
-            keys.w.pressed = true; 
-            lastKey = 'w';
-            player.currentSprite = player.sprites[walkOrRun].up;
+            testArr.pushOnce('w');
             break;
 
         case 'a': 
-            keys.a.pressed = true;
-            lastKey = 'a';
-            player.currentSprite = player.sprites[walkOrRun].left;
+            testArr.pushOnce('a');
             break;
 
         case 's':
-            keys.s.pressed= true;
-            lastKey = 's';
-            player.currentSprite = player.sprites[walkOrRun].down;
+            testArr.pushOnce('s')
             break;
 
         case 'd':
-            keys.d.pressed = true;
-            lastKey = 'd';
-            player.currentSprite = player.sprites[walkOrRun].right;
+            testArr.pushOnce('d')
             break;
 
     }
@@ -99,16 +92,16 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener( 'keyup', (e) => {
     switch (e.key) {
         case 'w':
-            keys.w.pressed = false;
+            testArr.splice(testArr.indexOf(e.key), 1);
             break;
         case 'a':
-            keys.a.pressed = false;
+            testArr.splice(testArr.indexOf(e.key), 1);
             break;
         case 's':
-            keys.s.pressed = false;
+            testArr.splice(testArr.indexOf(e.key), 1);
             break;
         case 'd':
-            keys.d.pressed = false;
+            testArr.splice(testArr.indexOf(e.key), 1);
             break;
     }
 })
@@ -121,14 +114,55 @@ currentMap.img.onload = () => {
 
 }
 
+let walkOrRun = player.isRunning ? 'run' : 'walk'; 
 let moveSpeed = 5;
 function animate() {
     window.requestAnimationFrame(animate);
 
-    if (keys.w.pressed && lastKey === 'w') {currentMap.position.y += moveSpeed}
-    else if (keys.a.pressed && lastKey === 'a') {currentMap.position.x += moveSpeed}
-    else if (keys.s.pressed && lastKey === 's') {currentMap.position.y -= moveSpeed}
-    else if (keys.d.pressed && lastKey === 'd') {currentMap.position.x -= moveSpeed}
+    // Movement
+    if (testArr[testArr.length - 1] === 'w') {
+        
+        currentMap.position.y += moveSpeed;
+        player.currentSprite = player.sprites[walkOrRun].up;
+    
+    } else if (testArr[testArr.length - 1] === 'a') {
+        
+        currentMap.position.x += moveSpeed;
+        player.currentSprite = player.sprites[walkOrRun].left;
+    
+    } else if (testArr[testArr.length - 1] === 's') {
+        
+        currentMap.position.y -= moveSpeed;
+        player.currentSprite = player.sprites[walkOrRun].down;
+    
+    } else if (testArr[testArr.length - 1] === 'd') {
+        
+        currentMap.position.x -= moveSpeed
+        player.currentSprite = player.sprites[walkOrRun].right;
+
+    }
+
+    // if (keys.w.pressed && testArr[testArr.length - 1] === 'w') {
+        
+    //     currentMap.position.y += moveSpeed;
+    //     player.currentSprite = player.sprites[walkOrRun].up;
+    
+    // } else if (keys.a.pressed && testArr[testArr.length - 1] === 'a') {
+        
+    //     currentMap.position.x += moveSpeed;
+    //     player.currentSprite = player.sprites[walkOrRun].left;
+    
+    // } else if (keys.s.pressed && testArr[testArr.length - 1] === 's') {
+        
+    //     currentMap.position.y -= moveSpeed;
+    //     player.currentSprite = player.sprites[walkOrRun].down;
+    
+    // } else if (keys.d.pressed && testArr[testArr.length - 1] === 'd') {
+        
+    //     currentMap.position.x -= moveSpeed
+    //     player.currentSprite = player.sprites[walkOrRun].right;
+
+    // }
 
     currentMap.draw();
     player.draw();
