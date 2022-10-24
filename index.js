@@ -65,6 +65,7 @@ const keys = {
 }
 
 let lastKey;
+// let testArr = [];
 window.addEventListener('keydown', (e) => {
     let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {

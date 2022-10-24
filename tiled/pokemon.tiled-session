@@ -86,11 +86,11 @@
             }
         },
         "spites/sprite-maps/male-player-walk-up.tmx": {
-            "scale": 18.148958333333333,
+            "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 24.050967112437583,
-                "y": 23.968317740917183
+                "x": 24.125,
+                "y": 32
             }
         },
         "spites/sprite-maps/player-walk-down-male.tmx": {
