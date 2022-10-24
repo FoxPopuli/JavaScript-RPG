@@ -6,7 +6,6 @@ export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
 
 // 16:9
-
 canvas.height = 720;
 canvas.width = (canvas.height/9)*16;
 ctx.fillStyle = 'white';
@@ -19,7 +18,6 @@ const clearing = new Map({
     imgPath: './img/maps/the-clearing-demo.png'
 })
 
-// clearing.draw();
 
 
 
@@ -48,9 +46,8 @@ const mon = new Pokemon ({
     isPlayer: true
 })
 
-// player.draw()
+
 let currentMap = clearing;
-let currentSprite = player.sprites.walk.down;
 
 // Overworld controls
 const binds = {
@@ -61,21 +58,10 @@ const binds = {
 } 
 
 const keys = {
-    w: {
-        pressed: false
-    },
-
-    a: {
-        pressed: false
-    },
-
-    s: {
-        pressed: false
-    },
-
-    d: {
-        pressed: false
-    }
+    w: {pressed: false},
+    a: {pressed: false},
+    s: {pressed: false},
+    d: {pressed: false}
 }
 
 let lastKey;
@@ -85,25 +71,25 @@ window.addEventListener('keydown', (e) => {
         case 'w':
             keys.w.pressed = true; 
             lastKey = 'w';
-            currentSprite = player.sprites[walkOrRun].up;
+            player.currentSprite = player.sprites[walkOrRun].up;
             break;
 
         case 'a': 
             keys.a.pressed = true;
             lastKey = 'a';
-            currentSprite = player.sprites[walkOrRun].left;
+            player.currentSprite = player.sprites[walkOrRun].left;
             break;
 
         case 's':
             keys.s.pressed= true;
             lastKey = 's';
-            currentSprite = player.sprites[walkOrRun].down;
+            player.currentSprite = player.sprites[walkOrRun].down;
             break;
 
         case 'd':
             keys.d.pressed = true;
             lastKey = 'd';
-            currentSprite = player.sprites[walkOrRun].right;
+            player.currentSprite = player.sprites[walkOrRun].right;
             break;
 
     }
@@ -129,17 +115,13 @@ window.addEventListener( 'keyup', (e) => {
 let i = 0;
 
 currentMap.img.onload = () => {
-
-    console.log('map loaded')
-    console.log(currentMap.img, currentSprite)
-    ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
-    ctx.drawImage(currentSprite, canvas.width / 2, canvas.height / 2);
+    currentMap.draw()
+    player.draw()
 
 }
 
 let moveSpeed = 5;
 function animate() {
-    // console.log(i)
     window.requestAnimationFrame(animate);
 
     if (keys.w.pressed && lastKey === 'w') {currentMap.position.y += moveSpeed}
@@ -147,36 +129,8 @@ function animate() {
     else if (keys.s.pressed && lastKey === 's') {currentMap.position.y -= moveSpeed}
     else if (keys.d.pressed && lastKey === 'd') {currentMap.position.x -= moveSpeed}
 
-    ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
-
-
-    let scaleWidth = currentSprite.width / 3;
-    // let scaleFactor = 1;
-    // if (scaleFactor === 3) {
-    //     scaleFactor = 0;
-    // }
-
-    ctx.drawImage(
-        currentSprite,
-
-        scaleWidth,
-        // 0,
-        0,
-
-        scaleWidth,
-        currentSprite.height,
-
-        canvas.width / 2 - currentSprite.width / 3  + scaleWidth / 2, 
-        canvas.height / 2 - currentSprite.height / 2 - 16,
-
-        scaleWidth,
-        currentSprite.height
-        );
-    // ctx.drawImage(player.sprites.walking, 0, 0);
-
-
-
-    scaleFactor++;
+    currentMap.draw();
+    player.draw();
 }
 
 animate()

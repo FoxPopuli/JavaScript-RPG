@@ -1,3 +1,4 @@
+import { canvas } from '../index.js';
 import {ctx} from '../index.js';
 export class Player {
     constructor ({name, isPlayer, prefix, gender}) {
@@ -36,21 +37,28 @@ export class Player {
         sprites.walk.right = new Image();
         sprites.walk.right.src = `./img/sprites/player/${this.gender}/walk-right.png`
         
-
-
-
-
-
         return sprites;
     }
 
+    draw() {
+        let scaleWidth = this.currentSprite.width / 3;
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth,
+            0,
+    
+            scaleWidth,
+            this.currentSprite.height,
+    
+            canvas.width / 2 - this.currentSprite.width / 3  + scaleWidth / 2, 
+            canvas.height / 2 - this.currentSprite.height / 2 - 16,
+    
+            scaleWidth,
+            this.currentSprite.height
+        );
+    }
 
-    // move = function(dir) {
-    //     switch (dir) {
-    //         case 'down':
-
-    //     }
-    // }
 
     addToParty = function (pokemon) {
         if (typeof pokemon === 'object') {
