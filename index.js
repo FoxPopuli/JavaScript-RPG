@@ -55,7 +55,7 @@ ctx.drawImage(currentSprite, 0, 0);
 console.log(currentSprite)
 
 // Overworld controls 
-document.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => {
     let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
         case 's':
