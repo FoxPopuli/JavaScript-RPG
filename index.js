@@ -7,7 +7,7 @@ export const ctx = canvas.getContext('2d');
 
 // 16:9
 
-canvas.height = 720;
+canvas.height = 1080;
 canvas.width = (canvas.height/9)*16;
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -50,49 +50,82 @@ const mon = new Pokemon ({
 
 // player.draw()
 let currentMap = clearing;
-
-
+let currentSprite = player.sprites.walk.down;
+ctx.drawImage(currentSprite, 0, 0);
+console.log(currentSprite)
 
 // Overworld controls 
-document.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => {
+    let walkOrRun = player.isRunning ? 'run' : 'walk'; 
     switch(e.key) {
         case 's':
-            console.log(e.key)
             currentMap.position.y -= 16;
-            console.log(currentMap.position)
+            currentSprite = player.sprites[walkOrRun].down;
             break;
         case 'w': 
             currentMap.position.y += 16;
+            currentSprite = player.sprites[walkOrRun].up;
             break;
 
         case 'a': 
             currentMap.position.x += 16;
+            currentSprite = player.sprites[walkOrRun].left;
             break;
         
         case 'd':
             currentMap.position.x -= 16;
+            currentSprite = player.sprites[walkOrRun].right;
+            break;
 
     }
 })
 
 
 let i = 0;
+
 currentMap.img.onload = () => {
 
+    console.log('map loaded')
+    console.log(currentMap.img, currentSprite)
     ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
-    ctx.drawImage(player.sprites.walking, canvas.width / 2, canvas.height / 2);
+    ctx.drawImage(currentSprite, canvas.width / 2, canvas.height / 2);
 
 }
+
+
 function animate() {
-    console.log(i)
+    // console.log(i)
     window.requestAnimationFrame(animate);
     ctx.drawImage(currentMap.img, currentMap.position.x, currentMap.position.y);
-    ctx.drawImage(player.sprites.walking, canvas.width / 2, canvas.height / 2);
+
+
+    let scaleWidth = currentSprite.width / 3;
+    let scaleFactor = 1;
+    if (scaleFactor === 3) {
+        scaleFactor = 0;
+    }
+
+    ctx.drawImage(
+        currentSprite,
+
+        scaleWidth,
+        // 0,
+        0,
+
+        scaleWidth,
+        currentSprite.height,
+
+        canvas.width / 2 - currentSprite.width / 3  + scaleWidth / 2, 
+        canvas.height / 2 - currentSprite.height / 2 - 16,
+
+        scaleWidth,
+        currentSprite.height
+        );
     // ctx.drawImage(player.sprites.walking, 0, 0);
 
 
 
-    i++;
+    scaleFactor++;
 }
 
-// animate()
+animate()

@@ -14,6 +14,7 @@ export class Player {
             y: 0
         }
         this.sprites = this.genSprites();
+        this.currentSprite = this.sprites.walk.down;
         
 
         this.direction = 'down';
@@ -23,14 +24,22 @@ export class Player {
 
     genSprites = function() {
         const sprites = {};
-        sprites.walking = new Image();
-        if (this.isPlayer) {
+        
+        // Walk
+        sprites.walk = {};
+        sprites.walk.left = new Image();
+        sprites.walk.left.src = `./img/sprites/player/${this.gender}/walk-left.png`
+        sprites.walk.up = new Image();
+        sprites.walk.up.src = `./img/sprites/player/${this.gender}/walk-up.png`
+        sprites.walk.down = new Image();
+        sprites.walk.down.src = `./img/sprites/player/${this.gender}/walk-down.png`
+        sprites.walk.right = new Image();
+        sprites.walk.right.src = `./img/sprites/player/${this.gender}/walk-right.png`
+        
 
-            sprites.walking.src = `./img/sprites/player-walking-${this.gender}.png`
 
-        } else {
-            return;
-        }
+
+
 
         return sprites;
     }
@@ -80,12 +89,4 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    draw () {
-
-
-        this.sprites.walking.onload = () => {
-            ctx.drawImage(this.sprites.walking, this.position.x, this.position.y);
-        }
-        return;
-    }
 }
