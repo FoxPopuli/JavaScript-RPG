@@ -28,7 +28,7 @@ export class Player {
         this.timeMoved = 0;
         this.dimensions = {x: 16*4, y: 16*4};   // pixels
         this.position = {x: 4, y: 4};     // pixels
-        this.delayMove = 700;               // ms
+        this.delayMove = 100;               // ms
 
     }
 

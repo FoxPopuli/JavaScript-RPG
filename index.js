@@ -130,7 +130,7 @@ window.onload = function () {
 // console.log(currentMap.colMat)
 let walkOrRun = player.isRunning ? 'run' : 'walk'; 
 let moveSpeed = 10;
-player.placeAt(5, 5)
+player.placeAt(10, 10)
 function animate() {
     let currentKey = testArr[testArr.length - 1];
     let currentFrameTime = Date.now();
@@ -163,13 +163,13 @@ function animate() {
 
     // Movement 3
     if (!player.processMovement(currentFrameTime)) {
-        if (currentKey === 'w') {
+        if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
             player.tileTo.y -= 1;
-        } else if (currentKey === 's') {
+        } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
             player.tileTo.y += 1;
-        } else if (currentKey === 'a') {
+        } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
             player.tileTo.x -= 1;
-        } else if (currentKey === 'd') {
+        } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
             player.tileTo.x += 1;
         }
 
