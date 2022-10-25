@@ -20,13 +20,13 @@ const clearing = new Map({
     mapFile: clearingMapFile
 })
 
-console.log(clearing.colMat);
 
 const player = new Player ({
     name: 'Vox',
     isPlayer: true,
     prefix: 'Pokemon God ',
-    gender: 'male'
+    gender: 'male',
+    currentMap: clearing
 })
 
 
@@ -48,7 +48,7 @@ const mon = new Pokemon ({
 })
 
 
-let currentMap = clearing;
+let currentMap = player.currentMap;
 // console.log(currentMap.layers)
 // Overworld controls
 const binds = {

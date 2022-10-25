@@ -24,6 +24,11 @@ export class Player {
 
     }
 
+
+    walk = function () {
+        
+    }
+
     genSprites = function() {
         const sprites = {};
         
