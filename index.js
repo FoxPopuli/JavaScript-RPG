@@ -165,12 +165,17 @@ function animate() {
     if (!player.processMovement(currentFrameTime)) {
         if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
             player.tileTo.y -= 1;
+            player.currentSprite = player.sprites[walkOrRun].up;
         } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
             player.tileTo.y += 1;
+
+            player.currentSprite = player.sprites[walkOrRun].down
         } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
             player.tileTo.x -= 1;
+            player.currentSprite = player.sprites[walkOrRun].left;
         } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
             player.tileTo.x += 1;
+            player.currentSprite = player.sprites[walkOrRun].right
         }
 
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
@@ -231,17 +236,17 @@ function animate() {
     // } else if (currentKey === 'a') {
         
     //     currentMap.position.x += moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].left;
+    //     ;
     
     // } else if (currentKey === 's') {
         
     //     currentMap.position.y -= moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].down;
+    //     ;
     
     // } else if (currentKey === 'd') {
         
     //     currentMap.position.x -= moveSpeed
-    //     player.currentSprite = player.sprites[walkOrRun].right;
+    //     ;
 
     // }
 
@@ -251,9 +256,9 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     currentMap.draw();
 
-    // player.draw()
+    player.draw()
 
-    ctx.fillRect(player.position.x, player.position.y, player.dimensions.x, player.dimensions.y);
+    // ctx.fillRect(player.position.x, player.position.y, player.dimensions.x, player.dimensions.y);
 
     player.showPos()
 

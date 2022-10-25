@@ -136,7 +136,7 @@ export class Player {
             // canvas.height / 2 - this.currentSprite.height / 2 - 16,
 
             this.position.x,
-            this.position.y,
+            this.position.y - this.currentSprite.height / 2,
     
             scaleWidth,
             this.currentSprite.height
