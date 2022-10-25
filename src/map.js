@@ -7,6 +7,9 @@ export class Map {
         this.img = new Image();
         this.img.src = imgPath;
         this.mapFile = mapFile;
+
+        this.width = this.mapFile.width;
+        this.height = this.mapFile.height;
         
         this.collisionArr = this.mapFile.layers.find(obj => {
             return obj.name === 'collision-tiles';
@@ -16,7 +19,13 @@ export class Map {
         this.colMat = this.toMatrix(this.collisionArr.data)
 
 
+
+
     }
+
+
+
+
 
     draw () {
         ctx.drawImage(this.img, this.position.x, this.position.y);

@@ -9,6 +9,7 @@
         "tilesets",
         "."
     ],
+    "exportAsImage.drawTileGrid": true,
     "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
