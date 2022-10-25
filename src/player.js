@@ -1,7 +1,7 @@
 import { canvas } from '../index.js';
 import {ctx} from '../index.js';
 export class Player {
-    constructor ({name, isPlayer, prefix, gender}) {
+    constructor ({name, isPlayer, prefix, gender, currentMap}) {
         this.name = name;
         this.party = [];
         this.currency = 0;
@@ -9,6 +9,7 @@ export class Player {
         this.isPlayer = isPlayer;
         this.prefix = prefix;
         this.gender = gender;
+        this.currentMap = currentMap;
         
         this.position = {
             x: 0,
