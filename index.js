@@ -6,13 +6,12 @@ import {Pokemon} from './src/pokemon.js'
 // mapFiles
 import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
 
-
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
 ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
-canvas.height = 720;
+canvas.height = 480;
 canvas.width = (canvas.height/9)*16;
 
 
@@ -27,13 +26,6 @@ let currentSecond = 0;
 let frameCount = 0;
 let framesLastSecond = 0;
 let lastFrameTime = 0;
-
-
-
-
-
-
-
 
 const sampleStats = {
     hp:     10,
@@ -52,18 +44,13 @@ const mon = new Pokemon ({
     isPlayer:   true
 })
 
-
-
-
-
-
-
 // VIEWPORT
 
 const viewport = {
     screen:     {x: canvas.width, y: canvas.height},
     startTile:  {x: 0, y: 0},
     endTile:    {x: 0, y: 0},
+
     offset:     {x: 0, y: 0},
 
     report:     function () {
@@ -73,6 +60,8 @@ const viewport = {
     },
 
     update:     function (px, py) {
+        this.startPixel = {x: this.startTile.x*tileW, y: this.startTile.y * tileH};
+        this.endPixel =   {x: this.endTile.x * tileW, y: this.endTile.y * tileH};
         // this.report()
         console.log('viewport.update()')
         // px, py : pixel coords of the center of the viewport
@@ -129,8 +118,6 @@ const player = new Player ({
 })
 
 
-let currentMap = player.currentMap;
-viewport.update(clearing.spawnTile.x * tileW, clearing.spawnTile.y * tileH)
 // OVERWORLD CONTROLS
 
 // Keybinds
@@ -177,19 +164,8 @@ window.addEventListener('keydown', (e) => {
 })
 
 window.addEventListener( 'keyup', (e) => {
-    switch (e.key) {
-        case 'w':
-            testArr.splice(testArr.indexOf(e.key), 1);
-            break;
-        case 'a':
-            testArr.splice(testArr.indexOf(e.key), 1);
-            break;
-        case 's':
-            testArr.splice(testArr.indexOf(e.key), 1);
-            break;
-        case 'd':
-            testArr.splice(testArr.indexOf(e.key), 1);
-            break;
+    if (['w', 'a', 's', 'd'].includes(e.key)) {
+        testArr.splice(testArr.indexOf(e.key), 1);
     }
 })
 
@@ -205,19 +181,11 @@ window.addEventListener ('keydown', (e) => {
 })
 
 
-
-player.placeAt(currentMap.spawnTile, currentMap.spawnTile)
-
-// viewport.screen.x = canvas.width;
-// viewport.screen.y = canvas.height;
+let currentMap = player.currentMap;
+// viewport.update(clearing.spawnTile.x * tileW, clearing.spawnTile.y * tileH)
+player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 
-
-// }
-
-
-// let  testobj = {yes: 1, no: 4}
-// console.log(testobj)
 
 
 
@@ -287,8 +255,8 @@ function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, viewport.screen.x, viewport.screen.y)
+    // ctx.fillStyle = 'black';
+    // ctx.fillRect(0, 0, viewport.screen.x, viewport.screen.y)
 
     currentMap.draw();
     player.draw()

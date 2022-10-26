@@ -168,9 +168,12 @@ export class Player {
             // canvas.width / 2 - this.currentSprite.width / 3  + scaleWidth / 2, 
             // canvas.height / 2 - this.currentSprite.height / 2 - 16,
 
-            this.position.x,
-            this.position.y - this.currentSprite.height / 2,
+            this.position.x + this.currentMap.viewport.offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y,
     
+            // this.position.x,
+            // this.position.y - this.currentSprite.height / 2,
+
             scaleWidth,
             this.currentSprite.height
         );
