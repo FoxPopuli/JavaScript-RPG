@@ -86,6 +86,7 @@ Array.prototype.pushOnce = function(key) {
 window.addEventListener('keydown', (e) => {
     switch(e.key) {
         case 'w':
+
             testArr.pushOnce('w');
             break;
 
@@ -127,10 +128,11 @@ window.onload = function () {
 
 }
 
-// console.log(currentMap.colMat)
-let walkOrRun = player.isRunning ? 'run' : 'walk'; 
-let moveSpeed = 10;
+
+ 
 player.placeAt(10, 10)
+
+
 function animate() {
     let currentKey = testArr[testArr.length - 1];
     let currentFrameTime = Date.now();
@@ -147,35 +149,31 @@ function animate() {
     }
 
 
-    // Movement 2
-    // if (!player.processMovement(currentFrameTime)) {
-        
-    //     if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
-    //         player.tileTo.y -= 1;
-    //     } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
-    //         player.tileTo.y += 1;
-    //     } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
-    //         player.tileTo.x -= 1;
-    //     } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
-    //         player.tileTo.x += 1;
-    //     }
-    // }
-
-    // Movement 3
+    // Movement 
     if (!player.processMovement(currentFrameTime)) {
         if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
-            player.tileTo.y -= 1;
-            player.currentSprite = player.sprites[walkOrRun].up;
-        } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
-            player.tileTo.y += 1;
 
-            player.currentSprite = player.sprites[walkOrRun].down
+            player.direction = 'up';
+            player.tileTo.y -= 1;
+            player.steps++;
+
+        } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
+
+            player.direction = 'down';
+            player.tileTo.y += 1;
+            player.steps++;
+
         } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
+
+            player.direction = 'left';
             player.tileTo.x -= 1;
-            player.currentSprite = player.sprites[walkOrRun].left;
+            player.steps++;
+
         } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
+
+            player.direction = 'right';
             player.tileTo.x += 1;
-            player.currentSprite = player.sprites[walkOrRun].right
+            player.steps++;
         }
 
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
@@ -184,86 +182,13 @@ function animate() {
 
     }
 
-   // Movement 4
-    // if (true) {
-    //     if (currentKey === 'w') {
-    //         player.position.y -= 1;
-    //         console.log(currentKey)
-    //     } else if (currentKey === 's') {
-    //         player.position.y += 1;
-    //     } else if (currentKey === 'a') {
-    //         player.position.x -= 1;
-    //     } else if (currentKey === 'd') {
-    //         player.position.x += 1;
-    //     }
-    // }
 
-    // Movement 5
-    // if (!player.processMovement(currentFrameTime)) {
-    //     if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
-    //         player.position.y -= 1;
-    //     } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
-    //         player.position.y += 1;
-    //     } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
-    //         player.position.x -= 1;
-    //     } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
-    //         player.position.x += 1;
-    //     }
-    // }
-
-
-
-
-
-    ctx.fillStyle = 'red';
-    // console.log('FPS: ' + framesLastSecond);
-
-
-
-
-
-
-
-
-
-    
-    // Movement
-    // if (currentKey === 'w') {
-        
-    //     currentMap.position.y += moveSpeed;
-    //     player.currentSprite = player.sprites[walkOrRun].up;
-    
-    // } else if (currentKey === 'a') {
-        
-    //     currentMap.position.x += moveSpeed;
-    //     ;
-    
-    // } else if (currentKey === 's') {
-        
-    //     currentMap.position.y -= moveSpeed;
-    //     ;
-    
-    // } else if (currentKey === 'd') {
-        
-    //     currentMap.position.x -= moveSpeed
-    //     ;
-
-    // }
-
-
-    
-    // player.placeAt(0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     currentMap.draw();
-
     player.draw()
 
-    // ctx.fillRect(player.position.x, player.position.y, player.dimensions.x, player.dimensions.y);
-
-    player.showPos()
 
     lastFrameTime = currentFrameTime;
-
     requestAnimationFrame(animate);
 }
 
