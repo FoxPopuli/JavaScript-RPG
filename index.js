@@ -152,22 +152,28 @@ function animate() {
     // Movement 
     if (!player.processMovement(currentFrameTime)) {
         if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
+
             player.direction = 'up';
             player.tileTo.y -= 1;
-            // player.currentSprite = player.sprites[walkOrRun].up;
+            player.steps++;
+
         } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
+
             player.direction = 'down';
             player.tileTo.y += 1;
+            player.steps++;
 
-            // player.currentSprite = player.sprites[walkOrRun].down
         } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
+
             player.direction = 'left';
             player.tileTo.x -= 1;
-            // player.currentSprite = player.sprites[walkOrRun].left;
+            player.steps++;
+
         } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
+
             player.direction = 'right';
             player.tileTo.x += 1;
-            // player.currentSprite = player.sprites[walkOrRun].right
+            player.steps++;
         }
 
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {

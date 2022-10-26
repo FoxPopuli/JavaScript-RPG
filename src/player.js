@@ -15,20 +15,22 @@ export class Player {
         this.currentMap = currentMap;
         
         this.sprites = this.genSprites();
-        this.currentSprite = this.sprites.walk.down;
-        
+        this.currentSprite = this.sprites.walk.down,
 
-        this.direction = 'down';
-        this.isRunning = false;
+        this.steps = 0;
 
 
         // Movement props
+        this.moveFrame = 1;
+        this.direction = 'down';
+        this.isRunning = false;
+
         this.tileFrom = {x: 1, y: 1}
         this.tileTo = {x: 1, y: 1}
         this.timeMoved = 0;
         this.dimensions = {x: 16*4, y: 16*4};   // pixels
-        this.position = {x: 4, y: 4};     // pixels
-        this.delayMove = 100;               // ms
+        this.position = {x: 4, y: 4};           // pixels
+        this.delayMove = 300;                   // ms
 
     }
 
@@ -65,6 +67,16 @@ export class Player {
         let walkOrRun = this.isRunning ? 'run' : 'walk';
         this.currentSprite = this.sprites[walkOrRun][this.direction];
 
+        if ((t - this.timeMoved) / this.delayMove < 0.5) {
+            if (this.steps % 2 === 0) {
+                this.moveFrame = 0;
+            } else {
+                this.moveFrame = 2;
+            }
+        } else {
+            this.moveFrame = 1;
+        }
+
         // Check if time elapsed is less than time to move
         if (t - this.timeMoved >= this.delayMove) {
             this.placeAt(this.tileTo.x, this.tileTo.y);
@@ -73,26 +85,20 @@ export class Player {
             this.position.x = this.tileFrom.x * tileW + (tileW - this.dimensions.x) / 2;
             this.position.y = this.tileFrom.y * tileH + (tileH - this.dimensions.y) / 2;
 
-            let diff;
+            // Distance moved between current and destination x values 
+            let diff = (tileW / this.delayMove) * (t - this.timeMoved);
+
             if (this.tileTo.x !== this.tileFrom.x) {
-
-                // Distance moved between current and destination x values 
-                diff = (tileW / this.delayMove) * (t - this.timeMoved);
-
                 // Move left or right by diff
                 this.position.x += (this.tileTo.x < this.tileFrom.x ? 0 - diff : diff);
             }
 
             if (this.tileTo.y !== this.tileFrom.y) {
-
-                // Distance moved between current and destination y values
-                diff = (tileH / this.delayMove) * (t - this.timeMoved);
-
                 // Move up or down by diff
                 this.position.y += (this.tileTo.y < this.tileFrom.y ? 0 - diff : diff);
             }
 
-            console.log('Diff: ' + diff);
+
             // round
             this.position.x = Math.round(this.position.x);
             this.position.y = Math.round(this.position.y);
@@ -129,7 +135,7 @@ export class Player {
         ctx.drawImage(
             this.currentSprite,
     
-            scaleWidth,
+            scaleWidth * this.moveFrame,
             0,
     
             scaleWidth,
