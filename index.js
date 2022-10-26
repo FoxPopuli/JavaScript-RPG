@@ -12,7 +12,7 @@ export const ctx = canvas.getContext('2d');
 ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
-canvas.height = 2080;
+canvas.height = 1080;
 canvas.width = (canvas.height/9)*16;
 
 
@@ -141,7 +141,7 @@ window.onload = function () {
 
 
  
-player.placeAt(10, 10)
+player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y);
 
 
 function animate() {

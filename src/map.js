@@ -16,8 +16,9 @@ export class Map {
         })
 
 
-        this.colMat = this.toMatrix(this.collisionArr.data)
+        this.colMat = this.toMatrix(this.collisionArr.data);
 
+        this.spawnTile = {x: 10, y:10};
 
 
 

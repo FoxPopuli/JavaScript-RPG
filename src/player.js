@@ -25,11 +25,13 @@ export class Player {
         this.direction = 'down';
         this.isRunning = false;
 
-        this.tileFrom = {x: 1, y: 1}
-        this.tileTo = {x: 1, y: 1}
+
+        this.tileFrom = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
+        this.tileTo = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
+        
         this.timeMoved = 0;
-        this.dimensions = {x: 16*4, y: 16*4};   // pixels
-        this.position = {x: 4, y: 4};           // pixels
+        this.dimensions = {x: tileW, y: tileH};   // pixels
+        this.position = {x: this.currentMap.spawnTile.x * tileW, y: this.currentMap.spawnTile.y * tileH}       // pixels
         this.delayMove = 300;                   // ms
 
     }
