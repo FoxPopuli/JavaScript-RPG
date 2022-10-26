@@ -62,6 +62,9 @@ export class Player {
             return false;
         }
 
+        let walkOrRun = this.isRunning ? 'run' : 'walk';
+        this.currentSprite = this.sprites[walkOrRun][this.direction];
+
         // Check if time elapsed is less than time to move
         if (t - this.timeMoved >= this.delayMove) {
             this.placeAt(this.tileTo.x, this.tileTo.y);
