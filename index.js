@@ -12,7 +12,7 @@ export const ctx = canvas.getContext('2d');
 ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
-canvas.height = 2080;
+canvas.height = 720;
 canvas.width = (canvas.height/9)*16;
 
 
@@ -22,49 +22,118 @@ canvas.width = (canvas.height/9)*16;
 const tileW = 16*4;
 const tileH = 16*4;
 
+// FPS and animations
 let currentSecond = 0;
 let frameCount = 0;
 let framesLastSecond = 0;
 let lastFrameTime = 0;
 
+
+
+
+
+
+
+
+const sampleStats = {
+    hp:     10,
+    atk:    10,
+    def:    10,
+    spatk:  10,
+    spdef:  10,
+    spd:    10
+}
+const mon = new Pokemon ({
+    name:       'Charmander', 
+    level:      5, 
+    type:       ['Fire'], 
+    baseStats:  sampleStats, 
+    // moves: [tackle, growl, megaBeam, hypnosis], 
+    isPlayer:   true
+})
+
+
+
+
+
+
+
+// VIEWPORT
+
+const viewport = {
+    screen:     {x: canvas.width, y: canvas.height},
+    startTile:  {x: 0, y: 0},
+    endTile:    {x: 0, y: 0},
+    offset:     {x: 0, y: 0},
+
+    report:     function () {
+        console.log('Report')
+        console.log(this.startTile);
+        console.log(this.endTile);
+    },
+
+    update:     function (px, py) {
+        // this.report()
+        console.log('viewport.update()')
+        // px, py : pixel coords of the center of the viewport
+        this.offset.x = Math.floor((this.screen.x / 2) - px);
+        this.offset.y = Math.floor((this.screen.y / 2) - py);
+
+        console.log(px, py)
+        let tile = {
+            x: Math.floor(px/tileW),
+            y: Math.floor(py/tileH) 
+        }
+
+
+
+        // this.report()
+        console.log(this.screen)
+        this.startTile.x = tile.x - 1 - Math.ceil((this.screen.x / 2) / tileW)
+        this.startTile.y = tile.y - 1 - Math.ceil((this.screen.y / 2) / tileH)
+        // this.report()
+
+
+        if (this.startTile.x < 0) {this.startTile.x = 0;}
+        if (this.startTile.y < 0) {this.startTile.y = 0;}
+
+        this.endTile.x = tile.x + 1 + Math.ceil((this.screen.x / 2) / tileW);
+        this.endTile.y = tile.y + 1 + Math.ceil((this.screen.y / 2) / tileH);
+
+        if (this.endTile.x >= currentMap.mapFile.width) {this.endTile.x = currentMap.mapFile.width - 1;}
+        if (this.endTile.y >= currentMap.mapFile.height) {this.endTile.y = currentMap.mapFile.height - 1;}
+    }
+}
+
+
+// currentMap.viewport = viewport;
+
+let testArr = [];
+
+
 const clearing = new Map({
     // position: {x: -500, y: -500}, 
     position: {x: 0, y: 0},
     imgPath: './img/maps/the-clearing-demo-grid.png',
-    mapFile: clearingMapFile
+    mapFile: clearingMapFile,
+    viewport: viewport
 })
 
 
 const player = new Player ({
-    name: 'Vox',
-    isPlayer: true,
-    prefix: 'Pokemon God ',
-    gender: 'male',
-    currentMap: clearing
-})
-
-
-const sampleStats = {
-    hp: 10,
-    atk: 10,
-    def: 10,
-    spatk: 10,
-    spdef: 10,
-    spd: 10
-}
-const mon = new Pokemon ({
-    name: 'Charmander', 
-    level: 5, 
-    type: ['Fire'], 
-    baseStats: sampleStats, 
-    // moves: [tackle, growl, megaBeam, hypnosis], 
-    isPlayer: true
+    name:       'Vox',
+    isPlayer:   true,
+    prefix:     'Pokemon God ',
+    gender:     'male',
+    currentMap:  clearing
 })
 
 
 let currentMap = player.currentMap;
-// console.log(currentMap.layers)
-// Overworld controls
+viewport.update(clearing.spawnTile.x * tileW, clearing.spawnTile.y * tileH)
+// OVERWORLD CONTROLS
+
+// Keybinds
 const binds = {
     up: 'w',
     left: 'a',
@@ -72,7 +141,9 @@ const binds = {
     right: 'd'
 } 
 
-let testArr = [];
+// Experimental movement controls
+// Allows the current key to override the previous key if it's still being pressed, 
+// and reinstated if it's still being pressed when the current key is lifted off.
 
 
 // Pushes the key to the array if the last element in the array isn't already that key
@@ -133,15 +204,21 @@ window.addEventListener ('keydown', (e) => {
 
 })
 
-window.onload = function () {
-    currentMap.draw()
-    // requestAnimationFrame(animate);
-
-}
 
 
- 
-player.placeAt(10, 10)
+player.placeAt(currentMap.spawnTile, currentMap.spawnTile)
+
+// viewport.screen.x = canvas.width;
+// viewport.screen.y = canvas.height;
+
+
+
+// }
+
+
+// let  testobj = {yes: 1, no: 4}
+// console.log(testobj)
+
 
 
 function animate() {
@@ -194,9 +271,30 @@ function animate() {
     }
 
 
+    console.log('P:')
+    console.log(player.position.x)
+
+    viewport.update( 
+        player.position.x + (player.dimensions.x / 2),
+        player.position.y + (player.dimensions.y / 2)
+        // player.position.x,
+        // player.position.y
+        
+    
+    );
+
+    console.log(viewport)
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, viewport.screen.x, viewport.screen.y)
+
     currentMap.draw();
     player.draw()
+
+
+
 
 
     lastFrameTime = currentFrameTime;

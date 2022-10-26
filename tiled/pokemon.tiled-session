@@ -78,6 +78,14 @@
                 "y": 40
             }
         },
+        "spites/sprite-maps/male-player-run-right.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -57,
+                "y": 11.75
+            }
+        },
         "spites/sprite-maps/male-player-run-up.tmx": {
             "scale": 4,
             "selectedLayer": 0,

@@ -1,12 +1,15 @@
 import {ctx} from '../index.js';
 
 export class Map {
-    constructor({ position, imgPath, mapFile}) {
+    constructor({ position, imgPath, mapFile, viewport}) {
         this.position = position;
         this.imgPath = imgPath;
         this.img = new Image();
         this.img.src = imgPath;
         this.mapFile = mapFile;
+        this.viewport = viewport;
+
+        this.spawnTile = {x: 10, y: 10};
 
         this.width = this.mapFile.width;
         this.height = this.mapFile.height;
@@ -15,12 +18,7 @@ export class Map {
             return obj.name === 'collision-tiles';
         })
 
-
         this.colMat = this.toMatrix(this.collisionArr.data)
-
-
-
-
     }
 
 
@@ -28,7 +26,20 @@ export class Map {
 
 
     draw () {
-        ctx.drawImage(this.img, this.position.x, this.position.y);
+        // console.log(this.viewport)
+        ctx.drawImage(
+            this.img, 
+            
+            this.viewport.startTile.x * 16*4, 
+            this.viewport.startTile.y * 16*4,
+
+            this.viewport.endTile.x * 16*4,
+            this.viewport.endTile.y * 16*4,
+
+            this.viewport.screen.x,
+            this.viewport.screen.y
+                    
+            );
     }
 
     toMatrix = function (array) {
@@ -43,3 +54,4 @@ export class Map {
     }
 
 } 
+
