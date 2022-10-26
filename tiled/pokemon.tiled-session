@@ -9,7 +9,7 @@
         "tilesets",
         "."
     ],
-    "exportAsImage.drawTileGrid": true,
+    "exportAsImage.drawTileGrid": false,
     "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -47,8 +47,8 @@
             "scale": 4,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 219.875,
-                "y": -95.5
+                "x": 436.5,
+                "y": 258.75
             }
         },
         "maps/tutorial-town.tmx": {
@@ -61,6 +61,30 @@
         },
         "maps/vermilion-city.tsx": {
             "scaleInDock": 1
+        },
+        "spites/sprite-maps/male-player-run-down.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160,
+                "y": 160
+            }
+        },
+        "spites/sprite-maps/male-player-run-left.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160,
+                "y": 40
+            }
+        },
+        "spites/sprite-maps/male-player-run-up.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 160,
+                "y": 160
+            }
         },
         "spites/sprite-maps/male-player-walk-down.tmx": {
             "scale": 4,
@@ -150,6 +174,7 @@
     ],
     "project": "pokemon.tiled-project",
     "recentFiles": [
+        "spites/sprite-maps/male-player-run-down.tmx",
         "maps/the-clearing-demo.tmx",
         "tilesets/rpg-tileset-6.tsx",
         "tilesets/rpg-tileset-32.tsx",

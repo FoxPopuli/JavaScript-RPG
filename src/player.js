@@ -61,7 +61,14 @@ export class Player {
         // Will return true if character is moving, else return false
 
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
+            this.currentSprite = this.sprites.walk[this.direction];
             return false;
+        }
+
+        if (this.isRunning) {
+            this.delayMove = 100;
+        } else {
+            this.delayMove = 200;
         }
 
         let walkOrRun = this.isRunning ? 'run' : 'walk';
@@ -126,6 +133,18 @@ export class Player {
         sprites.walk.right = new Image();
         sprites.walk.right.src = `./img/sprites/player/${this.gender}/walk-right.png`
         
+
+        // Run
+        sprites.run = {};
+        sprites.run.left = new Image();
+        sprites.run.left.src = `./img/sprites/player/${this.gender}/run-left.png`
+        sprites.run.up = new Image();
+        sprites.run.up.src = `./img/sprites/player/${this.gender}/run-up.png`
+        sprites.run.down = new Image();
+        sprites.run.down.src = `./img/sprites/player/${this.gender}/run-down.png`
+        sprites.run.right = new Image();
+        sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
+
         return sprites;
     }
 

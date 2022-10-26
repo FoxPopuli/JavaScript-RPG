@@ -122,6 +122,17 @@ window.addEventListener( 'keyup', (e) => {
     }
 })
 
+window.addEventListener ('keydown', (e) => {
+    if (e.key !== 'Shift') return;
+
+    if (player.isRunning) {
+        player.isRunning = false
+    } else {
+        player.isRunning = true
+    }
+
+})
+
 window.onload = function () {
     currentMap.draw()
     // requestAnimationFrame(animate);
