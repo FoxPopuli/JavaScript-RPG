@@ -9,7 +9,7 @@ export class Map {
         this.mapFile = mapFile;
         this.viewport = viewport;
 
-        this.spawnTile = {x: 15, y: 15};
+        this.spawnTile = {x: 20, y: 30};
 
         this.width = this.mapFile.width;
         this.height = this.mapFile.height;
@@ -22,7 +22,6 @@ export class Map {
     }
 
     draw () {
-        console.log(this.viewport)
         
         let dx = this.viewport.startTile.x * 16*4;
         let dy = this.viewport.startTile.y * 16*4
@@ -40,8 +39,16 @@ export class Map {
         ctx.drawImage(
             this.img,
             
-            this.viewport.startTile.x * 16*4, 
-            this.viewport.startTile.y * 16*4,
+            // this.viewport.startTile.x * 16*4 + this.viewport.offset.x, 
+            // this.viewport.startTile.y * 16*4 + this.viewport.offset.y,
+
+
+            this.viewport.px - this.viewport.screen.x / 2,
+            this.viewport.py - this.viewport.screen.y / 2,
+
+            // this.viewport.startTile.x * 16*4, 
+            // this.viewport.startTile.y * 16*4,
+
 
             this.viewport.screen.x,
             this.viewport.screen.y,
@@ -52,8 +59,6 @@ export class Map {
             0,
             0,
 
-            0,
-            0,
 
             this.viewport.screen.x,
             this.viewport.screen.y

@@ -60,27 +60,24 @@ const viewport = {
     },
 
     update:     function (px, py) {
+        this.px = px;
+        this.py = py;
+
         this.startPixel = {x: this.startTile.x*tileW, y: this.startTile.y * tileH};
         this.endPixel =   {x: this.endTile.x * tileW, y: this.endTile.y * tileH};
-        // this.report()
-        console.log('viewport.update()')
         // px, py : pixel coords of the center of the viewport
         this.offset.x = Math.floor((this.screen.x / 2) - px);
         this.offset.y = Math.floor((this.screen.y / 2) - py);
 
-        console.log(px, py)
         let tile = {
             x: Math.floor(px/tileW),
             y: Math.floor(py/tileH) 
         }
 
 
-
-        // this.report()
-        console.log(this.screen)
         this.startTile.x = tile.x - 1 - Math.ceil((this.screen.x / 2) / tileW)
         this.startTile.y = tile.y - 1 - Math.ceil((this.screen.y / 2) / tileH)
-        // this.report()
+
 
 
         if (this.startTile.x < 0) {this.startTile.x = 0;}
@@ -183,7 +180,7 @@ window.addEventListener ('keydown', (e) => {
 
 let currentMap = player.currentMap;
 // viewport.update(clearing.spawnTile.x * tileW, clearing.spawnTile.y * tileH)
-player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
+player.placeAt(15, 15)
 
 
 
@@ -238,10 +235,6 @@ function animate() {
 
     }
 
-
-    console.log('P:')
-    console.log(player.position.x)
-
     viewport.update( 
         player.position.x + (player.dimensions.x / 2),
         player.position.y + (player.dimensions.y / 2)
@@ -251,7 +244,7 @@ function animate() {
     
     );
 
-    console.log(viewport)
+    // console.log(viewport)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
