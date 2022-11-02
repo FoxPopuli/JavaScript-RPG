@@ -207,4 +207,10 @@ export class Player {
         return availableMon[partyIndex];
     }
 
+    // move = function (direction) {
+    //     if (direction === 'left') {
+    //         this.tileTo -= 1;
+    //     }
+    // }
+
 }

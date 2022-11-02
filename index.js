@@ -50,7 +50,6 @@ const viewport = {
     screen:     {x: canvas.width, y: canvas.height},
     startTile:  {x: 0, y: 0},
     endTile:    {x: 0, y: 0},
-
     offset:     {x: 0, y: 0},
 
     report:     function () {
@@ -75,11 +74,8 @@ const viewport = {
             y: Math.floor(py/tileH) 
         }
 
-
         this.startTile.x = tile.x - 1 - Math.ceil((this.screen.x / 2) / tileW)
         this.startTile.y = tile.y - 1 - Math.ceil((this.screen.y / 2) / tileH)
-
-
 
         if (this.startTile.x < 0) {this.startTile.x = 0;}
         if (this.startTile.y < 0) {this.startTile.y = 0;}
@@ -219,8 +215,6 @@ function animate() {
         player.position.x + (player.dimensions.x / 2),
         player.position.y + (player.dimensions.y / 2)
     );
-
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentMap.draw();
     player.draw()
