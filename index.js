@@ -60,12 +60,13 @@ const viewport = {
     },
 
     update:     function (px, py) {
+        // px, py : pixel coords of the center of the viewport
         this.px = px;
         this.py = py;
 
         this.startPixel = {x: this.startTile.x*tileW, y: this.startTile.y * tileH};
         this.endPixel =   {x: this.endTile.x * tileW, y: this.endTile.y * tileH};
-        // px, py : pixel coords of the center of the viewport
+
         this.offset.x = Math.floor((this.screen.x / 2) - px);
         this.offset.y = Math.floor((this.screen.y / 2) - py);
 
@@ -92,13 +93,10 @@ const viewport = {
 }
 
 
-// currentMap.viewport = viewport;
 
-let testArr = [];
 
 
 const clearing = new Map({
-    // position: {x: -500, y: -500}, 
     position: {x: 0, y: 0},
     imgPath: './img/maps/the-clearing-demo-grid.png',
     mapFile: clearingMapFile,
@@ -119,10 +117,12 @@ const player = new Player ({
 
 // Keybinds
 const binds = {
-    up: 'w',
-    left: 'a',
-    down: 's',
-    right: 'd'
+    movement: {
+        up: 'w',
+        left: 'a',
+        down: 's',
+        right: 'd'
+    }
 } 
 
 // Experimental movement controls
@@ -137,32 +137,16 @@ Array.prototype.pushOnce = function(key) {
     }
 }
 
-
+const moveArr = [];
 window.addEventListener('keydown', (e) => {
-    switch(e.key) {
-        case 'w':
-
-            testArr.pushOnce('w');
-            break;
-
-        case 'a': 
-            testArr.pushOnce('a');
-            break;
-
-        case 's':
-            testArr.pushOnce('s')
-            break;
-
-        case 'd':
-            testArr.pushOnce('d')
-            break;
-
+    if (Object.values(binds.movement).includes(e.key)) {
+        moveArr.pushOnce(e.key);
     }
 })
 
 window.addEventListener( 'keyup', (e) => {
-    if (['w', 'a', 's', 'd'].includes(e.key)) {
-        testArr.splice(testArr.indexOf(e.key), 1);
+    if (Object.values(binds.movement).includes(e.key)) {
+        moveArr.splice(moveArr.indexOf(e.key), 1);
     }
 })
 
@@ -179,15 +163,11 @@ window.addEventListener ('keydown', (e) => {
 
 
 let currentMap = player.currentMap;
-// viewport.update(clearing.spawnTile.x * tileW, clearing.spawnTile.y * tileH)
-player.placeAt(15, 15)
-
-
-
+player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 
 function animate() {
-    let currentKey = testArr[testArr.length - 1];
+    let currentKey = moveArr[moveArr.length - 1];
     let currentFrameTime = Date.now();
     let timeElapsed = currentFrameTime - lastFrameTime;
 
@@ -238,27 +218,15 @@ function animate() {
     viewport.update( 
         player.position.x + (player.dimensions.x / 2),
         player.position.y + (player.dimensions.y / 2)
-        // player.position.x,
-        // player.position.y
-        
-    
     );
 
-    // console.log(viewport)
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentMap.draw();
     player.draw()
-
-
-
-
 
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);
 }
 
-// window.onload = requestAnimationFrame(ani)
 animate()

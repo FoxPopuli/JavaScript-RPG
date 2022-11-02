@@ -15,7 +15,7 @@ export class Player {
         this.currentMap = currentMap;
         
         this.sprites = this.genSprites();
-        this.currentSprite = this.sprites.walk.down,
+        this.currentSprite = this.sprites.walk.down;
 
         this.steps = 0;
 
@@ -33,7 +33,8 @@ export class Player {
             // in pixels
             x: this.currentMap.spawnTile.x * tileW, 
             y: this.currentMap.spawnTile.y * tileH
-        };          
+        }; 
+
         this.delayMove = 300;                   // ms
 
     }
@@ -45,8 +46,8 @@ export class Player {
     }
 
     placeAt = function (x, y) {
-        // Places character at the specified tile
 
+        // Places character at the specified tile
         this.tileFrom.x = x;
         this.tileFrom.y = y;
 
@@ -54,10 +55,9 @@ export class Player {
         this.tileTo.y = y;
 
         // Position in pixels relative to top left of canvas
-
         this.position.x = tileW*x
         this.position.y = tileH*y
-        // console.log(this.position)
+
     }
 
     processMovement = function (t) {
@@ -120,9 +120,6 @@ export class Player {
         return true;
     }
 
-    // isMoving = function () {
-
-    // }
 
     genSprites = function() {
         const sprites = {};
@@ -155,7 +152,7 @@ export class Player {
 
     draw() {
         let scaleWidth = this.currentSprite.width / 3;
-        // console.log('Player position {x: ' + this.position.x + ' y: ' + this.position.y)
+
         ctx.drawImage(
             this.currentSprite,
     
@@ -165,14 +162,9 @@ export class Player {
             scaleWidth,
             this.currentSprite.height,
     
-            // canvas.width / 2 - this.currentSprite.width / 3  + scaleWidth / 2, 
-            // canvas.height / 2 - this.currentSprite.height / 2 - 16,
 
             this.position.x + this.currentMap.viewport.offset.x,
             this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y,
-    
-            // this.position.x,
-            // this.position.y - this.currentSprite.height / 2,
 
             scaleWidth,
             this.currentSprite.height
@@ -193,9 +185,7 @@ export class Player {
         console.log('switchMon() called');
         let availableMon = this.party.filter(mon => mon.status !== 'Faint');
 
-        if (availableMon === []) {
-            return null;
-        }
+        if (availableMon === []) {return null;}
 
         let partyIndex;
         if (this.isPlayer) {
