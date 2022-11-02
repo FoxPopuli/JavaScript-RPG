@@ -209,10 +209,47 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    // move = function (direction) {
-    //     if (direction === 'left') {
-    //         this.tileTo -= 1;
-    //     }
-    // }
+    move = function (key, currentFrameTime) {
+
+        if (this.processMovement(currentFrameTime)) return;
+
+        let nextTile = this.tileTo;
+        let map = this.currentMap;
+        switch (key) {
+            case 'a':
+                this.direction = 'left';
+                nextTile.x -= 1;
+                break;
+            
+            case 'd':
+                this.direction = 'right';
+                nextTile.x += 1;
+                break;
+            
+            case 'w':
+                this.direction = 'up';
+                nextTile.y -= 1;
+                break;
+            
+            case 's':
+                this.direction = 'down';
+                nextTile.y += 1;
+                break;
+        }
+        
+        if (map.colMat[nextTile.x][nextTile.y] !== 0) {
+            console.log('Collision')
+            return
+        }
+
+
+    
+        this.tileTo = nextTile;
+        this.steps++;
+
+        if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
+            this.timeMoved = currentFrameTime;
+        }
+    }
 
 }
