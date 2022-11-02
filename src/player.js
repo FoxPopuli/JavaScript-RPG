@@ -209,10 +209,72 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    // move = function (direction) {
-    //     if (direction === 'left') {
-    //         this.tileTo -= 1;
-    //     }
-    // }
+
+
+  
+    move = function (currentFrameTime, currentKey) {
+        // console.log(this.tileFrom)
+        // let nextTile = {
+        //     x: this.tileFrom.x,
+        //     y: this.tileFrom.y
+        // }
+
+        // switch (currentKey) {
+        //     case 'w':
+        //         nextTile.y -= 1;
+        //         this.direction = 'up';
+        //     case 's':
+        //         nextTile.y += 1;
+        //         this.direction = 'down';
+        //     case 'a':
+        //         nextTile.x -= 1;
+        //         this.direction = 'left';
+        //     case 'd':
+        //         nextTile.x += 1;
+        //         this.direction = 'right';
+        // }
+        // console.log(nextTile)
+
+        // if (this.currentMap.colMat[nextTile.x][nextTile.y] !== 0) {
+        //     console.log('collision');
+        // }
+
+        // if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
+        //     this.timeMoved = currentFrameTime;
+        // }
+
+
+        if (!this.processMovement(currentFrameTime)) {
+            if (currentKey === 'w' && this.currentMap.colMat[this.tileFrom.y - 1][this.tileFrom.x] === 0) {
+    
+                this.direction = 'up';
+                this.tileTo.y -= 1;
+                this.steps++;
+    
+            } else if (currentKey === 's' && this.currentMap.colMat[this.tileFrom.y + 1][this.tileFrom.x] === 0) {
+    
+                this.direction = 'down';
+                this.tileTo.y += 1;
+                this.steps++;
+    
+            } else if (currentKey === 'a' && this.currentMap.colMat[this.tileFrom.y][this.tileFrom.x - 1] === 0) {
+    
+                this.direction = 'left';
+                this.tileTo.x -= 1;
+                this.steps++;
+    
+            } else if (currentKey === 'd' && this.currentMap.colMat[this.tileFrom.y][this.tileFrom.x + 1] === 0) {
+    
+                this.direction = 'right';
+                this.tileTo.x += 1;
+                this.steps++;
+            }
+    
+            if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
+                this.timeMoved = currentFrameTime;
+            }
+    
+        }
+    }
 
 }
