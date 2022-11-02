@@ -31,7 +31,11 @@ export class Player {
         
         this.timeMoved = 0;
         this.dimensions = {x: tileW, y: tileH};   // pixels
-        this.position = {x: this.currentMap.spawnTile.x * tileW, y: this.currentMap.spawnTile.y * tileH}       // pixels
+        this.position = {
+            // in pixels
+            x: this.currentMap.spawnTile.x * tileW, 
+            y: this.currentMap.spawnTile.y * tileH
+        };          
         this.delayMove = 300;                   // ms
 
     }
@@ -52,10 +56,10 @@ export class Player {
         this.tileTo.y = y;
 
         // Position in pixels relative to top left of canvas
-        // this.position.x = tileW*x + (tileW - this.dimensions.x)/2
-        // this.position.y = tileH*y + (tileH - this.dimensions.y)/2
+
         this.position.x = tileW*x
         this.position.y = tileH*y
+        // console.log(this.position)
     }
 
     processMovement = function (t) {
@@ -63,6 +67,7 @@ export class Player {
         // Will return true if character is moving, else return false
 
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
+            // Reset to idle sprite if not moving
             this.currentSprite = this.sprites.walk[this.direction];
             return false;
         }
@@ -165,9 +170,12 @@ export class Player {
             // canvas.width / 2 - this.currentSprite.width / 3  + scaleWidth / 2, 
             // canvas.height / 2 - this.currentSprite.height / 2 - 16,
 
-            this.position.x,
-            this.position.y - this.currentSprite.height / 2,
+            this.position.x + this.currentMap.viewport.offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y,
     
+            // this.position.x,
+            // this.position.y - this.currentSprite.height / 2,
+
             scaleWidth,
             this.currentSprite.height
         );
