@@ -28,13 +28,16 @@ export class Map {
     draw () {
         // console.log(this.viewport)
         ctx.drawImage(
-            this.img, 
+            this.img,
             
             this.viewport.startTile.x * 16*4, 
             this.viewport.startTile.y * 16*4,
 
             this.viewport.endTile.x * 16*4,
             this.viewport.endTile.y * 16*4,
+
+            0,
+            0,
 
             this.viewport.screen.x,
             this.viewport.screen.y

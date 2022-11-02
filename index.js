@@ -287,8 +287,6 @@ function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, viewport.screen.x, viewport.screen.y)
 
     currentMap.draw();
     player.draw()
