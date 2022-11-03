@@ -42,6 +42,7 @@ export class Player {
 
         // Other props
         this.isSurfing = false;
+        this.updateTileFacing();
         // this.facingTile = {
         //     x: this.tileFrom.x,
         //     y: this.tileFrom.y + 1
@@ -68,32 +69,6 @@ export class Player {
         this.position.x = tileW*x
         this.position.y = tileH*y
 
-        console.log('hello')
-        this.tileFacing = {
-            x: this.tileFrom.x,
-            y: this.tileFrom.y
-        };
-        console.log(this.tileFacing)
-        console.log(this.tileFrom)
-
-        // This is a problem
-        switch (this.direction) {
-            case 'up':
-                console.log('up')
-                this.tileFacing.y -= 1;
-                break;
-            case 'left':
-                this.tileFacing.x -= 1;
-                break;
-            case 'down':
-                this.tileFacing.y += 1;
-                break;
-            case 'right':
-                this.tileFacing.x += 1;
-                break;
-        }
-        console.log(this.tileFacing)
-        console.log(this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x]);
 
         if (this.isSurfing && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
             console.log('Leaving water');
@@ -250,10 +225,31 @@ export class Player {
     }
 
 
+    updateTileFacing = function () {
+        this.tileFacing = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        }
+        switch (this.direction) {
+            case 'up': 
+                this.tileFacing.y -= 1;
+                break;
+            case 'left':
+                this.tileFacing.x -= 1;
+                break;
+            case 'down':
+                this.tileFacing.y += 1;
+                break;
+            case 'right':
+                this.tileFacing.x += 1;
+                break;
+        }
+    }
 
   
     move = function (currentFrameTime, currentKey) {
         if (!this.processMovement(currentFrameTime)) {
+            
 
             let nextTile = {
                 x: this.tileFrom.x,
@@ -278,6 +274,8 @@ export class Player {
                     this.direction = 'right';
                     break;
             }
+
+            this.updateTileFacing();
     
             // Movement gates
             if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && !this.isSurfing) return;
@@ -288,6 +286,7 @@ export class Player {
 
             this.tileTo = nextTile;
             this.steps++;
+            this.updateTileFacing();
 
     
             if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
