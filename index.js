@@ -4,7 +4,7 @@ import {Pokemon} from './src/pokemon.js'
 // import {toIndex} from './src/useful-functions.js';
 
 // mapFiles
-import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
+import clearingMapFile from './src/the-clearing-demo-mapfile-2.json' assert {type: 'json'};
 
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
@@ -27,22 +27,7 @@ let frameCount = 0;
 let framesLastSecond = 0;
 let lastFrameTime = 0;
 
-const sampleStats = {
-    hp:     10,
-    atk:    10,
-    def:    10,
-    spatk:  10,
-    spdef:  10,
-    spd:    10
-}
-const mon = new Pokemon ({
-    name:       'Charmander', 
-    level:      5, 
-    type:       ['Fire'], 
-    baseStats:  sampleStats, 
-    // moves: [tackle, growl, megaBeam, hypnosis], 
-    isPlayer:   true
-})
+
 
 // VIEWPORT
 
@@ -99,6 +84,22 @@ const clearing = new Map({
     viewport: viewport
 })
 
+const sampleStats = {
+    hp:     10,
+    atk:    10,
+    def:    10,
+    spatk:  10,
+    spdef:  10,
+    spd:    10
+}
+const mon = new Pokemon ({
+    name:       'Charmander', 
+    level:      5, 
+    type:       ['Fire', 'Water'], 
+    baseStats:  sampleStats, 
+    // moves: [tackle, growl, megaBeam, hypnosis], 
+    isPlayer:   true
+})
 
 const player = new Player ({
     name:       'Vox',
@@ -108,7 +109,7 @@ const player = new Player ({
     currentMap:  clearing
 })
 
-
+player.party.push(mon)
 // OVERWORLD CONTROLS
 
 // Keybinds
@@ -118,6 +119,10 @@ const binds = {
         left: 'a',
         down: 's',
         right: 'd'
+    },
+
+    actions: {
+        interact: 'e'
     }
 } 
 
@@ -138,6 +143,12 @@ window.addEventListener('keydown', (e) => {
     if (Object.values(binds.movement).includes(e.key)) {
         moveArr.pushOnce(e.key);
     }
+
+    switch (e.key) {
+        case 'e':
+            player.interact();
+            break
+    }
 })
 
 window.addEventListener( 'keyup', (e) => {
@@ -156,6 +167,8 @@ window.addEventListener ('keydown', (e) => {
     }
 
 })
+
+
 
 
 let currentMap = player.currentMap;
@@ -181,37 +194,7 @@ function animate() {
 
     // Movement
     player.move(currentFrameTime, currentKey)
-    // if (!player.processMovement(currentFrameTime)) {
-    //     if (currentKey === 'w' && currentMap.colMat[player.tileFrom.y - 1][player.tileFrom.x] === 0) {
 
-    //         player.direction = 'up';
-    //         player.tileTo.y -= 1;
-    //         player.steps++;
-
-    //     } else if (currentKey === 's' && currentMap.colMat[player.tileFrom.y + 1][player.tileFrom.x] === 0) {
-
-    //         player.direction = 'down';
-    //         player.tileTo.y += 1;
-    //         player.steps++;
-
-    //     } else if (currentKey === 'a' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x - 1] === 0) {
-
-    //         player.direction = 'left';
-    //         player.tileTo.x -= 1;
-    //         player.steps++;
-
-    //     } else if (currentKey === 'd' && currentMap.colMat[player.tileFrom.y][player.tileFrom.x + 1] === 0) {
-
-    //         player.direction = 'right';
-    //         player.tileTo.x += 1;
-    //         player.steps++;
-    //     }
-
-    //     if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
-    //         player.timeMoved = currentFrameTime;
-    //     }
-
-    // }
 
     viewport.update( 
         player.position.x + (player.dimensions.x / 2),

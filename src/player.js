@@ -39,6 +39,14 @@ export class Player {
 
         this.delayMove = 300;                   // ms
 
+
+        // Other props
+        this.isSurfing = false;
+        // this.facingTile = {
+        //     x: this.tileFrom.x,
+        //     y: this.tileFrom.y + 1
+        // }
+
     }
 
 
@@ -59,6 +67,38 @@ export class Player {
         // Position in pixels relative to top left of canvas
         this.position.x = tileW*x
         this.position.y = tileH*y
+
+        console.log('hello')
+        this.tileFacing = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        };
+        console.log(this.tileFacing)
+        console.log(this.tileFrom)
+
+        // This is a problem
+        switch (this.direction) {
+            case 'up':
+                console.log('up')
+                this.tileFacing.y -= 1;
+                break;
+            case 'left':
+                this.tileFacing.x -= 1;
+                break;
+            case 'down':
+                this.tileFacing.y += 1;
+                break;
+            case 'right':
+                this.tileFacing.x += 1;
+                break;
+        }
+        console.log(this.tileFacing)
+        console.log(this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x]);
+
+        if (this.isSurfing && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
+            console.log('Leaving water');
+            this.isSurfing = false;
+        }
 
     }
 
@@ -240,53 +280,35 @@ export class Player {
             }
     
             // Movement gates
-            if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0) console.log('water');
+            if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && !this.isSurfing) return;
             if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
 
     
+
+
             this.tileTo = nextTile;
             this.steps++;
+
     
             if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
                 this.timeMoved = currentFrameTime;
             }
+
+
         }
+    }
 
+    interact() {
+        console.log('interact')
+        console.log(this.party)
+        if (this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x] !== 0 && !this.isSurfing) {
+            const waterMon = this.party.filter( obj => obj.type.includes('Water') )
 
+            if (waterMon.length > 0) {
+                this.isSurfing = true;
+            }
 
-
-
-        // if (!this.processMovement(currentFrameTime)) {
-        //     if (currentKey === 'w' && this.currentMap.colMat[this.tileFrom.y - 1][this.tileFrom.x] === 0) {
-    
-        //         this.direction = 'up';
-        //         this.tileTo.y -= 1;
-        //         this.steps++;
-    
-        //     } else if (currentKey === 's' && this.currentMap.colMat[this.tileFrom.y + 1][this.tileFrom.x] === 0) {
-    
-        //         this.direction = 'down';
-        //         this.tileTo.y += 1;
-        //         this.steps++;
-    
-        //     } else if (currentKey === 'a' && this.currentMap.colMat[this.tileFrom.y][this.tileFrom.x - 1] === 0) {
-    
-        //         this.direction = 'left';
-        //         this.tileTo.x -= 1;
-        //         this.steps++;
-    
-        //     } else if (currentKey === 'd' && this.currentMap.colMat[this.tileFrom.y][this.tileFrom.x + 1] === 0) {
-    
-        //         this.direction = 'right';
-        //         this.tileTo.x += 1;
-        //         this.steps++;
-        //     }
-    
-        //     if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
-        //         this.timeMoved = currentFrameTime;
-        //     }
-    
-        // }
+        }
     }
 
 }
