@@ -94,6 +94,22 @@
                 "y": 160
             }
         },
+        "spites/sprite-maps/male-player-surf-down.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 164.5,
+                "y": 106.75
+            }
+        },
+        "spites/sprite-maps/male-player-surf-up.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 76.5,
+                "y": 39
+            }
+        },
         "spites/sprite-maps/male-player-walk-down.tmx": {
             "scale": 4,
             "selectedLayer": 0,
@@ -170,7 +186,7 @@
     },
     "last.exportedFilePath": "/home/john/repos/pokemon/src",
     "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/spites/sprite-tilesets",
-    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/bg",
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites/player/male",
     "map.height": 20,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",

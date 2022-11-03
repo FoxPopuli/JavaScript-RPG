@@ -81,34 +81,63 @@ export class Player {
         // t - time elapsed currently in game
         // Will return true if character is moving, else return false
 
+
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
             // Reset to idle sprite if not moving
-            this.currentSprite = this.sprites.walk[this.direction];
             return false;
         }
 
-        if (this.isRunning) {
+
+        if (this.isSurfing) {
+
+            this.currentSprite = this.sprites.surf[this.direction];
             this.delayMove = 100;
-        } else {
-            this.delayMove = 200;
-        }
-
-        let walkOrRun = this.isRunning ? 'run' : 'walk';
-        this.currentSprite = this.sprites[walkOrRun][this.direction];
-
-        if ((t - this.timeMoved) / this.delayMove < 0.5) {
-            if (this.steps % 2 === 0) {
-                this.moveFrame = 0;
-            } else {
-                this.moveFrame = 2;
-            }
-        } else {
             this.moveFrame = 1;
+            // ADD SURFING SPRITES AND UPDATE 
+
+
+        } else {
+
+
+
+            if (this.isRunning) {
+                this.delayMove = 100;
+            } else {
+                this.delayMove = 200;
+            }
+
+            let walkOrRun = this.isRunning ? 'run' : 'walk';
+            this.currentSprite = this.sprites[walkOrRun][this.direction];
+
+            if ((t - this.timeMoved) / this.delayMove < 0.5) {
+                if (this.steps % 2 === 0) {
+                    this.moveFrame = 0;
+                } else {
+                    this.moveFrame = 2;
+                }
+            } else {
+                this.moveFrame = 1;
+            }
         }
+
+
+
+        // if (this.isSurfing) {
+        //     this.currentSprite = this.sprites.surf[this.direction];
+        // }
+
+
 
         // Check if time elapsed is less than time to move
         if (t - this.timeMoved >= this.delayMove) {
+
+
+
             this.placeAt(this.tileTo.x, this.tileTo.y);
+
+            if (!this.isSurfing) this.sprites.walk[this.direction];
+    
+
         } else {
             // Calculate current pixel position of character
             this.position.x = this.tileFrom.x * tileW + (tileW - this.dimensions.x) / 2;
@@ -164,11 +193,23 @@ export class Player {
         sprites.run.right = new Image();
         sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
 
+        // Surf
+        sprites.surf = {};
+        sprites.surf.left = new Image();
+        sprites.surf.left.src = `./img/sprites/player/${this.gender}/surf-left.png`
+        sprites.surf.up = new Image();
+        sprites.surf.up.src = `./img/sprites/player/${this.gender}/surf-up.png`
+        sprites.surf.down = new Image();
+        sprites.surf.down.src = `./img/sprites/player/${this.gender}/surf-down.png`
+        sprites.surf.right = new Image();
+        sprites.surf.right.src = `./img/sprites/player/${this.gender}/surf-right.png`
+
         return sprites;
     }
 
     draw() {
-        let scaleWidth = this.currentSprite.width / 3;
+        let scale = this.isSurfing ? 2 : 3;
+        let scaleWidth = this.currentSprite.width / scale;
 
         ctx.drawImage(
             this.currentSprite,
@@ -197,7 +238,6 @@ export class Player {
         }
     }
 
-
     switchMon = function () {
         console.log('switchMon() called');
         let availableMon = this.party.filter(mon => mon.status !== 'Faint');
@@ -223,7 +263,6 @@ export class Player {
         console.log(`switching to ${availableMon[partyIndex].name}`);
         return availableMon[partyIndex];
     }
-
 
     updateTileFacing = function () {
         this.tileFacing = {
