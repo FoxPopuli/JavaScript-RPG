@@ -18,7 +18,12 @@ export class Map {
             return obj.name === 'collision-tiles';
         })
 
-        this.colMat = this.toMatrix(this.collisionArr.data)
+        const waterArr = this.mapFile.layers.find(obj => {
+            return obj.name === 'water';
+        }) 
+
+        this.colMat = this.toMatrix(this.collisionArr.data);
+        this.waterMat = this.toMatrix(waterArr.data);
     }
 
     draw () {

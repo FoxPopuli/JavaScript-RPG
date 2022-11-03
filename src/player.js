@@ -239,7 +239,10 @@ export class Player {
                     break;
             }
     
+            // Movement gates
+            if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0) console.log('water');
             if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
+
     
             this.tileTo = nextTile;
             this.steps++;
