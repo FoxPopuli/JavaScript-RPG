@@ -326,7 +326,7 @@ export class Player {
                 this.direction = 'left';
                 break;
             case 'right':
-                case 'd':
+            case 'd':
                 nextTile.x += 1;
                 this.direction = 'right';
                 break;

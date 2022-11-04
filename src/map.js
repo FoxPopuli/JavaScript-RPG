@@ -9,6 +9,9 @@ export class Map {
         this.mapFile = mapFile;
         this.viewport = viewport;
 
+        this.foreground = new Image();
+        this.foreground.src = './img/maps/the-clearing-demo-foreground.png';
+
         this.spawnTile = {x: 15, y: 15};
 
         this.width = this.mapFile.width;
@@ -30,6 +33,27 @@ export class Map {
         
         ctx.drawImage(
             this.img,
+            
+            this.viewport.px - this.viewport.screen.x / 2,
+            this.viewport.py - this.viewport.screen.y / 2,
+
+            this.viewport.screen.x,
+            this.viewport.screen.y,
+
+            0,
+            0,
+
+            this.viewport.screen.x,
+            this.viewport.screen.y
+                    
+        );
+
+    }
+
+    drawFG () {
+        // console.log(typeof this.foreground)
+        ctx.drawImage(
+            this.foreground,
             
             this.viewport.px - this.viewport.screen.x / 2,
             this.viewport.py - this.viewport.screen.y / 2,
