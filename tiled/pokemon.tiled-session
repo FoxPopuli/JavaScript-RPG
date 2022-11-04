@@ -52,11 +52,11 @@
             }
         },
         "maps/the-clearing-demo.tmx": {
-            "scale": 2,
-            "selectedLayer": 7,
+            "scale": 4,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": -132.75,
-                "y": 165
+                "x": 88.375,
+                "y": 236
             }
         },
         "maps/tutorial-town.tmx": {
