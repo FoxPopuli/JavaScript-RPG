@@ -278,7 +278,7 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    updateTileFacing = function (currentKey) {
+    updateTileFacing = function () {
         this.tileFacing = {
             x: this.tileFrom.x,
             y: this.tileFrom.y
@@ -298,12 +298,7 @@ export class Player {
                 break;
         }
 
-        this.currentSprite = this.sprites[this.moveType][this.direction];
 
-        // Reset to idle walk if player isn't moving or surfing
-        if (!currentKey && this.moveType !== 'surf') {
-            this.currentSprite = this.sprites.walk[this.direction]
-        }
     }
 
   
@@ -315,25 +310,36 @@ export class Player {
         }
 
         switch (currentKey) {
+            case 'up':
             case 'w':
                 nextTile.y -= 1;
                 this.direction = 'up';
                 break;
+            case 'down':
             case 's':
                 nextTile.y += 1;
                 this.direction = 'down';
                 break;
+            case 'left':
             case 'a':
                 nextTile.x -= 1;
                 this.direction = 'left';
                 break;
-            case 'd':
+            case 'right':
+                case 'd':
                 nextTile.x += 1;
                 this.direction = 'right';
                 break;
         }
 
-        this.updateTileFacing(currentKey);
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+
+        // Reset to idle walk if player isn't moving or surfing
+        if (!currentKey && this.moveType === 'run') {
+            this.currentSprite = this.sprites.walk[this.direction]
+        }
+
+        this.updateTileFacing();
 
         // Movement gates
         if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
@@ -344,7 +350,7 @@ export class Player {
 
         this.tileTo = nextTile;
         this.steps++;
-        this.updateTileFacing(currentKey);
+        this.updateTileFacing();
 
     }
 
@@ -354,6 +360,7 @@ export class Player {
 
             if (waterMon.length > 0) {
                 this.moveType = 'surf';
+                this.move(this.direction);
             }
 
         }

@@ -178,7 +178,7 @@ player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 
 function animate() {
-    let currentKey = moveArr[moveArr.length - 1];
+
 
     let currentFrameTime = Date.now();
     let timeElapsed = currentFrameTime - lastFrameTime;
@@ -193,9 +193,8 @@ function animate() {
         frameCount++;
     }
 
-
-
     // Movement
+    let currentKey = moveArr[moveArr.length - 1];
     if (!player.processMovement(currentFrameTime)) {
         player.move(currentKey);
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
