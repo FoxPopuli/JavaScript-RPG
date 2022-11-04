@@ -205,7 +205,24 @@ export class Player {
     }
 
     draw() {
-        let scale = this.isSurfing ? 2 : 3;
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+
+        }
+        // scale = this.moveType === 'surf' ? 2 : 3;
         let scaleWidth = this.currentSprite.width / scale;
 
         ctx.drawImage(
@@ -218,8 +235,8 @@ export class Player {
             this.currentSprite.height,
     
 
-            this.position.x + this.currentMap.viewport.offset.x,
-            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y,
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
 
             scaleWidth,
             this.currentSprite.height
@@ -282,6 +299,8 @@ export class Player {
         }
 
         this.currentSprite = this.sprites[this.moveType][this.direction];
+
+        // Reset to idle walk if player isn't moving or surfing
         if (!currentKey && this.moveType !== 'surf') {
             this.currentSprite = this.sprites.walk[this.direction]
         }
@@ -330,8 +349,6 @@ export class Player {
     }
 
     interact() {
-        console.log('interact')
-        console.log(this.party)
         if (this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x] !== 0 && !this.isSurfing) {
             const waterMon = this.party.filter( obj => obj.type.includes('Water') )
 
