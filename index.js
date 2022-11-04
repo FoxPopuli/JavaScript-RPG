@@ -11,7 +11,7 @@ export const ctx = canvas.getContext('2d');
 ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
-canvas.height = 480;
+canvas.height = 720;
 canvas.width = (canvas.height/9)*16;
 
 
@@ -160,12 +160,13 @@ window.addEventListener( 'keyup', (e) => {
 window.addEventListener ('keydown', (e) => {
     if (e.key !== 'Shift') return;
 
-    if (player.isRunning) {
-        player.isRunning = false
-    } else {
-        player.isRunning = true
-    }
+    if (player.moveType === 'surf' || player.moveType === 'cycle') return;
 
+    if (player.moveType === 'run') {
+        player.moveType = 'walk';
+    } else {
+        player.moveType = 'run';
+    }
 })
 
 
@@ -178,6 +179,7 @@ player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 function animate() {
     let currentKey = moveArr[moveArr.length - 1];
+
     let currentFrameTime = Date.now();
     let timeElapsed = currentFrameTime - lastFrameTime;
 
@@ -192,9 +194,15 @@ function animate() {
     }
 
 
-    // Movement
-    player.move(currentFrameTime, currentKey)
 
+    // Movement
+    if (!player.processMovement(currentFrameTime)) {
+        player.move(currentKey);
+        if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
+            player.timeMoved = currentFrameTime;
+        }
+        
+    } 
 
     viewport.update( 
         player.position.x + (player.dimensions.x / 2),
@@ -203,6 +211,8 @@ function animate() {
 
     currentMap.draw();
     player.draw()
+
+    // console.log(player.tileFacing)
 
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);

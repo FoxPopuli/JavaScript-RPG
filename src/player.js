@@ -23,6 +23,7 @@ export class Player {
         // Movement props
         this.moveFrame = 1;
         this.direction = 'down';
+        this.moveType = 'walk';
         this.isRunning = false;
 
 
@@ -70,12 +71,13 @@ export class Player {
         this.position.y = tileH*y
 
 
-        if (this.isSurfing && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
+        if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
             console.log('Leaving water');
-            this.isSurfing = false;
+            this.moveType = 'walk';
         }
 
     }
+
 
     processMovement = function (t) {
         // t - time elapsed currently in game
@@ -83,62 +85,57 @@ export class Player {
 
 
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
-            // Reset to idle sprite if not moving
             return false;
         }
 
 
-        if (this.isSurfing) {
-
-            this.currentSprite = this.sprites.surf[this.direction];
-            this.delayMove = 100;
-            this.moveFrame = 1;
-            // ADD SURFING SPRITES AND UPDATE 
-
-
-        } else {
-
-
-
-            if (this.isRunning) {
+        // Choose sprite
+        switch (this.moveType) {
+            case 'run':
                 this.delayMove = 100;
-            } else {
-                this.delayMove = 200;
-            }
-
-            let walkOrRun = this.isRunning ? 'run' : 'walk';
-            this.currentSprite = this.sprites[walkOrRun][this.direction];
-
-            if ((t - this.timeMoved) / this.delayMove < 0.5) {
-                if (this.steps % 2 === 0) {
-                    this.moveFrame = 0;
+                this.currentSprite = this.sprites[this.moveType][this.direction];
+                if ((t - this.timeMoved) / this.delayMove < 0.5) {
+                    if (this.steps % 2 === 0) {
+                        this.moveFrame = 0;
+                    } else {
+                        this.moveFrame = 2;
+                    }
                 } else {
-                    this.moveFrame = 2;
+                    this.moveFrame = 1;
                 }
-            } else {
-                this.moveFrame = 1;
-            }
+                break;
+            case 'walk':
+                this.delayMove = 200;
+                this.currentSprite = this.sprites[this.moveType][this.direction];
+                if ((t - this.timeMoved) / this.delayMove < 0.5) {
+                    if (this.steps % 2 === 0) {
+                        this.moveFrame = 0;
+                    } else {
+                        this.moveFrame = 2;
+                    }
+                } else {
+                    this.moveFrame = 1;
+                }
+                break;
+
+            case 'surf':
+                this.delayMove = 100;
+                this.currentSprite = this.sprites[this.moveType][this.direction];
+                break;
+
         }
 
 
 
-        // if (this.isSurfing) {
-        //     this.currentSprite = this.sprites.surf[this.direction];
-        // }
-
-
-
-        // Check if time elapsed is less than time to move
+        // Check if time elapsed is less than time to move (arrived or travelling)
         if (t - this.timeMoved >= this.delayMove) {
-
-
+            // Arrived
 
             this.placeAt(this.tileTo.x, this.tileTo.y);
 
-            if (!this.isSurfing) this.sprites.walk[this.direction];
-    
-
         } else {
+            // Travelling
+
             // Calculate current pixel position of character
             this.position.x = this.tileFrom.x * tileW + (tileW - this.dimensions.x) / 2;
             this.position.y = this.tileFrom.y * tileH + (tileH - this.dimensions.y) / 2;
@@ -264,7 +261,7 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    updateTileFacing = function () {
+    updateTileFacing = function (currentKey) {
         this.tileFacing = {
             x: this.tileFrom.x,
             y: this.tileFrom.y
@@ -283,57 +280,53 @@ export class Player {
                 this.tileFacing.x += 1;
                 break;
         }
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        if (!currentKey && this.moveType !== 'surf') {
+            this.currentSprite = this.sprites.walk[this.direction]
+        }
     }
 
   
-    move = function (currentFrameTime, currentKey) {
-        if (!this.processMovement(currentFrameTime)) {
+    move = function (currentKey) {
             
-
-            let nextTile = {
-                x: this.tileFrom.x,
-                y: this.tileFrom.y
-            }
-    
-            switch (currentKey) {
-                case 'w':
-                    nextTile.y -= 1;
-                    this.direction = 'up';
-                    break;
-                case 's':
-                    nextTile.y += 1;
-                    this.direction = 'down';
-                    break;
-                case 'a':
-                    nextTile.x -= 1;
-                    this.direction = 'left';
-                    break;
-                case 'd':
-                    nextTile.x += 1;
-                    this.direction = 'right';
-                    break;
-            }
-
-            this.updateTileFacing();
-    
-            // Movement gates
-            if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && !this.isSurfing) return;
-            if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
-
-    
-
-
-            this.tileTo = nextTile;
-            this.steps++;
-            this.updateTileFacing();
-
-    
-            if (this.tileFrom.x !== this.tileTo.x || this.tileFrom.y !== this.tileTo.y) {
-                this.timeMoved = currentFrameTime;
-            }
-
-
+        let nextTile = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
         }
+
+        switch (currentKey) {
+            case 'w':
+                nextTile.y -= 1;
+                this.direction = 'up';
+                break;
+            case 's':
+                nextTile.y += 1;
+                this.direction = 'down';
+                break;
+            case 'a':
+                nextTile.x -= 1;
+                this.direction = 'left';
+                break;
+            case 'd':
+                nextTile.x += 1;
+                this.direction = 'right';
+                break;
+        }
+
+        this.updateTileFacing(currentKey);
+
+        // Movement gates
+        if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
+        if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
+
+
+
+
+        this.tileTo = nextTile;
+        this.steps++;
+        this.updateTileFacing(currentKey);
+
     }
 
     interact() {
@@ -343,7 +336,7 @@ export class Player {
             const waterMon = this.party.filter( obj => obj.type.includes('Water') )
 
             if (waterMon.length > 0) {
-                this.isSurfing = true;
+                this.moveType = 'surf';
             }
 
         }
