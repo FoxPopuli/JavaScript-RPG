@@ -1,13 +1,14 @@
 import {ctx} from '../index.js';
 
 export class Map {
-    constructor({ position, imgPath, mapFile, viewport}) {
+    constructor({ position, imgPath, mapFile, viewport, encounterObj}) {
         this.position = position;
         this.imgPath = imgPath;
         this.img = new Image();
         this.img.src = imgPath;
         this.mapFile = mapFile;
         this.viewport = viewport;
+
 
         this.foreground = new Image();
         this.foreground.src = './img/maps/the-clearing-demo-foreground.png';
@@ -17,16 +18,63 @@ export class Map {
         this.width = this.mapFile.width;
         this.height = this.mapFile.height;
         
-        this.collisionArr = this.mapFile.layers.find(obj => {
+        // Extract mapFile data
+        const collisionArr = this.mapFile.layers.find(obj => {
             return obj.name === 'collision-tiles';
         })
+        this.colMat = this.toMatrix(collisionArr.data);
 
         const waterArr = this.mapFile.layers.find(obj => {
             return obj.name === 'water';
         }) 
-
-        this.colMat = this.toMatrix(this.collisionArr.data);
         this.waterMat = this.toMatrix(waterArr.data);
+
+        const grassArr = this.mapFile.layers.find (obj => {
+            return obj.name === 'battle-grass';
+        })
+        this.grassMat = this.toMatrix(grassArr.data);
+
+        // Generate encounter array
+
+        this.encounters = {}
+        this.genEncArray(encounterObj);
+
+
+
+
+    }
+
+    // const clearingEncounters = {
+    //     grass: [
+    //         {
+    //             name: 'Charmander',
+    //             rate: 10
+    //         },
+    
+    //         {
+    //             name: 'Squirtle',
+    //             rate: 10
+    //         },
+    
+    //         {
+    //             name: 'Pidgey',
+    //             rate: 80
+    //         }
+    
+    //     ],
+    
+    // }
+
+    genEncArray = function (encObj) {
+
+        for (const [encType, encMons] of Object.entries(encObj)) {
+            this.encounters[encType + 'Arr'] = [];
+            encMons.forEach ( mon => {
+                for (let i = 0; i < mon.rate; i++) {
+                    this.encounters[encType + 'Arr'].push(mon.name);
+                }
+            })
+        }
     }
 
     draw () {

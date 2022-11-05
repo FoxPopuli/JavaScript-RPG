@@ -73,16 +73,41 @@ const viewport = {
     }
 }
 
+// MAP
 
+const clearingEncounters = {
+    grass: [
+        {
+            name: 'Charmander',
+            rate: 10
+        },
 
+        {
+            name: 'Squirtle',
+            rate: 10
+        },
 
+        {
+            name: 'Pidgey',
+            rate: 80
+        }
+
+    ]
+
+}
 
 const clearing = new Map({
     position: {x: 0, y: 0},
     imgPath: './img/maps/the-clearing-demo-grid.png',
     mapFile: clearingMapFile,
-    viewport: viewport
+    viewport: viewport,
+    encounterObj: clearingEncounters
 })
+
+
+
+
+console.log(clearing.encounters);
 
 const sampleStats = {
     hp:     10,
@@ -133,9 +158,7 @@ const binds = {
 
 // Pushes the key to the array if the last element in the array isn't already that key
 Array.prototype.pushOnce = function(key) {
-    if (this[this.length - 1] !== key) {
-        this.push(key);
-    }
+    if (this[this.length - 1] !== key) this.push(key);
 }
 
 const moveArr = [];
@@ -159,14 +182,11 @@ window.addEventListener( 'keyup', (e) => {
 
 window.addEventListener ('keydown', (e) => {
     if (e.key !== 'Shift') return;
-
     if (player.moveType === 'surf' || player.moveType === 'cycle') return;
 
-    if (player.moveType === 'run') {
-        player.moveType = 'walk';
-    } else {
-        player.moveType = 'run';
-    }
+    // Toggle between walk and run
+    player.moveType = player.moveType === 'run' ? 'walk' : 'run';
+
 })
 
 

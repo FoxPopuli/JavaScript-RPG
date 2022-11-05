@@ -73,7 +73,9 @@ export class Player {
             this.moveType = 'walk';
         };
 
-        
+        if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
+            console.log('In grass')
+        }
 
     }
 
