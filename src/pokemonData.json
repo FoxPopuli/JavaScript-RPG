@@ -1,0 +1,71 @@
+{
+    "bulbasaur": {
+        "name": "Bulbasaur",
+        "id": "bulbasaur",
+        "types": ["Grass", "Poison"],
+        "baseStats": {
+            "hp": 45,
+            "atk": 49,
+            "def": 49,
+            "spatk": 65,
+            "spdef": 65,
+            "spd": 45
+        },
+
+        "learnSet": {
+            "Growl": 1,
+            "Tackle": 1,
+            "Vine Whip": 3
+        },
+
+        "levelAt": 10
+
+    },
+
+    "charmander": {
+        "name": "charmander",
+        "id": "charmander",
+        "types": ["Fire"],
+        "baseStats": {
+            "hp": 39,
+            "atk": 52,
+            "def": 43,
+            "spatk": 60,
+            "spdef": 50,
+            "spd": 65
+        },
+
+        "learnSet": {
+            "1": 1,
+            "Tackle": 1,
+            "Ember": 3
+        },
+
+        "levelAt": 10
+
+    },
+
+    "squirtle": {
+        "name": "Squirtle",
+        "id": "charmander",
+        "types": ["Fire"],
+        "baseStats": {
+            "hp": 39,
+            "atk": 52,
+            "def": 43,
+            "spatk": 60,
+            "spdef": 50,
+            "spd": 65
+        },
+
+        "learnSet": {
+            "Growl": 1,
+            "Tackle": 1,
+            "Ember": 3
+        },
+
+        "levelAt": 10
+
+    }
+
+}

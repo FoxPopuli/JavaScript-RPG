@@ -1,10 +1,10 @@
 import {Map} from './src/map.js';
 import {Player} from './src/player.js';
-import {Pokemon} from './src/pokemon.js'
-// import {toIndex} from './src/useful-functions.js';
+import {Pokemon} from './src/pokemon.js';
 
 // mapFiles
 import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
+
 
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
@@ -92,6 +92,18 @@ const clearingEncounters = {
             rate: 80
         }
 
+    ],
+
+    water: [
+        {
+            name: 'Squirtle',
+            rate: 50
+        },
+
+        {
+            name: 'Magikarp',
+            rate: 50
+        }
     ]
 
 }
@@ -104,10 +116,12 @@ const clearing = new Map({
     encounterObj: clearingEncounters
 })
 
+clearing.encounters.grassRate = 5;
+clearing.encounters.waterRate = 1;
 
 
 
-console.log(clearing.encounters);
+// console.log(clearing.encounters);
 
 const sampleStats = {
     hp:     10,
@@ -117,12 +131,10 @@ const sampleStats = {
     spdef:  10,
     spd:    10
 }
-const mon = new Pokemon ({
-    name:       'Charmander', 
+const testMon = new Pokemon ({
+    id:         'charmander', 
     level:      5, 
-    type:       ['Fire', 'Water'], 
-    baseStats:  sampleStats, 
-    // moves: [tackle, growl, megaBeam, hypnosis], 
+    moves:      ['tackle', 'growl', 'megaBeam', 'hypnosis'], 
     isPlayer:   true
 })
 
@@ -134,7 +146,8 @@ const player = new Player ({
     currentMap:  clearing
 })
 
-player.party.push(mon)
+player.party.push(testMon)
+
 // OVERWORLD CONTROLS
 
 // Keybinds

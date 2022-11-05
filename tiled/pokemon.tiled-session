@@ -9,7 +9,7 @@
         "tilesets",
         "."
     ],
-    "exportAsImage.drawTileGrid": true,
+    "exportAsImage.drawTileGrid": false,
     "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -55,8 +55,8 @@
             "scale": 2,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": -132.75,
-                "y": 165
+                "x": 305.25,
+                "y": 397.5
             }
         },
         "maps/tutorial-town.tmx": {
@@ -194,7 +194,7 @@
     },
     "last.exportedFilePath": "/home/john/repos/pokemon/src",
     "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/spites/sprite-tilesets",
-    "last.imagePath": "/home/john/repos/pokemon/tiled/maps",
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites/pokemon",
     "map.height": 20,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",

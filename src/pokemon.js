@@ -1,4 +1,5 @@
 import {roll} from './useful-functions.js'
+import pokeData from './pokemonData.json' assert {type: 'json'}
 
 const testNature = {
     atk: 0.9,
@@ -8,11 +9,12 @@ const testNature = {
     spd: 1
 }
 export class Pokemon {
-    constructor({name, level, type, baseStats, moves, isPlayer}) {
-        this.name = name;
+    constructor({id, level, moves, isPlayer}) {
+        this.id = id;
         this.level = level;
-        this.type = type;
-        this.baseStats = baseStats;
+        this.name = pokeData[this.id].name;
+        this.type = pokeData[this.id].types;
+        this.baseStats = pokeData[this.id].baseStats;
         this.moves = moves;
         this.isPlayer = isPlayer;
 
@@ -36,6 +38,12 @@ export class Pokemon {
 
         this.currentHP = this.stats.hp;
 
+        this.sprites = {};
+        const spriteTypes = ['front', 'back']
+        spriteTypes.forEach ((type) => {
+            this.sprites[type] = new Image();
+            this.sprites[type].src = `./img/sprites/pokemon/${this.id}-${type}.png`;
+        })
         
 
     }

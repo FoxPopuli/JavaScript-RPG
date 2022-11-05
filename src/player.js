@@ -1,5 +1,6 @@
 import { canvas } from '../index.js';
 import {ctx} from '../index.js';
+import { roll } from './useful-functions.js';
 
 const tileW = 16*4;
 const tileH = 16*4;
@@ -68,14 +69,22 @@ export class Player {
         this.position.y = tileH*y
 
 
+        // Surf check
         if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
             console.log('Leaving water');
             this.moveType = 'walk';
         };
 
+        // Grass check
         if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
-            console.log('In grass')
+            // console.log('In grass')
+            if (roll(100) <= this.currentMap.encounters.grassRate) {
+                console.log('battle!');
+                console.log(this.currentMap.encounters.grassArr[roll(100)]);
+            }
+
         }
+
 
     }
 
