@@ -78,30 +78,25 @@ const viewport = {
 const clearingEncounters = {
     grass: [
         {
-            name: 'Charmander',
-            rate: 10
+            id: 'charmander',
+            rate: 50
         },
 
         {
-            name: 'Squirtle',
-            rate: 10
+            id: 'squirtle',
+            rate: 50
         },
 
-        {
-            name: 'Pidgey',
-            rate: 80
-        }
+        // {
+        //     id: 'pidgey',
+        //     rate: 80
+        // }
 
     ],
 
     water: [
         {
-            name: 'Squirtle',
-            rate: 50
-        },
-
-        {
-            name: 'Magikarp',
+            id: 'squirtle',
             rate: 50
         }
     ]
@@ -120,17 +115,6 @@ clearing.encounters.grassRate = 5;
 clearing.encounters.waterRate = 1;
 
 
-
-// console.log(clearing.encounters);
-
-const sampleStats = {
-    hp:     10,
-    atk:    10,
-    def:    10,
-    spatk:  10,
-    spdef:  10,
-    spd:    10
-}
 const testMon = new Pokemon ({
     id:         'charmander', 
     level:      5, 

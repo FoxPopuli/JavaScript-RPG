@@ -1,6 +1,8 @@
 import { canvas } from '../index.js';
 import {ctx} from '../index.js';
 import { roll } from './useful-functions.js';
+import {Pokemon} from './pokemon.js';
+// import pokeData from './pokemonData.json' assert {type: 'json'};
 
 const tileW = 16*4;
 const tileH = 16*4;
@@ -80,7 +82,15 @@ export class Player {
             // console.log('In grass')
             if (roll(100) <= this.currentMap.encounters.grassRate) {
                 console.log('battle!');
-                console.log(this.currentMap.encounters.grassArr[roll(100)]);
+
+                const encounterId = this.currentMap.encounters.grassArr[roll(100)];
+
+                console.log(new Pokemon({
+                    id: encounterId,
+                    level: 5,
+                    moves: [],
+                    isPlayer: false
+                }))
             }
 
         }

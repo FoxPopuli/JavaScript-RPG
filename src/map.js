@@ -44,26 +44,7 @@ export class Map {
 
     }
 
-    // const clearingEncounters = {
-    //     grass: [
-    //         {
-    //             name: 'Charmander',
-    //             rate: 10
-    //         },
-    
-    //         {
-    //             name: 'Squirtle',
-    //             rate: 10
-    //         },
-    
-    //         {
-    //             name: 'Pidgey',
-    //             rate: 80
-    //         }
-    
-    //     ],
-    
-    // }
+
 
     genEncArray = function (encObj) {
 
@@ -71,7 +52,7 @@ export class Map {
             this.encounters[encType + 'Arr'] = [];
             encMons.forEach ( mon => {
                 for (let i = 0; i < mon.rate; i++) {
-                    this.encounters[encType + 'Arr'].push(mon.name);
+                    this.encounters[encType + 'Arr'].push(mon.id);
                 }
             })
         }
