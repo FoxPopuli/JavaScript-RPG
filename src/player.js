@@ -44,10 +44,7 @@ export class Player {
         // Other props
         this.isSurfing = false;
         this.updateTileFacing();
-        // this.facingTile = {
-        //     x: this.tileFrom.x,
-        //     y: this.tileFrom.y + 1
-        // }
+
 
     }
 
@@ -74,7 +71,9 @@ export class Player {
         if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
             console.log('Leaving water');
             this.moveType = 'walk';
-        }
+        };
+
+        
 
     }
 

@@ -51,7 +51,6 @@ export class Map {
     }
 
     drawFG () {
-        // console.log(typeof this.foreground)
         ctx.drawImage(
             this.foreground,
             
