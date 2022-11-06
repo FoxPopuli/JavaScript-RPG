@@ -47,6 +47,7 @@ export class Player {
         // Other props
         this.isSurfing = false;
         this.updateTileFacing();
+        this.canMove = true;
 
 
     }

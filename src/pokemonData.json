@@ -22,7 +22,7 @@
     },
 
     "charmander": {
-        "name": "charmander",
+        "name": "Charmander",
         "types": ["Fire"],
         "baseStats": {
             "hp": 39,

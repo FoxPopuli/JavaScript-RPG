@@ -122,6 +122,13 @@ const testMon = new Pokemon ({
     isPlayer:   true
 })
 
+const testMon2 = new Pokemon ({
+    id:         'squirtle',
+    level:      5,
+    moves:      ['tackle', 'growl', 'megaBeam', 'hypnosis'], 
+    isPlayer:   true
+})
+
 const player = new Player ({
     name:       'Vox',
     isPlayer:   true,
@@ -131,11 +138,15 @@ const player = new Player ({
 })
 
 player.party.push(testMon)
+player.party.push(testMon2)
 
 // OVERWORLD CONTROLS
 
 // Keybinds
 const binds = {
+
+    
+
     movement: {
         up: 'w',
         left: 'a',
@@ -158,37 +169,53 @@ Array.prototype.pushOnce = function(key) {
     if (this[this.length - 1] !== key) this.push(key);
 }
 
-const moveArr = [];
+let moveArr = [];
+let navArr = [];
 window.addEventListener('keydown', (e) => {
-    if (Object.values(binds.movement).includes(e.key)) {
-        moveArr.pushOnce(e.key);
+    if (player.canMove) {
+        
+        if (Object.values(binds.movement).includes(e.key)) {
+            moveArr.pushOnce(e.key);
+        }
+
+        switch (e.key) {
+            case 'e':
+                player.interact();
+                break;
+
+            case 'Shift':
+                if (player.moveType !== 'surf' || player.moveType !== 'cycle') {
+                    player.moveType = player.moveType === 'run' ? 'walk' : 'run';
+                }
+                break;
+        }
+
+    } else {
+        return;
     }
 
-    switch (e.key) {
-        case 'e':
-            player.interact();
-            break
-    }
+
+
 })
 
 window.addEventListener( 'keyup', (e) => {
-    if (Object.values(binds.movement).includes(e.key)) {
+
+    if (!player.canMove) {
+        moveArr = [];
+        player.moveType = 'walk';
+
+    } else if (Object.values(binds.movement).includes(e.key)) {
         moveArr.splice(moveArr.indexOf(e.key), 1);
     }
-})
 
-window.addEventListener ('keydown', (e) => {
-    if (e.key !== 'Shift') return;
-    if (player.moveType === 'surf' || player.moveType === 'cycle') return;
-
-    // Toggle between walk and run
-    player.moveType = player.moveType === 'run' ? 'walk' : 'run';
-
+    
 })
 
 
 
 
+
+// Initialization
 let currentMap = player.currentMap;
 player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
