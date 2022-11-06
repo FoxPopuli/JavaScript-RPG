@@ -1,6 +1,7 @@
 import {Map} from './src/map.js';
 import {Player} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
+import {Textbox} from '/src/textbox.js';
 
 // mapFiles
 import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -8,7 +9,6 @@ import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type:
 
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
-ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
 canvas.height = 720;
@@ -86,18 +86,12 @@ const clearingEncounters = {
             id: 'squirtle',
             rate: 50
         },
-
-        // {
-        //     id: 'pidgey',
-        //     rate: 80
-        // }
-
     ],
 
     water: [
         {
             id: 'squirtle',
-            rate: 50
+            rate: 100
         }
     ]
 
@@ -171,6 +165,7 @@ Array.prototype.pushOnce = function(key) {
 
 let moveArr = [];
 let navArr = [];
+let currentObj= null;
 window.addEventListener('keydown', (e) => {
     if (player.canMove) {
         
@@ -180,23 +175,44 @@ window.addEventListener('keydown', (e) => {
 
         switch (e.key) {
             case 'e':
-                player.interact();
-                break;
+                let tile = player.tileFacing;
+                currentObj = currentMap.objMat[tile.y][tile.x]
 
+                // player.interact();
+                break;
             case 'Shift':
+                // This is bollocks
                 if (player.moveType !== 'surf' || player.moveType !== 'cycle') {
                     player.moveType = player.moveType === 'run' ? 'walk' : 'run';
                 }
                 break;
         }
 
-    } else {
-        return;
+    } 
+
+    switch (e.key) {
+        // case 'e':
+            
+
+        //     currentTextbox = new Textbox(1, "Hello, World!");
+        //     currentTextbox.draw();
+        //     player.canMove = false;
+        //     break;
+
+        case 'q':
+            currentObj = null;
+            player.canMove = true;
+            break;
     }
 
 
 
+
+
 })
+
+
+
 
 window.addEventListener( 'keyup', (e) => {
 
@@ -222,7 +238,6 @@ player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 
 function animate() {
-
 
     let currentFrameTime = Date.now();
     let timeElapsed = currentFrameTime - lastFrameTime;
@@ -255,6 +270,16 @@ function animate() {
     currentMap.draw();
     player.draw();
     currentMap.drawFG();
+
+    if (currentObj) {
+        currentObj.textbox.draw()
+        player.canMove = false;
+
+        if (currentObj.choices) {
+
+        }
+
+    }
 
     // console.log(player.tileFacing)
 

@@ -2,6 +2,7 @@ import { canvas } from '../index.js';
 import {ctx} from '../index.js';
 import { roll } from './useful-functions.js';
 import {Pokemon} from './pokemon.js';
+import { Textbox } from './textbox.js';
 // import pokeData from './pokemonData.json' assert {type: 'json'};
 
 const tileW = 16*4;
@@ -243,7 +244,7 @@ export class Player {
                 break;
 
         }
-        // scale = this.moveType === 'surf' ? 2 : 3;
+
         let scaleWidth = this.currentSprite.width / scale;
 
         ctx.drawImage(
@@ -376,10 +377,13 @@ export class Player {
     }
 
     interact() {
+        return this.tileFacing;
         if (this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x] !== 0 && !this.isSurfing) {
             const waterMon = this.party.filter( obj => obj.type.includes('Water') )
 
             if (waterMon.length > 0) {
+                let surfText = "Do you want to surf? e: Yes, q: No";
+                let box = new Textbox (1, surfText);
                 this.moveType = 'surf';
                 this.move(this.direction);
             }

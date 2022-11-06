@@ -1,4 +1,20 @@
 import {ctx} from '../index.js';
+import { Textbox } from './textbox.js';
+
+class WaterTile {
+    constructor () {
+        this.textbox = new Textbox(1, 'Do you want to surf?');
+        this.choices = ['Yes', 'No'];
+    }
+
+    onClick = function () {
+        player.moveType = 'surf';
+        player.move(player.direction);
+    }
+
+}
+
+
 
 export class Map {
     constructor({ position, imgPath, mapFile, viewport, encounterObj}) {
@@ -19,19 +35,13 @@ export class Map {
         this.height = this.mapFile.height;
         
         // Extract mapFile data
-        const collisionArr = this.mapFile.layers.find(obj => {
-            return obj.name === 'collision-tiles';
-        })
+        const collisionArr = this.mapFile.layers.find(obj => {return obj.name === 'collision-tiles';})
         this.colMat = this.toMatrix(collisionArr.data);
 
-        const waterArr = this.mapFile.layers.find(obj => {
-            return obj.name === 'water';
-        }) 
+        const waterArr = this.mapFile.layers.find(obj => {return obj.name === 'water';}) 
         this.waterMat = this.toMatrix(waterArr.data);
 
-        const grassArr = this.mapFile.layers.find (obj => {
-            return obj.name === 'battle-grass';
-        })
+        const grassArr = this.mapFile.layers.find (obj => {return obj.name === 'battle-grass';})
         this.grassMat = this.toMatrix(grassArr.data);
 
         // Generate encounter array
@@ -40,7 +50,18 @@ export class Map {
         this.genEncArray(encounterObj);
 
 
+        // TEST
 
+        const waterObjArr = waterArr.data.map (tile => {
+            if (tile) {
+                // console.log(tile)
+                return new WaterTile();
+            } else {
+                return 0;
+            }
+        })
+        console.log(waterObjArr)
+        this.objMat = this.toMatrix(waterObjArr);
 
     }
 
@@ -100,7 +121,7 @@ export class Map {
     }
 
     toMatrix = function (array) {
-        let mapWidth = this.mapFile.width;
+        let mapWidth = this.width;
         let matrix = [];
         
         for (let i = 0; i < array.length; i += mapWidth) {
