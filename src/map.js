@@ -3,7 +3,7 @@ import { Textbox } from './textbox.js';
 
 class WaterTile {
     constructor () {
-        this.textbox = new Textbox(1, 'Do you want to surf?');
+        this.textbox = new Textbox('Do you want to surf?');
         this.choices = ['Yes', 'No'];
     }
 

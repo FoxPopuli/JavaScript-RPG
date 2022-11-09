@@ -1,7 +1,7 @@
 import {Map} from './src/map.js';
 import {Player} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
-import {Textbox} from '/src/textbox.js';
+import {Textbox, Menu} from '/src/textbox.js';
 
 // mapFiles
 import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -174,10 +174,10 @@ const testObj = {
         run: function () {
             switch (this.tracker) {
                 case 0:
-                    this.currentBox = new Textbox(1, 'This is the first text.');
+                    this.currentBox = new Textbox('This is the first text.');
                     break;
                 case 1:
-                    this.currentBox = new Textbox (1, 'This is the second text'); 
+                    this.currentBox = new Textbox ('This is the second text'); 
                     break;
 
                 default:
@@ -185,7 +185,8 @@ const testObj = {
             }
 
             if (this.currentBox) {
-                this.currentBox.draw();
+                this.currentBox.drawImg();
+                this.currentBox.drawText();
             }
         }
     }
@@ -202,18 +203,20 @@ class TestScript {
     run = function () {
         switch (this.tracker) {
             case 0:
-                this.box = new Textbox(1, 'This is the first text.');
+                this.box = new Textbox(`This is the first text.`);
                 break;
             case 1:
-                this.box = new Textbox (1, 'This is the second text'); 
+                this.box = new Textbox ('This is the second text'); 
                 break;
-
+            case 2:
+                this.box = new Menu (['Yes', 'No']);
             default:
                 currentObj = null;
         }
 
         if (this.box) {
-            this.box.draw();
+            this.box.drawImg();
+            this.box.drawText();
         }
     }
 }
