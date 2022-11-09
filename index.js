@@ -163,11 +163,71 @@ Array.prototype.pushOnce = function(key) {
     if (this[this.length - 1] !== key) this.push(key);
 }
 
+
+//////////////////////////////
+// test script
+const testObj = {
+    script: {
+        tracker: 0,
+        choice: null,
+        currentBox: null,
+        run: function () {
+            switch (this.tracker) {
+                case 0:
+                    this.currentBox = new Textbox(1, 'This is the first text.');
+                    break;
+                case 1:
+                    this.currentBox = new Textbox (1, 'This is the second text'); 
+                    break;
+
+                default:
+                    currentObj = null;
+            }
+
+            if (this.currentBox) {
+                this.currentBox.draw();
+            }
+        }
+    }
+
+}
+
+class TestScript {
+    constructor () {
+        this.tracker = 0;
+        this.choice = null;
+        this.box = null;
+    }
+
+    run = function () {
+        switch (this.tracker) {
+            case 0:
+                this.box = new Textbox(1, 'This is the first text.');
+                break;
+            case 1:
+                this.box = new Textbox (1, 'This is the second text'); 
+                break;
+
+            default:
+                currentObj = null;
+        }
+
+        if (this.box) {
+            this.box.draw();
+        }
+    }
+}
+
+
+////////////////////////////////
+
+
+
 let moveArr = [];
 let navArr = [];
 let currentObj= null;
 window.addEventListener('keydown', (e) => {
-    if (player.canMove) {
+    if (!currentObj) {
         
         if (Object.values(binds.movement).includes(e.key)) {
             moveArr.pushOnce(e.key);
@@ -177,8 +237,6 @@ window.addEventListener('keydown', (e) => {
             case 'e':
                 let tile = player.tileFacing;
                 currentObj = currentMap.objMat[tile.y][tile.x]
-
-                // player.interact();
                 break;
             case 'Shift':
                 // This is bollocks
@@ -186,9 +244,20 @@ window.addEventListener('keydown', (e) => {
                     player.moveType = player.moveType === 'run' ? 'walk' : 'run';
                 }
                 break;
+
+                // For testing
+            case 't': {
+                currentObj = new TestScript()
+            }
         }
 
-    } 
+    } else {
+        switch (e.key) {
+            case 'e':
+                console.log(currentObj.tracker)
+                currentObj.tracker += 1;
+        }
+    }
 
     switch (e.key) {
         // case 'e':
@@ -205,10 +274,6 @@ window.addEventListener('keydown', (e) => {
             break;
     }
 
-
-
-
-
 })
 
 
@@ -216,9 +281,8 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener( 'keyup', (e) => {
 
-    if (!player.canMove) {
+    if (currentObj) {
         moveArr = [];
-        player.moveType = 'walk';
 
     } else if (Object.values(binds.movement).includes(e.key)) {
         moveArr.splice(moveArr.indexOf(e.key), 1);
@@ -254,6 +318,8 @@ function animate() {
 
     // Movement
     let currentKey = moveArr[moveArr.length - 1];
+
+    // Use something similar to this for menus
     if (!player.processMovement(currentFrameTime)) {
         player.move(currentKey);
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
@@ -271,14 +337,34 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
+    // if (currentObj) {
+    //     currentObj.textbox.draw()
+    //     player.canMove = false;
+
+    //     if (currentObj.choices) {
+    //         let currentChoice = 0;
+    //         switch (navArr[0]) {
+    //             case 'w':
+    //                 currentChoice += 1;
+    //                 break;
+    //             case 's':
+    //                 currentChoice -= 1;
+    //                 break;
+    //         }
+
+    //         navArr.pop();
+
+    //         if (currentChoice < 0) {
+    //             currentChoice = currentObj.choices.length - 1;
+    //         } else if (currentChoice > currentObj.choices.length - 1) {
+    //             currentChoice = 0;
+    //         }
+    //     }
+
+    // }
+
     if (currentObj) {
-        currentObj.textbox.draw()
-        player.canMove = false;
-
-        if (currentObj.choices) {
-
-        }
-
+        currentObj.run()
     }
 
     // console.log(player.tileFacing)

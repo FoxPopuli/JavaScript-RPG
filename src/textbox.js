@@ -43,11 +43,9 @@ export class Textbox {
             this.dimensions.x,
             this.dimensions.y
         )
-        console.log('imageDrawn')
 
         const drawFrom = this.drawFrom;
-        console.log(drawFrom)
-        console.log(this.drawFrom)
+
 
         ctx.fillText(
             this.text,
