@@ -166,38 +166,13 @@ Array.prototype.pushOnce = function(key) {
 
 //////////////////////////////
 // test script
-const testObj = {
-    script: {
-        tracker: 0,
-        choice: null,
-        currentBox: null,
-        run: function () {
-            switch (this.tracker) {
-                case 0:
-                    this.currentBox = new Textbox('This is the first text.');
-                    break;
-                case 1:
-                    this.currentBox = new Textbox ('This is the second text'); 
-                    break;
-
-                default:
-                    currentObj = null;
-            }
-
-            if (this.currentBox) {
-                this.currentBox.drawImg();
-                this.currentBox.drawText();
-            }
-        }
-    }
-
-}
 
 class TestScript {
     constructor () {
         this.tracker = 0;
         this.choice = null;
         this.box = null;
+        this.sequence2 = new Menu(['Yes', 'No'])
     }
 
     run = function () {
@@ -209,18 +184,37 @@ class TestScript {
                 this.box = new Textbox ('This is the second text'); 
                 break;
             case 2:
-                this.box = new Menu (['Yes', 'No']);
+                this.box = this.sequence2;
+                // console.log(this.box);
+                break;
+            case 3:
+                console.log(this.box.choice)
+                switch (this.box.choice) {
+                    case 'Yes':
+                        this.box = new Textbox('You chose yes');
+                        break;
+                    case 'No':
+                        this.box = new Textbox('You chose no');
+                        break
+                }
+                break;
             default:
+                // this.box = null;
                 currentObj = null;
+                break;
         }
 
+        // console.log(this.box.choiceIndex)
+
         if (this.box) {
-            this.box.drawImg();
-            this.box.drawText();
+            this.box.draw();
         }
     }
 }
 
+const test1 = new Menu()
+
+// console.log(test1)
 
 ////////////////////////////////
 
@@ -258,8 +252,22 @@ window.addEventListener('keydown', (e) => {
         switch (e.key) {
             case 'e':
                 console.log(currentObj.tracker)
+                if (currentObj.box.isMenu) {
+
+                    currentObj.box.choice = currentObj.box.choices[currentObj.box.choiceIndex];
+                    console.log(currentObj.box.choice)
+                }
                 currentObj.tracker += 1;
-        }
+                break;
+            case 'w':
+                currentObj.box.choiceIndex += 1;
+                console.log(currentObj.box.choiceIndex)
+            case 's':
+                currentObj.box.choiceIndex -= 1;
+                console.log(currentObj.box.choiceIndex)
+
+            }
+    
     }
 
     switch (e.key) {
@@ -302,7 +310,7 @@ window.addEventListener( 'keyup', (e) => {
 let currentMap = player.currentMap;
 player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
-
+let testMenu = new Menu(['Yes', 'No'])
 
 function animate() {
 
@@ -367,10 +375,13 @@ function animate() {
     // }
 
     if (currentObj) {
+
         currentObj.run()
+
     }
 
     // console.log(player.tileFacing)
+
 
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);

@@ -40,6 +40,14 @@
                 "y": 68.75
             }
         },
+        "maps/menus/yes-or-no.tmx": {
+            "scale": 7.398124999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 80.02027540762019,
+                "y": 80.02027540762019
+            }
+        },
         "maps/pallet-town-bg.tsx": {
             "scaleInDock": 1
         },
@@ -55,8 +63,8 @@
             "scale": 2,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 396,
-                "y": 514
+                "x": 324,
+                "y": 274
             }
         },
         "maps/tutorial-town.tmx": {
@@ -198,8 +206,8 @@
     "map.height": 20,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 8,
-    "map.tileWidth": 8,
+    "map.tileHeight": 2,
+    "map.tileWidth": 2,
     "map.width": 20,
     "openFiles": [
         "maps/the-clearing-demo.tmx"
@@ -215,9 +223,9 @@
     "tileset.lastUsedFormat": "tsx",
     "tileset.spacing": 0,
     "tileset.tileSize": {
-        "height": 8,
-        "width": 8
+        "height": 2,
+        "width": 2
     },
-    "tileset.transparentColor": "#a7a7e3",
+    "tileset.transparentColor": "#ff00ff",
     "tileset.useTransparentColor": true
 }
