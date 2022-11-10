@@ -260,11 +260,13 @@ window.addEventListener('keydown', (e) => {
                 currentObj.tracker += 1;
                 break;
             case 'w':
-                currentObj.box.choiceIndex += 1;
-                console.log(currentObj.box.choiceIndex)
-            case 's':
                 currentObj.box.choiceIndex -= 1;
-                console.log(currentObj.box.choiceIndex)
+                console.log(currentObj.box.choiceIndex);
+                break;
+            case 's':
+                currentObj.box.choiceIndex += 1;
+                console.log(currentObj.box.choiceIndex);
+                break;
 
             }
     
