@@ -4,7 +4,7 @@ import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from '/src/textbox.js';
 
 // mapFiles
-import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
+import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
 
 
 export const canvas = document.querySelector('#game-screen');
@@ -78,7 +78,7 @@ const viewport = {
 const clearingEncounters = {
     grass: [
         {
-            id: 'charmander',
+            id: 'charmander', 
             rate: 50
         },
 

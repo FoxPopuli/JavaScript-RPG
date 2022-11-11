@@ -1,5 +1,5 @@
 import {roll} from './useful-functions.js'
-import pokeData from './pokemonData.json' assert {type: 'json'}
+import pokeData from '../json/pokemon-data.json' assert {type: 'json'}
 
 const testNature = {
     atk: 0.9,
