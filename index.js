@@ -132,7 +132,7 @@ const player = new Player ({
 })
 
 player.party.push(testMon)
-player.party.push(testMon2)
+// player.party.push(testMon2)
 
 // OVERWORLD CONTROLS
 
@@ -167,52 +167,115 @@ Array.prototype.pushOnce = function(key) {
 //////////////////////////////
 // test script
 
-class TestScript {
+class Script {
     constructor () {
         this.tracker = 0;
         this.choice = null;
-        this.box = null;
-        this.sequence2 = new Menu(['Yes', 'No'])
-    }
-
-    run = function () {
-        switch (this.tracker) {
-            case 0:
-                this.box = new Textbox(`This is the first text.`);
-                break;
-            case 1:
-                this.box = new Textbox ('This is the second text'); 
-                break;
-            case 2:
-                this.box = this.sequence2;
-                // console.log(this.box);
-                break;
-            case 3:
-                console.log(this.box.choice)
-                switch (this.box.choice) {
-                    case 'Yes':
-                        this.box = new Textbox('You chose yes');
-                        break;
-                    case 'No':
-                        this.box = new Textbox('You chose no');
-                        break
-                }
-                break;
-            default:
-                // this.box = null;
-                currentObj = null;
-                break;
-        }
-
-        // console.log(this.box.choiceIndex)
-
-        if (this.box) {
-            this.box.draw();
-        }
+        this.textbox = null;
+        this.menu = new Menu (['Yes', 'No']);
+        
     }
 }
 
-const test1 = new Menu()
+const testScript = new Script()
+testScript.run = function () {
+    switch (this.tracker) {
+        case 0:
+            this.textbox = new Textbox(`This is the first text.`);
+            break;
+        case 1:
+            this.textbox = new Textbox ('This is the second text'); 
+            break;
+        case 2:
+            this.textbox = new Textbox ('Please make a choice');
+            this.menuBox = this.menu;
+            break;
+        case 3:
+
+            switch (this.menuBox.choice) {
+                case 'Yes':
+                    this.textbox = new Textbox('You chose yes');
+                    this.menuBox.canDraw = false;
+                    break;
+                case 'No':
+                    this.textbox = new Textbox('You chose no');
+                    this.menuBox.canDraw = false;
+                    break
+            }
+
+            break;
+        default:
+            currentObj = null;
+            break;
+    }
+
+    if (this.textbox) {
+        this.textbox.draw();
+    }
+
+    if (this.menuBox) {
+        if (this.menuBox.canDraw) {
+            this.menuBox.draw()
+        }
+    }
+
+}
+
+
+class waterScript {
+    constructor () {
+        this.tracker = 0;
+        this.choice = null;
+        this.textbox = null;
+        this.menu = new Menu (['Yes', 'No']);
+    }
+
+    run () {
+        switch (this.tracker) {
+            case 0:
+                if (player.party.find(mon => mon.type.includes('Water'))) {
+                    this.textbox = new Textbox( 'Would you like to surf?');
+                    this.menuBox = this.menu;
+            
+                } else {
+                    this.textbox = new Textbox ('You need a water type Pokemon to cross water.');
+                }
+                break;
+            case 1:
+                if (this.menuBox) {
+                    switch (this.menuBox.choice) {
+                        case 'Yes':
+                            console.log('surf');
+                            player.moveType = 'surf';
+                            player.move(player.direction);
+                            this.tracker++;
+                            break;
+                        case 'No':
+                            this.tracker++;
+                            break;
+                    }
+                } else {
+                    currentObj = null;
+                }
+                break;
+    
+            default:
+                currentObj = null;
+                break;
+        }
+    
+        if (this.textbox) {
+            this.textbox.draw();
+        }
+    
+        if (this.menuBox) {
+            if (this.menuBox.canDraw) {
+                this.menuBox.draw()
+            }
+        }
+    }
+};
+
 
 // console.log(test1)
 
@@ -233,10 +296,15 @@ window.addEventListener('keydown', (e) => {
         switch (e.key) {
             case 'e':
                 let tile = player.tileFacing;
-                currentObj = currentMap.objMat[tile.y][tile.x]
+
+
+                if (currentMap.waterMat[tile.y][tile.x]) {
+                    currentObj = new waterScript;
+                }
+
+                // currentObj = currentMap.objMat[tile.y][tile.x]
                 break;
             case 'Shift':
-                // This is bollocks
                 if (player.moveType !== 'surf' || player.moveType !== 'cycle') {
                     player.moveType = player.moveType === 'run' ? 'walk' : 'run';
                 }
@@ -244,7 +312,9 @@ window.addEventListener('keydown', (e) => {
 
                 // For testing
             case 't': {
-                currentObj = new TestScript()
+                // currentObj = testScript
+                currentObj = new waterScript;
+
             }
         }
 
@@ -252,20 +322,19 @@ window.addEventListener('keydown', (e) => {
         switch (e.key) {
             case 'e':
                 console.log(currentObj.tracker)
-                if (currentObj.box.isMenu) {
+                if (currentObj.menuBox) {
 
-                    currentObj.box.choice = currentObj.box.choices[currentObj.box.choiceIndex];
-                    console.log(currentObj.box.choice)
+                    currentObj.menuBox.choice = currentObj.menuBox.choices[currentObj.menuBox.choiceIndex];
                 }
                 currentObj.tracker += 1;
                 break;
             case 'w':
-                currentObj.box.choiceIndex -= 1;
-                console.log(currentObj.box.choiceIndex);
+                currentObj.menuBox.choiceIndex -= 1;
+                console.log(currentObj.menuBox.choiceIndex);
                 break;
             case 's':
-                currentObj.box.choiceIndex += 1;
-                console.log(currentObj.box.choiceIndex);
+                currentObj.menuBox.choiceIndex += 1;
+                console.log(currentObj.menuBox.choiceIndex);
                 break;
 
             }

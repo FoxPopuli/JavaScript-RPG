@@ -67,13 +67,14 @@ export class Menu extends Textbox {
         this.textOffset = {x: 150, y: 300};
         this.choices = choices;
         this.isMenu = true;
+        this.canDraw = true;
 
         this.choiceIndex = 0;
 
         this.img = new Image();
         this.img.src = '../img/textboxes/yes-or-no.png';
 
-        this.drawFrom = {x: canvas.width / 2 - this.img.width / 2, y: (8 * 16 + 4)*2};
+        this.drawFrom = {x: canvas.width / 2 - this.img.width / 2 + 230, y: (8 * 16 + 4)*2 - 130};
 
         this.dimensions = {
             x: this.img.width,
