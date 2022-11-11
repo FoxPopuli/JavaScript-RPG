@@ -1,5 +1,7 @@
 import {ctx} from '../index.js';
 import { Textbox, Menu } from './textbox.js';
+import { roll } from './useful-functions.js';
+import {Pokemon} from './pokemon.js';
 
 class WaterTile {
     constructor () {
@@ -21,17 +23,22 @@ class WaterTile {
 
 
 export class Map {
-    constructor({ position, imgPath, mapFile, viewport, encounterObj}) {
-        this.position = position;
-        this.imgPath = imgPath;
-        this.img = new Image();
-        this.img.src = imgPath;
-        this.mapFile = mapFile;
-        this.viewport = viewport;
+    constructor({mapData, mapFile, viewport}) {
 
+
+        this.background = new Image();
+        this.background.src = mapData.imgPathBG;
 
         this.foreground = new Image();
-        this.foreground.src = './img/maps/the-clearing-demo-foreground.png';
+        this.foreground.src = mapData.imgPathFG;
+
+
+        this.mapFile = mapFile;
+        this.viewport = viewport;
+        this.encounterObj = mapData.encounterObj;
+        this.encounterRates = mapData.encounterRates;
+
+
 
         this.spawnTile = {x: 15, y: 15};
 
@@ -49,9 +56,17 @@ export class Map {
         this.grassMat = this.toMatrix(grassArr.data);
 
         // Generate encounter array
-
         this.encounters = {}
-        this.genEncArray(encounterObj);
+        for (const [encType, encMons] of Object.entries(this.encounterObj)) {
+            this.encounters[encType + 'Arr'] = [];
+            console.log(encMons)
+            encMons.forEach ( mon => {
+                for (let i = 0; i < mon.rate; i++) {
+                    this.encounters[encType + 'Arr'].push(mon.id);
+                }
+            })
+        }
+
 
 
         // TEST
@@ -64,29 +79,34 @@ export class Map {
                 return 0;
             }
         })
-        console.log(waterObjArr)
+
         this.objMat = this.toMatrix(waterObjArr);
 
     }
 
 
 
-    genEncArray = function (encObj) {
 
-        for (const [encType, encMons] of Object.entries(encObj)) {
-            this.encounters[encType + 'Arr'] = [];
-            encMons.forEach ( mon => {
-                for (let i = 0; i < mon.rate; i++) {
-                    this.encounters[encType + 'Arr'].push(mon.id);
-                }
-            })
-        }
+    genEncounter = function (type) {
+
+
+        const encounterId = this.encounters[type + 'Arr'][roll(100)] 
+        const encounter = this.encounterObj[type].find( element => element.id = encounterId)
+        const encounterLvl = encounter.levelRange[roll(encounter.levelRange.length)]
+        return new Pokemon ({
+            id: encounterId, 
+            level: encounterLvl, 
+            moves: [], 
+            isPlayer: false
+        })
+
+        
     }
 
     draw () {
         
         ctx.drawImage(
-            this.img,
+            this.background,
             
             this.viewport.px - this.viewport.screen.x / 2,
             this.viewport.py - this.viewport.screen.y / 2,

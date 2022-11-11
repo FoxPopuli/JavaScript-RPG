@@ -82,17 +82,8 @@ export class Player {
         // Grass check
         if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
             // console.log('In grass')
-            if (roll(100) <= this.currentMap.encounters.grassRate) {
-                console.log('battle!');
-
-                const encounterId = this.currentMap.encounters.grassArr[roll(100)];
-
-                console.log(new Pokemon({
-                    id: encounterId,
-                    level: 5,
-                    moves: [],
-                    isPlayer: false
-                }))
+            if (roll(100) <= this.currentMap.encounterRates.grass) {
+                console.log(this.currentMap.genEncounter('grass'));
             }
 
         }

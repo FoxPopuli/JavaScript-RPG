@@ -12,8 +12,6 @@ export class Pokemon {
     constructor({id, level, moves, isPlayer}) {
         this.id = id;
         this.level = level;
-
-        
         this.name = pokeData[this.id].name;
         this.type = pokeData[this.id].types;
         this.baseStats = pokeData[this.id].baseStats;

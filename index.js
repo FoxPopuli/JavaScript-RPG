@@ -5,6 +5,8 @@ import {Textbox, Menu} from '/src/textbox.js';
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
+// Map Data
+import allMapData from './json/map-data.json' assert {type: 'json'};
 
 
 export const canvas = document.querySelector('#game-screen');
@@ -98,15 +100,12 @@ const clearingEncounters = {
 }
 
 const clearing = new Map({
-    position: {x: 0, y: 0},
-    imgPath: './img/maps/the-clearing-demo-grid.png',
+    mapData: allMapData.theClearing,
     mapFile: clearingMapFile,
     viewport: viewport,
-    encounterObj: clearingEncounters
 })
 
-clearing.encounters.grassRate = 5;
-clearing.encounters.waterRate = 1;
+
 
 
 const testMon = new Pokemon ({
@@ -132,7 +131,7 @@ const player = new Player ({
 })
 
 player.party.push(testMon)
-// player.party.push(testMon2)
+player.party.push(testMon2)
 
 // OVERWORLD CONTROLS
 
@@ -419,39 +418,9 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
-    // if (currentObj) {
-    //     currentObj.textbox.draw()
-    //     player.canMove = false;
-
-    //     if (currentObj.choices) {
-    //         let currentChoice = 0;
-    //         switch (navArr[0]) {
-    //             case 'w':
-    //                 currentChoice += 1;
-    //                 break;
-    //             case 's':
-    //                 currentChoice -= 1;
-    //                 break;
-    //         }
-
-    //         navArr.pop();
-
-    //         if (currentChoice < 0) {
-    //             currentChoice = currentObj.choices.length - 1;
-    //         } else if (currentChoice > currentObj.choices.length - 1) {
-    //             currentChoice = 0;
-    //         }
-    //     }
-
-    // }
-
     if (currentObj) {
-
         currentObj.run()
-
     }
-
-    // console.log(player.tileFacing)
 
 
     lastFrameTime = currentFrameTime;
