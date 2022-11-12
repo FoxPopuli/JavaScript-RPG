@@ -67,7 +67,6 @@ export class Menu extends Textbox {
         this.textOffset = {x: 150, y: 300};
         this.choices = choices;
         this.isMenu = true;
-        this.canDraw = true;
 
         this.choiceIndex = 0;
 

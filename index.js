@@ -2,7 +2,7 @@ import {Map} from './src/map.js';
 import {Player} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from './src/textbox.js';
-import {Script, waterScript} from './src/script.js';
+import {Test, Script, WaterScript} from './src/script.js';
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -130,23 +130,13 @@ Array.prototype.pushOnce = function(key) {
     if (this[this.length - 1] !== key) this.push(key);
 }
 
-
-
-
-
-
-
-////////////////////////////////
-
-
-
 let moveArr = [];
-let navArr = [];
-let currentObj= {};
-currentObj.isActive = false;
+let currentScript = {};
+currentScript.isActive = false;
 window.addEventListener('keydown', (e) => {
-    if (!currentObj.isActive) {
+    if (!currentScript.isActive) {
         
+        // Overworld controls
         if (Object.values(binds.movement).includes(e.key)) {
             moveArr.pushOnce(e.key);
         }
@@ -155,10 +145,7 @@ window.addEventListener('keydown', (e) => {
             case 'e':
 
                 if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
-                    console.log(currentObj)
-                    currentObj = new waterScript;
-                    console.log(currentObj)
-
+                    currentScript = new WaterScript;
                 }
                 break;
             case 'Shift':
@@ -166,39 +153,27 @@ window.addEventListener('keydown', (e) => {
                     player.moveType = player.moveType === 'run' ? 'walk' : 'run';
                 }
                 break;
-
-                // For testing
+               
             case 't': {
-                // currentObj = testScript
-                // let testSequence = {
-                //     1: {
-                //         textbox: new Textbox('Text 1'),
-                //     },
-                //     2: {
-                //         textbox: new Textbox('Text 2'),
-                //         menu: new Menu(['Yes', 'No'])
-                //     }
-                // }
-                currentObj = new Script();
-
+                // For testing
+                currentScript = new Test();
             }
         }
 
     } else {
+        // Menu controls
         switch (e.key) {
             case 'e':
-                if (currentObj.menuBox) {
-                    currentObj.menuBox.choice = currentObj.menuBox.choices[currentObj.menuBox.choiceIndex];
+                if (currentScript.menu) {
+                    currentScript.choice = currentScript.menu.choices[currentScript.menu.choiceIndex];
                 }
-                currentObj.tracker += 1;
+                currentScript.tracker += 1;
                 break;
             case 'w':
-                currentObj.menuBox.choiceIndex -= 1;
-                console.log(currentObj.menuBox.choiceIndex);
+                currentScript.menu.choiceIndex -= 1;
                 break;
             case 's':
-                currentObj.menuBox.choiceIndex += 1;
-                console.log(currentObj.menuBox.choiceIndex);
+                currentScript.menu.choiceIndex += 1;
                 break;
 
             }
@@ -207,7 +182,7 @@ window.addEventListener('keydown', (e) => {
 
     switch (e.key) {
         case 'q':
-            currentObj.isActive = false;
+            currentScript.isActive = false;
             break;
     }
 
@@ -218,7 +193,7 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener( 'keyup', (e) => {
 
-    if (currentObj.isActive) {
+    if (currentScript.isActive) {
         moveArr = [];
 
     } else if (Object.values(binds.movement).includes(e.key)) {
@@ -274,8 +249,8 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
-    if (currentObj.isActive) {
-        currentObj.run()
+    if (currentScript.isActive) {
+        currentScript.run()
     }
 
 

@@ -8,6 +8,7 @@ export class Script {
         this.tracker = 0;
         this.choice = null;
         this.textbox = null;
+        this.menu = null;
         this.isActive = true;
 
 
@@ -16,7 +17,7 @@ export class Script {
         
     }
 }
-class Test extends Script {
+export class Test extends Script {
     run() {
         switch (this.tracker) {
             case 0:
@@ -27,24 +28,24 @@ class Test extends Script {
                 break;
             case 2:
                 this.textbox = new Textbox ('Please make a choice');
-                this.menuBox = this.menu;
+                if (!this.menu) this.menu = new Menu (['Yes', 'No']);
                 break;
             case 3:
     
-                switch (this.menuBox.choice) {
+                switch (this.choice) {
                     case 'Yes':
                         this.textbox = new Textbox('You chose yes');
-                        this.menuBox.canDraw = false;
+                        this.menu = null;
                         break;
                     case 'No':
                         this.textbox = new Textbox('You chose no');
-                        this.menuBox.canDraw = false;
+                        this.menu = null;
                         break
                 }
     
                 break;
             default:
-                currentObj = null;
+                this.isActive = false;
                 break;
         }
     
@@ -52,68 +53,17 @@ class Test extends Script {
             this.textbox.draw();
         }
     
-        if (this.menuBox) {
-            if (this.menuBox.canDraw) {
-                this.menuBox.draw()
-            }
+        if (this.menu) {
+            this.menu.draw();
         }
     
      
     }
 }
-const testScript = new Script()
-testScript.run = function () {
-    switch (this.tracker) {
-        case 0:
-            this.textbox = new Textbox(`This is the first text.`);
-            break;
-        case 1:
-            this.textbox = new Textbox ('This is the second text'); 
-            break;
-        case 2:
-            this.textbox = new Textbox ('Please make a choice');
-            this.menuBox = this.menu;
-            break;
-        case 3:
-
-            switch (this.menuBox.choice) {
-                case 'Yes':
-                    this.textbox = new Textbox('You chose yes');
-                    this.menuBox.canDraw = false;
-                    break;
-                case 'No':
-                    this.textbox = new Textbox('You chose no');
-                    this.menuBox.canDraw = false;
-                    break
-            }
-
-            break;
-        default:
-            currentObj = null;
-            break;
-    }
-
-    if (this.textbox) {
-        this.textbox.draw();
-    }
-
-    if (this.menuBox) {
-        if (this.menuBox.canDraw) {
-            this.menuBox.draw()
-        }
-    }
-
-}
 
 
-export class waterScript {
-    constructor () {
-        this.tracker = 0;
-        this.choice = null;
-        this.textbox = null;
-        this.menu = new Menu (['Yes', 'No']);
-        this.isActive = true;
-    }
+
+export class WaterScript extends Script {
 
     run () {
         // if (!this.isActive) return;
@@ -121,22 +71,26 @@ export class waterScript {
             case 0:
                 if (player.party.find(mon => mon.type.includes('Water'))) {
                     this.textbox = new Textbox( 'Would you like to surf?');
-                    this.menuBox = this.menu;
+                    if (!this.menu) this.menu = new Menu (['Yes', 'No']);
+
             
                 } else {
                     this.textbox = new Textbox ('You need a water type Pokemon to cross water.');
                 }
                 break;
             case 1:
-                if (this.menuBox) {
-                    switch (this.menuBox.choice) {
+                if (this.menu) {
+                    switch (this.choice) {
                         case 'Yes':
                             player.moveType = 'surf';
                             player.move(player.direction);
+                            this.menu = null;
                             this.tracker++;
+
                             break;
                         case 'No':
-                            this.tracker++;
+                            this.menu = null;
+                            this.tracker++
                             break;
                     }
                 } else {
@@ -154,10 +108,19 @@ export class waterScript {
             this.textbox.draw();
         }
     
-        if (this.menuBox) {
-            if (this.menuBox.canDraw) {
-                this.menuBox.draw()
-            }
+        if (this.menu) {
+            this.menu.draw()
         }
     }
 };
+
+
+export class TestScriptNPC extends Script {
+    run () {
+        switch (this.tracker) {
+            case 0:
+                
+                this.textbox = new Textbox ("Hi! We've never spoken...");
+        }
+    }
+}
