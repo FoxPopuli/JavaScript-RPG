@@ -1,7 +1,8 @@
 import {Map} from './src/map.js';
 import {Player} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
-import {Textbox, Menu} from '/src/textbox.js';
+import {Textbox, Menu} from './src/textbox.js';
+import {Script, waterScript} from './src/script.js';
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -38,12 +39,6 @@ const viewport = {
     startTile:  {x: 0, y: 0},
     endTile:    {x: 0, y: 0},
     offset:     {x: 0, y: 0},
-
-    report:     function () {
-        console.log('Report')
-        console.log(this.startTile);
-        console.log(this.endTile);
-    },
 
     update:     function (px, py) {
         // px, py : pixel coords of the center of the viewport
@@ -100,10 +95,9 @@ const testMon2 = new Pokemon ({
     isPlayer:   true
 })
 
-const player = new Player ({
+export const player = new Player ({
     name:       'Vox',
     prefix:     'Pokemon God ',
-    gender:     'male',
     currentMap:  clearing
 })
 
@@ -114,9 +108,6 @@ player.party.push(testMon2)
 
 // Keybinds
 const binds = {
-
-    
-
     movement: {
         up: 'w',
         left: 'a',
@@ -140,116 +131,7 @@ Array.prototype.pushOnce = function(key) {
 }
 
 
-//////////////////////////////
-// test script
 
-class Script {
-    constructor () {
-        this.tracker = 0;
-        this.choice = null;
-        this.textbox = null;
-        this.menu = new Menu (['Yes', 'No']);
-        
-    }
-}
-
-const testScript = new Script()
-testScript.run = function () {
-    switch (this.tracker) {
-        case 0:
-            this.textbox = new Textbox(`This is the first text.`);
-            break;
-        case 1:
-            this.textbox = new Textbox ('This is the second text'); 
-            break;
-        case 2:
-            this.textbox = new Textbox ('Please make a choice');
-            this.menuBox = this.menu;
-            break;
-        case 3:
-
-            switch (this.menuBox.choice) {
-                case 'Yes':
-                    this.textbox = new Textbox('You chose yes');
-                    this.menuBox.canDraw = false;
-                    break;
-                case 'No':
-                    this.textbox = new Textbox('You chose no');
-                    this.menuBox.canDraw = false;
-                    break
-            }
-
-            break;
-        default:
-            currentObj = null;
-            break;
-    }
-
-    if (this.textbox) {
-        this.textbox.draw();
-    }
-
-    if (this.menuBox) {
-        if (this.menuBox.canDraw) {
-            this.menuBox.draw()
-        }
-    }
-
-}
-
-
-class waterScript {
-    constructor () {
-        this.tracker = 0;
-        this.choice = null;
-        this.textbox = null;
-        this.menu = new Menu (['Yes', 'No']);
-    }
-
-    run () {
-        switch (this.tracker) {
-            case 0:
-                if (player.party.find(mon => mon.type.includes('Water'))) {
-                    this.textbox = new Textbox( 'Would you like to surf?');
-                    this.menuBox = this.menu;
-            
-                } else {
-                    this.textbox = new Textbox ('You need a water type Pokemon to cross water.');
-                }
-                break;
-            case 1:
-                if (this.menuBox) {
-                    switch (this.menuBox.choice) {
-                        case 'Yes':
-                            player.moveType = 'surf';
-                            player.move(player.direction);
-                            this.tracker++;
-                            break;
-                        case 'No':
-                            this.tracker++;
-                            break;
-                    }
-                } else {
-                    currentObj = null;
-                }
-                break;
-    
-            default:
-                currentObj = null;
-                break;
-        }
-    
-        if (this.textbox) {
-            this.textbox.draw();
-        }
-    
-        if (this.menuBox) {
-            if (this.menuBox.canDraw) {
-                this.menuBox.draw()
-            }
-        }
-    }
-};
 
 
 
@@ -260,9 +142,10 @@ class waterScript {
 
 let moveArr = [];
 let navArr = [];
-let currentObj= null;
+let currentObj= {};
+currentObj.isActive = false;
 window.addEventListener('keydown', (e) => {
-    if (!currentObj) {
+    if (!currentObj.isActive) {
         
         if (Object.values(binds.movement).includes(e.key)) {
             moveArr.pushOnce(e.key);
@@ -284,7 +167,16 @@ window.addEventListener('keydown', (e) => {
                 // For testing
             case 't': {
                 // currentObj = testScript
-                currentObj = new waterScript;
+                // let testSequence = {
+                //     1: {
+                //         textbox: new Textbox('Text 1'),
+                //     },
+                //     2: {
+                //         textbox: new Textbox('Text 2'),
+                //         menu: new Menu(['Yes', 'No'])
+                //     }
+                // }
+                currentObj = new Script();
 
             }
         }
@@ -312,7 +204,7 @@ window.addEventListener('keydown', (e) => {
 
     switch (e.key) {
         case 'q':
-            currentObj = null;
+            currentObj.isActive = false;
             break;
     }
 
@@ -323,7 +215,7 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener( 'keyup', (e) => {
 
-    if (currentObj) {
+    if (currentObj.isActive) {
         moveArr = [];
 
     } else if (Object.values(binds.movement).includes(e.key)) {
@@ -379,7 +271,7 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
-    if (currentObj) {
+    if (currentObj.isActive) {
         currentObj.run()
     }
 

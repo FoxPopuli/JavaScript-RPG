@@ -1,8 +1,6 @@
 import {ctx} from '../index.js';
-import { roll } from './useful-functions.js';
-import { Textbox } from './textbox.js';
+import {roll} from './useful-functions.js';
 import {malePlayer} from './sprites.js';
-// import pokeData from './pokemonData.json' assert {type: 'json'};
 
 const tileW = 16*4;
 const tileH = 16*4;
@@ -13,11 +11,8 @@ class Character {
         this.currentMap = currentMap;
 
         // Sprites
-        this.sprites = malePlayer;
+        this.sprites = malePlayer;          // Placeholder
         this.currentSprite = this.sprites.walk.down;
-
-
-
 
         // Movement props
         this.steps = 0;
@@ -38,11 +33,8 @@ class Character {
 
         this.delayMove = 300;                   // ms
 
-
         // Other props
         this.updateTileFacing();
-
-
     }
 
     placeAt = function (x, y) {
@@ -57,14 +49,11 @@ class Character {
         // Position in pixels relative to top left of canvas
         this.position.x = tileW*x
         this.position.y = tileH*y
-
     }
-
 
     processMovement = function (t) {
         // t - time elapsed currently in game
         // Will return true if character is moving, else return false
-
 
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
             return false;
@@ -75,7 +64,6 @@ class Character {
         switch (this.moveType) {
             case 'run':
                 this.delayMove = 100;
-
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -88,7 +76,6 @@ class Character {
                 break;
             case 'walk':
                 this.delayMove = 200;
-
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -102,12 +89,8 @@ class Character {
 
             case 'surf':
                 this.delayMove = 100;
-
                 break;
-
         }
-
-
 
         // Check if time elapsed is less than time to move (arrived or travelling)
         if (t - this.timeMoved >= this.delayMove) {
@@ -134,18 +117,15 @@ class Character {
                 this.position.y += (this.tileTo.y < this.tileFrom.y ? 0 - diff : diff);
             }
 
-
             // round
             this.position.x = Math.round(this.position.x);
             this.position.y = Math.round(this.position.y);
-
-            
         }
+
         return true;
     }
 
     move = function (currentKey) {
-            
         let nextTile = {
             x: this.tileFrom.x,
             y: this.tileFrom.y
@@ -186,9 +166,6 @@ class Character {
         // Movement gates
         if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
         if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
-
-
-
 
         this.tileTo = nextTile;
         this.steps++;
@@ -233,7 +210,6 @@ class Character {
                 offset.x = 0 - 32;
                 offset.y = 8;
                 break;
-
         }
 
         let scaleWidth = this.currentSprite.width / scale;
