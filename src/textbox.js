@@ -123,7 +123,7 @@ export class Menu extends Textbox {
             this.drawFrom.y + this.textOffset.y - 50 + 35*this.choiceIndex
             
         )
-        console.log(this.choiceIndex)
+
 
 
     }

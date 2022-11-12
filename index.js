@@ -77,28 +77,6 @@ const viewport = {
 
 // MAP
 
-const clearingEncounters = {
-    grass: [
-        {
-            id: 'charmander', 
-            rate: 50
-        },
-
-        {
-            id: 'squirtle',
-            rate: 50
-        },
-    ],
-
-    water: [
-        {
-            id: 'squirtle',
-            rate: 100
-        }
-    ]
-
-}
-
 const clearing = new Map({
     mapData: allMapData.theClearing,
     mapFile: clearingMapFile,
@@ -244,7 +222,6 @@ class waterScript {
                 if (this.menuBox) {
                     switch (this.menuBox.choice) {
                         case 'Yes':
-                            console.log('surf');
                             player.moveType = 'surf';
                             player.move(player.direction);
                             this.tracker++;
@@ -276,7 +253,7 @@ class waterScript {
 };
 
 
-// console.log(test1)
+
 
 ////////////////////////////////
 
@@ -294,14 +271,10 @@ window.addEventListener('keydown', (e) => {
 
         switch (e.key) {
             case 'e':
-                let tile = player.tileFacing;
 
-
-                if (currentMap.waterMat[tile.y][tile.x]) {
+                if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
                     currentObj = new waterScript;
                 }
-
-                // currentObj = currentMap.objMat[tile.y][tile.x]
                 break;
             case 'Shift':
                 if (player.moveType !== 'surf' || player.moveType !== 'cycle') {
@@ -320,9 +293,7 @@ window.addEventListener('keydown', (e) => {
     } else {
         switch (e.key) {
             case 'e':
-                console.log(currentObj.tracker)
                 if (currentObj.menuBox) {
-
                     currentObj.menuBox.choice = currentObj.menuBox.choices[currentObj.menuBox.choiceIndex];
                 }
                 currentObj.tracker += 1;
@@ -414,7 +385,7 @@ function animate() {
         player.position.y + (player.dimensions.y / 2)
     );
 
-    currentMap.draw();
+    currentMap.drawBG();
     player.draw();
     currentMap.drawFG();
 

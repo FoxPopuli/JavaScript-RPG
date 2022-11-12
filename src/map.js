@@ -3,25 +3,6 @@ import { Textbox, Menu } from './textbox.js';
 import { roll } from './useful-functions.js';
 import {Pokemon} from './pokemon.js';
 
-class WaterTile {
-    constructor () {
-        this.textbox = new Textbox('Do you want to surf?');
-        this.choices = ['Yes', 'No'];
-    }
-
-    onClick = function () {
-        player.moveType = 'surf';
-        player.move(player.direction);
-    }
-
-}
-
-// const waterTileScript = {
-
-// }
-
-
-
 export class Map {
     constructor({mapData, mapFile, viewport}) {
 
@@ -37,10 +18,7 @@ export class Map {
         this.viewport = viewport;
         this.encounterObj = mapData.encounterObj;
         this.encounterRates = mapData.encounterRates;
-
-
-
-        this.spawnTile = {x: 15, y: 15};
+        this.spawnTile = mapData.spawnTile;
 
         this.width = this.mapFile.width;
         this.height = this.mapFile.height;
@@ -59,28 +37,12 @@ export class Map {
         this.encounters = {}
         for (const [encType, encMons] of Object.entries(this.encounterObj)) {
             this.encounters[encType + 'Arr'] = [];
-            console.log(encMons)
             encMons.forEach ( mon => {
                 for (let i = 0; i < mon.rate; i++) {
                     this.encounters[encType + 'Arr'].push(mon.id);
                 }
             })
         }
-
-
-
-        // TEST
-
-        const waterObjArr = waterArr.data.map (tile => {
-            if (tile) {
-                // console.log(tile)
-                return new WaterTile();
-            } else {
-                return 0;
-            }
-        })
-
-        this.objMat = this.toMatrix(waterObjArr);
 
     }
 
@@ -91,7 +53,7 @@ export class Map {
 
 
         const encounterId = this.encounters[type + 'Arr'][roll(100)] 
-        const encounter = this.encounterObj[type].find( element => element.id = encounterId)
+        const encounter = this.encounterObj[type].find( element => element.id === encounterId)
         const encounterLvl = encounter.levelRange[roll(encounter.levelRange.length)]
         return new Pokemon ({
             id: encounterId, 
@@ -103,7 +65,7 @@ export class Map {
         
     }
 
-    draw () {
+    drawBG () {
         
         ctx.drawImage(
             this.background,
