@@ -1,13 +1,12 @@
-import { canvas } from '../index.js';
 import {ctx} from '../index.js';
 import { roll } from './useful-functions.js';
-import {Pokemon} from './pokemon.js';
 import { Textbox } from './textbox.js';
+import {malePlayer} from './sprites.js';
 // import pokeData from './pokemonData.json' assert {type: 'json'};
 
 const tileW = 16*4;
 const tileH = 16*4;
-export class Player {
+class Character {
     constructor ({name, isPlayer, prefix, gender, currentMap}) {
         this.name = name;
         this.party = [];
@@ -17,8 +16,9 @@ export class Player {
         this.prefix = prefix;
         this.gender = gender;
         this.currentMap = currentMap;
-        
-        this.sprites = this.genSprites();
+
+        // Sprites
+        this.sprites = malePlayer;
         this.currentSprite = this.sprites.walk.down;
 
         this.steps = 0;
@@ -28,7 +28,6 @@ export class Player {
         this.moveFrame = 1;
         this.direction = 'down';
         this.moveType = 'walk';
-        this.isRunning = false;
 
 
         this.tileFrom = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
@@ -46,22 +45,15 @@ export class Player {
 
 
         // Other props
-        this.isSurfing = false;
         this.updateTileFacing();
         this.canMove = true;
 
 
     }
 
-
-    showPos = function () {
-        console.log(`Position\nx: ${this.position.x} y: ${this.position.y}\ntileFrom\nx: ${this.tileFrom.x} y: ${this.tileFrom.y}
-        \ntileTo\nx: ${this.tileTo.x} y: ${this.tileTo.y}`);
-    }
-
     placeAt = function (x, y) {
-
         // Places character at the specified tile
+        
         this.tileFrom.x = x;
         this.tileFrom.y = y;
 
@@ -75,13 +67,11 @@ export class Player {
 
         // Surf check
         if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
-            console.log('Leaving water');
             this.moveType = 'walk';
         };
 
         // Grass check
         if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
-            // console.log('In grass')
             if (roll(100) <= this.currentMap.encounterRates.grass) {
                 console.log(this.currentMap.genEncounter('grass'));
             }
@@ -176,45 +166,25 @@ export class Player {
         return true;
     }
 
-
-    genSprites = function() {
-        const sprites = {};
-        
-        // Walk
-        sprites.walk = {};
-        sprites.walk.left = new Image();
-        sprites.walk.left.src = `./img/sprites/player/${this.gender}/walk-left.png`
-        sprites.walk.up = new Image();
-        sprites.walk.up.src = `./img/sprites/player/${this.gender}/walk-up.png`
-        sprites.walk.down = new Image();
-        sprites.walk.down.src = `./img/sprites/player/${this.gender}/walk-down.png`
-        sprites.walk.right = new Image();
-        sprites.walk.right.src = `./img/sprites/player/${this.gender}/walk-right.png`
-        
-
-        // Run
-        sprites.run = {};
-        sprites.run.left = new Image();
-        sprites.run.left.src = `./img/sprites/player/${this.gender}/run-left.png`
-        sprites.run.up = new Image();
-        sprites.run.up.src = `./img/sprites/player/${this.gender}/run-up.png`
-        sprites.run.down = new Image();
-        sprites.run.down.src = `./img/sprites/player/${this.gender}/run-down.png`
-        sprites.run.right = new Image();
-        sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
-
-        // Surf
-        sprites.surf = {};
-        sprites.surf.left = new Image();
-        sprites.surf.left.src = `./img/sprites/player/${this.gender}/surf-left.png`
-        sprites.surf.up = new Image();
-        sprites.surf.up.src = `./img/sprites/player/${this.gender}/surf-up.png`
-        sprites.surf.down = new Image();
-        sprites.surf.down.src = `./img/sprites/player/${this.gender}/surf-down.png`
-        sprites.surf.right = new Image();
-        sprites.surf.right.src = `./img/sprites/player/${this.gender}/surf-right.png`
-
-        return sprites;
+    updateTileFacing = function () {
+        this.tileFacing = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        }
+        switch (this.direction) {
+            case 'up': 
+                this.tileFacing.y -= 1;
+                break;
+            case 'left':
+                this.tileFacing.x -= 1;
+                break;
+            case 'down':
+                this.tileFacing.y += 1;
+                break;
+            case 'right':
+                this.tileFacing.x += 1;
+                break;
+        }
     }
 
     draw() {
@@ -255,6 +225,71 @@ export class Player {
             this.currentSprite.height
         );
     }
+}
+
+
+export class Player extends Character {
+    constructor ({name, isPlayer, prefix, gender, currentMap}) {
+
+        super({name, isPlayer, prefix, gender, currentMap});
+        // Run
+        // this.sprites.run = {};
+        // this.sprites.run.left = new Image();
+        // this.sprites.run.left.src = `./img/sprites/player/${this.gender}/run-left.png`
+        // this.sprites.run.up = new Image();
+        // this.sprites.run.up.src = `./img/sprites/player/${this.gender}/run-up.png`
+        // this.sprites.run.down = new Image();
+        // this.sprites.run.down.src = `./img/sprites/player/${this.gender}/run-down.png`
+        // this.sprites.run.right = new Image();
+        // this.sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
+
+        // // Surf
+        // this.sprites.surf = {};
+        // this.sprites.surf.left = new Image();
+        // this.sprites.surf.left.src = `./img/sprites/player/${this.gender}/surf-left.png`
+        // this.sprites.surf.up = new Image();
+        // this.sprites.surf.up.src = `./img/sprites/player/${this.gender}/surf-up.png`
+        // this.sprites.surf.down = new Image();
+        // this.sprites.surf.down.src = `./img/sprites/player/${this.gender}/surf-down.png`
+        // this.sprites.surf.right = new Image();
+        // this.sprites.surf.right.src = `./img/sprites/player/${this.gender}/surf-right.png`
+
+    }
+
+
+    placeAt = function (x, y) {
+        // Places character at the specified tile
+        
+        this.tileFrom.x = x;
+        this.tileFrom.y = y;
+
+        this.tileTo.x = x;
+        this.tileTo.y = y;
+
+        // Position in pixels relative to top left of canvas
+        this.position.x = tileW*x
+        this.position.y = tileH*y
+
+
+        // Surf check
+        if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
+            this.moveType = 'walk';
+        };
+
+        // Grass check
+        if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
+            if (roll(100) <= this.currentMap.encounterRates.grass) {
+                console.log(this.currentMap.genEncounter('grass'));
+            }
+
+        }
+
+
+    } 
+
+
+
+
 
 
     addToParty = function (pokemon) {
@@ -291,28 +326,7 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    updateTileFacing = function () {
-        this.tileFacing = {
-            x: this.tileFrom.x,
-            y: this.tileFrom.y
-        }
-        switch (this.direction) {
-            case 'up': 
-                this.tileFacing.y -= 1;
-                break;
-            case 'left':
-                this.tileFacing.x -= 1;
-                break;
-            case 'down':
-                this.tileFacing.y += 1;
-                break;
-            case 'right':
-                this.tileFacing.x += 1;
-                break;
-        }
 
-
-    }
 
   
     move = function (currentKey) {
