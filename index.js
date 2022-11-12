@@ -155,7 +155,10 @@ window.addEventListener('keydown', (e) => {
             case 'e':
 
                 if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
+                    console.log(currentObj)
                     currentObj = new waterScript;
+                    console.log(currentObj)
+
                 }
                 break;
             case 'Shift':

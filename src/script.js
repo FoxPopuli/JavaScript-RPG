@@ -112,6 +112,7 @@ export class waterScript {
         this.choice = null;
         this.textbox = null;
         this.menu = new Menu (['Yes', 'No']);
+        this.isActive = true;
     }
 
     run () {
