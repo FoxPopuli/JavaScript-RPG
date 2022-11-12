@@ -102,7 +102,6 @@ const testMon2 = new Pokemon ({
 
 const player = new Player ({
     name:       'Vox',
-    isPlayer:   true,
     prefix:     'Pokemon God ',
     gender:     'male',
     currentMap:  clearing
@@ -312,17 +311,8 @@ window.addEventListener('keydown', (e) => {
     }
 
     switch (e.key) {
-        // case 'e':
-            
-
-        //     currentTextbox = new Textbox(1, "Hello, World!");
-        //     currentTextbox.draw();
-        //     player.canMove = false;
-        //     break;
-
         case 'q':
             currentObj = null;
-            player.canMove = true;
             break;
     }
 

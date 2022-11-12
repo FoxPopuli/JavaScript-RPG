@@ -7,28 +7,23 @@ import {malePlayer} from './sprites.js';
 const tileW = 16*4;
 const tileH = 16*4;
 class Character {
-    constructor ({name, isPlayer, prefix, gender, currentMap}) {
+    constructor ({name, prefix, currentMap}) {
         this.name = name;
-        this.party = [];
-        this.currency = 0;
-        this.inventory = [];
-        this.isPlayer = isPlayer;
         this.prefix = prefix;
-        this.gender = gender;
         this.currentMap = currentMap;
 
         // Sprites
         this.sprites = malePlayer;
         this.currentSprite = this.sprites.walk.down;
 
-        this.steps = 0;
+
 
 
         // Movement props
+        this.steps = 0;
         this.moveFrame = 1;
         this.direction = 'down';
         this.moveType = 'walk';
-
 
         this.tileFrom = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
         this.tileTo = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
@@ -46,7 +41,6 @@ class Character {
 
         // Other props
         this.updateTileFacing();
-        this.canMove = true;
 
 
     }
@@ -64,21 +58,6 @@ class Character {
         this.position.x = tileW*x
         this.position.y = tileH*y
 
-
-        // Surf check
-        if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
-            this.moveType = 'walk';
-        };
-
-        // Grass check
-        if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
-            if (roll(100) <= this.currentMap.encounterRates.grass) {
-                console.log(this.currentMap.genEncounter('grass'));
-            }
-
-        }
-
-
     }
 
 
@@ -91,12 +70,12 @@ class Character {
             return false;
         }
 
+        this.currentSprite = this.sprites[this.moveType][this.direction];
 
-        // Choose sprite
         switch (this.moveType) {
             case 'run':
                 this.delayMove = 100;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
+
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -109,7 +88,7 @@ class Character {
                 break;
             case 'walk':
                 this.delayMove = 200;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
+
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -123,7 +102,7 @@ class Character {
 
             case 'surf':
                 this.delayMove = 100;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
+
                 break;
 
         }
@@ -133,7 +112,6 @@ class Character {
         // Check if time elapsed is less than time to move (arrived or travelling)
         if (t - this.timeMoved >= this.delayMove) {
             // Arrived
-
             this.placeAt(this.tileTo.x, this.tileTo.y);
 
         } else {
@@ -164,6 +142,58 @@ class Character {
             
         }
         return true;
+    }
+
+    move = function (currentKey) {
+            
+        let nextTile = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        }
+
+        switch (currentKey) {
+            case 'up':
+            case 'w':
+                nextTile.y -= 1;
+                this.direction = 'up';
+                break;
+            case 'down':
+            case 's':
+                nextTile.y += 1;
+                this.direction = 'down';
+                break;
+            case 'left':
+            case 'a':
+                nextTile.x -= 1;
+                this.direction = 'left';
+                break;
+            case 'right':
+            case 'd':
+                nextTile.x += 1;
+                this.direction = 'right';
+                break;
+        }
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+
+        // Reset to idle walk if player isn't moving or surfing
+        if (!currentKey && this.moveType === 'run') {
+            this.currentSprite = this.sprites.walk[this.direction]
+        }
+
+        this.updateTileFacing();
+
+        // Movement gates
+        if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
+        if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
+
+
+
+
+        this.tileTo = nextTile;
+        this.steps++;
+        this.updateTileFacing();
+
     }
 
     updateTileFacing = function () {
@@ -229,30 +259,11 @@ class Character {
 
 
 export class Player extends Character {
-    constructor ({name, isPlayer, prefix, gender, currentMap}) {
-
-        super({name, isPlayer, prefix, gender, currentMap});
-        // Run
-        // this.sprites.run = {};
-        // this.sprites.run.left = new Image();
-        // this.sprites.run.left.src = `./img/sprites/player/${this.gender}/run-left.png`
-        // this.sprites.run.up = new Image();
-        // this.sprites.run.up.src = `./img/sprites/player/${this.gender}/run-up.png`
-        // this.sprites.run.down = new Image();
-        // this.sprites.run.down.src = `./img/sprites/player/${this.gender}/run-down.png`
-        // this.sprites.run.right = new Image();
-        // this.sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
-
-        // // Surf
-        // this.sprites.surf = {};
-        // this.sprites.surf.left = new Image();
-        // this.sprites.surf.left.src = `./img/sprites/player/${this.gender}/surf-left.png`
-        // this.sprites.surf.up = new Image();
-        // this.sprites.surf.up.src = `./img/sprites/player/${this.gender}/surf-up.png`
-        // this.sprites.surf.down = new Image();
-        // this.sprites.surf.down.src = `./img/sprites/player/${this.gender}/surf-down.png`
-        // this.sprites.surf.right = new Image();
-        // this.sprites.surf.right.src = `./img/sprites/player/${this.gender}/surf-right.png`
+    constructor ({name, prefix, gender, currentMap}) {
+        super({name, prefix, gender, currentMap});
+        this.party = [];
+        this.currency = 0;
+        this.inventory = [];
 
     }
 
@@ -326,74 +337,5 @@ export class Player extends Character {
         return availableMon[partyIndex];
     }
 
-
-
-  
-    move = function (currentKey) {
-            
-        let nextTile = {
-            x: this.tileFrom.x,
-            y: this.tileFrom.y
-        }
-
-        switch (currentKey) {
-            case 'up':
-            case 'w':
-                nextTile.y -= 1;
-                this.direction = 'up';
-                break;
-            case 'down':
-            case 's':
-                nextTile.y += 1;
-                this.direction = 'down';
-                break;
-            case 'left':
-            case 'a':
-                nextTile.x -= 1;
-                this.direction = 'left';
-                break;
-            case 'right':
-            case 'd':
-                nextTile.x += 1;
-                this.direction = 'right';
-                break;
-        }
-
-        this.currentSprite = this.sprites[this.moveType][this.direction];
-
-        // Reset to idle walk if player isn't moving or surfing
-        if (!currentKey && this.moveType === 'run') {
-            this.currentSprite = this.sprites.walk[this.direction]
-        }
-
-        this.updateTileFacing();
-
-        // Movement gates
-        if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
-        if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
-
-
-
-
-        this.tileTo = nextTile;
-        this.steps++;
-        this.updateTileFacing();
-
-    }
-
-    interact() {
-        return this.tileFacing;
-        if (this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x] !== 0 && !this.isSurfing) {
-            const waterMon = this.party.filter( obj => obj.type.includes('Water') )
-
-            if (waterMon.length > 0) {
-                let surfText = "Do you want to surf? e: Yes, q: No";
-                let box = new Textbox (1, surfText);
-                this.moveType = 'surf';
-                this.move(this.direction);
-            }
-
-        }
-    }
 
 }
