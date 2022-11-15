@@ -103,7 +103,8 @@ const testObj = new Character ({
     script: new CharacterScript (),
     currentMap: clearing
 })
-// console.log(testObj.spawnTile)
+
+
 export const player = new Player ({
     name:       'Vox',
     prefix:     'Pokemon God ',

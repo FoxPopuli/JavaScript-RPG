@@ -44,14 +44,13 @@ export class MapObj {
 
 export class Character extends MapObj {
     constructor ({name, prefix, currentMap, spawnTile, script, sprites}) {
+        
         super({spawnTile, script, sprites, currentMap});
+        
         this.name = name;
         this.prefix = prefix;
         this.currentMap = currentMap;
 
-        // Sprites
-        // Placeholder
-        // this.currentSprite = this.sprites.walk.down;
 
         // Movement props
         this.steps = 0;
@@ -92,8 +91,6 @@ export class Character extends MapObj {
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
             return false;
         }
-
-        this.currentSprite = this.sprites[this.moveType][this.direction];
 
         switch (this.moveType) {
             case 'run':
@@ -248,6 +245,7 @@ export class Character extends MapObj {
         
         let scaleWidth = this.currentSprite.width / scale;
 
+        this.currentSprite = this.sprites[this.moveType][this.direction];
         ctx.drawImage(
             this.currentSprite,
     

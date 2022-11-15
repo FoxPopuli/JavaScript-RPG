@@ -29,15 +29,23 @@ export class CharacterScript extends Script {
         switch (player.direction) {
             case 'up':
                 thisObj.direction = 'down';
+                break;
             case 'down':
                 thisObj.direction = 'up';
+                break;
             case 'left':
                 thisObj.direction = 'right';
+                console.log(thisObj.direction)
+
+                break;
             case 'right':
                 thisObj.direction = 'left';
+                console.log(thisObj.direction)
+                break;
 
         }
 
+        thisObj.updateTileFacing();
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox(`This is the first text.`);
