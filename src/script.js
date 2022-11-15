@@ -17,8 +17,27 @@ export class Script {
         
     }
 }
-export class Test extends Script {
-    run() {
+
+function battle(a, b) {
+    console.log(`${b.name} wants to battle!`);
+    console.log(`${a.prefix} ${a.name} sent out ${a.party}`)
+}
+
+export class CharacterScript extends Script {
+    run(thisObj, player) {
+
+        switch (player.direction) {
+            case 'up':
+                thisObj.direction = 'down';
+            case 'down':
+                thisObj.direction = 'up';
+            case 'left':
+                thisObj.direction = 'right';
+            case 'right':
+                thisObj.direction = 'left';
+
+        }
+
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox(`This is the first text.`);
@@ -27,18 +46,18 @@ export class Test extends Script {
                 this.textbox = new Textbox ('This is the second text'); 
                 break;
             case 2:
-                this.textbox = new Textbox ('Please make a choice');
+                this.textbox = new Textbox ('Make a choice.');
                 if (!this.menu) this.menu = new Menu (['Yes', 'No']);
                 break;
             case 3:
     
                 switch (this.choice) {
                     case 'Yes':
-                        this.textbox = new Textbox('You chose yes');
+                        this.textbox = new Textbox('You chose yes.');
                         this.menu = null;
                         break;
                     case 'No':
-                        this.textbox = new Textbox('You chose no');
+                        this.textbox = new Textbox('You chose no.');
                         this.menu = null;
                         break
                 }
@@ -61,11 +80,20 @@ export class Test extends Script {
     }
 }
 
-
+export class DefaultScript extends Script {
+    run (thisObj, player) {
+        switch (this.tracker) {
+            case 0:
+                this.textbox = new Textbox('Example text.');
+            default:
+                this.isActive = false;
+        }
+    }
+}
 
 export class WaterScript extends Script {
 
-    run () {
+    run (player) {
         // if (!this.isActive) return;
         switch (this.tracker) {
             case 0:

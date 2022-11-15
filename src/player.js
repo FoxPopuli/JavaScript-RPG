@@ -1,18 +1,57 @@
 import {ctx} from '../index.js';
 import {roll} from './useful-functions.js';
-import {malePlayer} from './sprites.js';
 
 const tileW = 16*4;
 const tileH = 16*4;
-class Character {
-    constructor ({name, prefix, currentMap}) {
+
+export class MapObj {
+    constructor ({spawnTile, script, sprites, currentMap}) {
+        this.spawnTile = spawnTile;
+        this.position = {
+            x: spawnTile.x * tileH,
+            y: spawnTile.y * tileW
+        }
+        this.currentMap = currentMap;
+        this.viewport = this.currentMap.viewport;
+        this.script = script;
+        this.sprites = sprites;
+        this.currentSprite = this.sprites.default;
+        this.isSolid = true;
+    }
+
+    runScript (player) {
+        this.script.run(this, player);
+    }
+
+    draw () {
+
+        const drawFrom = {
+            x: this.position.x - this.viewport.px + this.viewport.screen.x / 2,
+            y: this.position.y - this.viewport.py + this.viewport.screen.y / 2
+        }
+
+        ctx.drawImage (
+            this.currentSprite,
+            
+            drawFrom.x,
+            drawFrom.y
+            
+        )
+    }
+
+}
+
+
+export class Character extends MapObj {
+    constructor ({name, prefix, currentMap, spawnTile, script, sprites}) {
+        super({spawnTile, script, sprites, currentMap});
         this.name = name;
         this.prefix = prefix;
         this.currentMap = currentMap;
 
         // Sprites
-        this.sprites = malePlayer;          // Placeholder
-        this.currentSprite = this.sprites.walk.down;
+        // Placeholder
+        // this.currentSprite = this.sprites.walk.down;
 
         // Movement props
         this.steps = 0;
@@ -20,16 +59,11 @@ class Character {
         this.direction = 'down';
         this.moveType = 'walk';
 
-        this.tileFrom = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
-        this.tileTo = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
+        this.tileFrom = {x: spawnTile.x, y: spawnTile.y}
+        this.tileTo = {x: spawnTile.x, y: spawnTile.y}
         
         this.timeMoved = 0;
         this.dimensions = {x: tileW, y: tileH};   // pixels
-        this.position = {
-            // in pixels
-            x: this.currentMap.spawnTile.x * tileW, 
-            y: this.currentMap.spawnTile.y * tileH
-        }; 
 
         this.delayMove = 300;                   // ms
 
@@ -211,7 +245,7 @@ class Character {
                 offset.y = 8;
                 break;
         }
-
+        
         let scaleWidth = this.currentSprite.width / scale;
 
         ctx.drawImage(
@@ -233,13 +267,35 @@ class Character {
     }
 }
 
+export class Trainer extends Character {
+    constructor ({name, prefix, currentMap, spawnTile, script, party}) {
+        super({name, prefix, currentMap, spawnTile, script});
+        this.party = party;
+        this.currency = 1000;
+        this.inventory = [];
+
+        this.hasBattled = false;
+    }
+
+
+}
+
+
+// export class Trainer extends NPC {
+
+// }
 
 export class Player extends Character {
-    constructor ({name, prefix, gender, currentMap}) {
-        super({name, prefix, gender, currentMap});
+    constructor ({name, prefix, currentMap, spawnTile, sprites}) {
+        super({name, prefix, currentMap, spawnTile, sprites});
         this.party = [];
-        this.currency = 0;
         this.inventory = [];
+
+        this.position = {
+            // in pixels
+            x: this.currentMap.spawnTile.x * tileW, 
+            y: this.currentMap.spawnTile.y * tileH
+        }; 
 
     }
 
@@ -275,8 +331,43 @@ export class Player extends Character {
     } 
 
 
+    draw() {
 
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
 
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+
+        let scaleWidth = this.currentSprite.width / scale;
+
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            0,
+    
+            scaleWidth,
+            this.currentSprite.height,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height
+        );
+    }
 
 
     addToParty = function (pokemon) {

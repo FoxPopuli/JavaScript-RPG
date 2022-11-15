@@ -1,8 +1,10 @@
 import {Map} from './src/map.js';
-import {Player} from './src/player.js';
+import {MapObj, Trainer, Player, Character} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from './src/textbox.js';
-import {Test, Script, WaterScript} from './src/script.js';
+import {CharacterScript, Script, WaterScript} from './src/script.js';
+import {malePlayerSprites} from './src/sprites.js';
+
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -95,11 +97,21 @@ const testMon2 = new Pokemon ({
     isPlayer:   true
 })
 
+const testObj = new Character ({
+    spawnTile: {x: 21, y: 15},
+    sprites: malePlayerSprites,
+    script: new CharacterScript (),
+    currentMap: clearing
+})
+// console.log(testObj.spawnTile)
 export const player = new Player ({
     name:       'Vox',
     prefix:     'Pokemon God ',
-    currentMap:  clearing
+    currentMap:  clearing,
+    spawnTile:   clearing.spawnTile,
+    sprites: malePlayerSprites
 })
+
 
 player.party.push(testMon)
 player.party.push(testMon2)
@@ -131,10 +143,12 @@ Array.prototype.pushOnce = function(key) {
 }
 
 let moveArr = [];
-let currentScript = {};
-currentScript.isActive = false;
+let currentObj = {};
+currentObj.script = {};
+currentObj.script.isActive = false;
+
 window.addEventListener('keydown', (e) => {
-    if (!currentScript.isActive) {
+    if (!currentObj.script.isActive) {
         
         // Overworld controls
         if (Object.values(binds.movement).includes(e.key)) {
@@ -143,9 +157,15 @@ window.addEventListener('keydown', (e) => {
 
         switch (e.key) {
             case 'e':
+                console.log(player.tileFacing)
+                console.log(testObj.spawnTile)
+
+                if (player.tileFacing.x === testObj.spawnTile.x && player.tileFacing.y === testObj.spawnTile.y) {
+                    currentObj = testObj;
+                }
 
                 if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
-                    currentScript = new WaterScript;
+                    currentObj.script = new WaterScript;
                 }
                 break;
             case 'Shift':
@@ -156,7 +176,7 @@ window.addEventListener('keydown', (e) => {
                
             case 't': {
                 // For testing
-                currentScript = new Test();
+                currentObj.script = new Test();
             }
         }
 
@@ -164,16 +184,16 @@ window.addEventListener('keydown', (e) => {
         // Menu controls
         switch (e.key) {
             case 'e':
-                if (currentScript.menu) {
-                    currentScript.choice = currentScript.menu.choices[currentScript.menu.choiceIndex];
+                if (currentObj.script.menu) {
+                    currentObj.script.choice = currentObj.script.menu.choices[currentObj.script.menu.choiceIndex];
                 }
-                currentScript.tracker += 1;
+                currentObj.script.tracker += 1;
                 break;
             case 'w':
-                currentScript.menu.choiceIndex -= 1;
+                currentObj.menu.choiceIndex -= 1;
                 break;
             case 's':
-                currentScript.menu.choiceIndex += 1;
+                currentObj.menu.choiceIndex += 1;
                 break;
 
             }
@@ -182,7 +202,7 @@ window.addEventListener('keydown', (e) => {
 
     switch (e.key) {
         case 'q':
-            currentScript.isActive = false;
+            currentObj.script.isActive = false;
             break;
     }
 
@@ -193,7 +213,7 @@ window.addEventListener('keydown', (e) => {
 
 window.addEventListener( 'keyup', (e) => {
 
-    if (currentScript.isActive) {
+    if (currentObj.isActive) {
         moveArr = [];
 
     } else if (Object.values(binds.movement).includes(e.key)) {
@@ -211,7 +231,6 @@ window.addEventListener( 'keyup', (e) => {
 let currentMap = player.currentMap;
 player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
-let testMenu = new Menu(['Yes', 'No'])
 
 function animate() {
 
@@ -249,11 +268,17 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
-    if (currentScript.isActive) {
-        currentScript.run()
+    testObj.draw()
+
+    if (currentObj.script.isActive) {
+        currentObj.runScript(player)
     }
 
-
+    // let obj = new NPC ({
+    //     name: 'Jack',
+    //     prefix: 'That guy ',
+    //     currentMap: currentMap
+    // });
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);
 }
