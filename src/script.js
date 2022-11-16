@@ -5,15 +5,7 @@ import { player } from '../index.js';
 
 export class Script {
     constructor () {
-        this.tracker = 0;
-        this.choice = null;
-        this.textbox = null;
-        this.menu = null;
-        this.isActive = true;
-
-
-        // this.sequence = sequence
-        // this.menu = new Menu (['Yes', 'No']);
+        this.reset()
         
     }
 

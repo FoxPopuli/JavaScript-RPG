@@ -106,12 +106,12 @@ const testObj = new Character ({
 
 
 export const player = new Player ({
-    name:       'Vox',
-    prefix:     'Pokemon God ',
-    currentMap:  clearing,
-    spawnTile:   clearing.spawnTile,
-    sprites: malePlayerSprites
-})
+    name:           'Vox',
+    prefix:         'Pokemon God ',
+    currentMap:     clearing,
+    spawnTile:      clearing.spawnTile,
+    sprites:        malePlayerSprites
+})  
 
 
 player.party.push(testMon)

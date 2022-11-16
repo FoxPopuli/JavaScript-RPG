@@ -5,19 +5,19 @@ const tileW = 16*4;
 const tileH = 16*4;
 
 export class BasicMapObj {
+    // Only runs a script, used for water logic
     constructor({script}) {
         this.script = script;
     }
 
     runScript (player) {
-        console.log(this.script)
-        console.log(player)
         this.script.run(this, player);
     }
 }
 
 
 export class MapObj extends BasicMapObj {
+    // Overworld object with a sprite
     constructor ({spawnTile, script, sprites, currentMap}) {
         super({script});
         this.spawnTile = spawnTile;
