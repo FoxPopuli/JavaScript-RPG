@@ -48,7 +48,6 @@ export class Menu {
         this.cursorImg.src = '../img/textboxes/cursor.png';
     }
 
-
     draw() {
 
         // Draw image
