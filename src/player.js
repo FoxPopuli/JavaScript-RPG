@@ -209,6 +209,7 @@ export class Character extends MapObj {
         // Movement gates
         if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
         if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
+        if (this.currentMap.objMatrix[nextTile.y][nextTile.x] !== 0) return;
 
         this.tileTo = nextTile;
         this.steps++;

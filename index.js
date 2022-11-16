@@ -4,7 +4,7 @@ import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from './src/textbox.js';
 import {CharacterScript, Script, WaterScript} from './src/script.js';
 import {malePlayerSprites} from './src/sprites.js';
-
+import { clearingMapObjs } from './data/mapObjs.js';
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
@@ -78,6 +78,7 @@ const clearing = new Map({
     mapData: allMapData.theClearing,
     mapFile: clearingMapFile,
     viewport: viewport,
+    mapObjData: clearingMapObjs
 })
 
 
@@ -115,7 +116,7 @@ export const player = new Player ({
 
 
 player.party.push(testMon)
-player.party.push(testMon2)
+// player.party.push(testMon2)
 
 // OVERWORLD CONTROLS
 
@@ -160,11 +161,12 @@ window.addEventListener('keydown', (e) => {
             case 'e':
                 console.log(player.tileFacing)
                 
+                let objFacing = currentMap.objMatrix[player.tileFacing.y][player.tileFacing.x];
 
-                if (player.tileFacing.x === testObj.spawnTile.x && player.tileFacing.y === testObj.spawnTile.y) {
-                    currentObj = testObj;
-                    if (!testObj.script.isActive) {
-                        testObj.script.reset()
+                if (objFacing) {
+                    currentObj = objFacing;
+                    if (!currentObj.script.isActive) {
+                        currentObj.script.reset()
                     };
                 }
 
@@ -185,7 +187,7 @@ window.addEventListener('keydown', (e) => {
                
             case 't': {
                 // For testing
-                currentObj.script = new Test();
+                console.log(player.party)
             }
         }
 
@@ -278,7 +280,8 @@ function animate() {
     player.draw();
     currentMap.drawFG();
 
-    testObj.draw()
+    // testObj.draw()
+    currentMap.drawObj();
 
     if (currentObj.script.isActive) {
         currentObj.runScript(player)

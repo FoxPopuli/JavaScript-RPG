@@ -2,10 +2,13 @@ import {ctx} from '../index.js';
 import { Textbox, Menu } from './textbox.js';
 import { roll } from './useful-functions.js';
 import {Pokemon} from './pokemon.js';
+import { Character } from './player.js';
 
 export class Map {
-    constructor({mapData, mapFile, viewport}) {
+    constructor({mapData, mapFile, viewport, mapObjData}) {
 
+
+        this.mapObjData = mapObjData;
 
         this.background = new Image();
         this.background.src = mapData.imgPathBG;
@@ -43,6 +46,25 @@ export class Map {
                 }
             })
         }
+
+        // Generate mapObj array
+        let mapObjMatrix = [];
+        for (let i = 0; i < this.height; i++) {
+            mapObjMatrix.push(new Array(this.width).fill(0))
+        }
+
+        this.mapObjs = this.mapObjData.map (obj => {
+            obj.currentMap = this;
+            return new Character (obj);
+        })
+
+        // console.log(this.map)
+
+        this.mapObjs.forEach( obj => {
+            mapObjMatrix[obj.spawnTile.y][obj.spawnTile.x] = obj; 
+        })
+
+        this.objMatrix = mapObjMatrix;
 
     }
 
@@ -104,6 +126,12 @@ export class Map {
                     
         );
 
+    }
+
+    drawObj () {
+        this.mapObjs.forEach (obj => {
+            obj.draw();
+        })
     }
 
     toMatrix = function (array) {

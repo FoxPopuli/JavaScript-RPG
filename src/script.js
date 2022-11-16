@@ -37,13 +37,15 @@ export class CharacterScript extends Script {
                 break;
 
         }
+
+        thisObj.updateTileFacing();
     }
 
     run(thisObj, player) {
 
         this.runPrescript(thisObj, player);
 
-        thisObj.updateTileFacing();
+        
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox(`This is the first text.`);
@@ -91,8 +93,10 @@ export class DefaultScript extends Script {
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox('Example text.');
+                break;
             default:
                 this.isActive = false;
+                break;
         }
     }
 }
@@ -108,7 +112,7 @@ export class WaterScript extends Script {
 
             
                 } else {
-                    this.textbox = new Textbox ('You need a water type Pokemon to cross water.');
+                    this.textbox = new Textbox ('You need a water type to cross water.');
                 }
                 break;
             case 1:
