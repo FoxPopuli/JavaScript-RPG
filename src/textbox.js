@@ -1,7 +1,6 @@
 import {ctx} from '../index.js';
 import {canvas} from '../index.js';
 
-
 export class Textbox {
     constructor (text) {
         this.text = text;
@@ -11,59 +10,30 @@ export class Textbox {
         this.img = new Image();
         this.img.src = `../img/textboxes/type-1.png`;
 
-        this.drawFrom = {x: canvas.width / 2 - this.img.width / 2, y: (8 * 16 + 4)*2};
-
-        this.dimensions = {
-            x: this.img.width,
-            y: this.img.height
-        }
-
-
+        this.drawFrom = {x: canvas.width / 2 - this.img.width / 2, y: 264};
     }
 
-    drawImg() {
-
-
+    draw() {
         ctx.drawImage (
             this.img, 
 
-            0,
-            0,
-
-            this.dimensions.x,
-            this.dimensions.y,
-
             this.drawFrom.x,
             this.drawFrom.y,
-
-            this.dimensions.x,
-            this.dimensions.y
         )
 
-
-
-    }
-
-    drawText() {
         ctx.font = '24pt sans-serif';
         ctx.fillText(
             this.text,
 
             this.drawFrom.x + this.textOffset.x,
             this.drawFrom.y + this.textOffset.y
-
         )
-    }
-
-    draw() {
-        this.drawImg();
-        this.drawText();
     }
 }
 
-export class Menu extends Textbox {
+export class Menu {
     constructor(choices) {
-        super();
+
         this.textOffset = {x: 150, y: 300};
         this.choices = choices;
         this.isMenu = true;
@@ -72,26 +42,25 @@ export class Menu extends Textbox {
 
         this.img = new Image();
         this.img.src = '../img/textboxes/yes-or-no.png';
-
-        this.drawFrom = {x: canvas.width / 2 - this.img.width / 2 + 230, y: (8 * 16 + 4)*2 - 130};
-
-        this.dimensions = {
-            x: this.img.width,
-            y: this.img.height
-        }
-    
+        this.drawFrom = {x: 550, y: 134};
 
         this.cursorImg = new Image();
         this.cursorImg.src = '../img/textboxes/cursor.png';
-
     }
 
-    drawText() {
 
+    draw() {
+
+        // Draw image
+        ctx.drawImage (
+            this.img, 
+
+            this.drawFrom.x,
+            this.drawFrom.y,
+        )
+
+        // Draw text
         ctx.font = '24pt sans-serif';
-
-
-
         for (let i = 0; i < this.choices.length; i++) {
             ctx.fillText(
                 this.choices[i],
@@ -101,19 +70,9 @@ export class Menu extends Textbox {
             )
         }
 
-    }
-
-    drawCursor() {
-
-
-
-
-        if (this.choiceIndex > this.choices.length - 1) {
-            this.choiceIndex = 0;
-        }  
-        if (this.choiceIndex < 0) {
-            this.choiceIndex = this.choices.length - 1;
-        }
+        // Draw cursor
+        if (this.choiceIndex > this.choices.length - 1) this.choiceIndex = 0;
+        if (this.choiceIndex < 0) this.choiceIndex = this.choices.length - 1;
 
         ctx.drawImage (
             this.cursorImg, 
@@ -123,13 +82,5 @@ export class Menu extends Textbox {
             
         )
 
-
-
-    }
-
-    draw() {
-        this.drawImg();
-        this.drawText();
-        this.drawCursor();
     }
 }

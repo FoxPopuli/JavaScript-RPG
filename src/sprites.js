@@ -36,5 +36,14 @@ malePlayerSprites.surf.right.src = `./img/sprites/player/male/surf-right.png`
 malePlayerSprites.default = new Image;
 malePlayerSprites.default.src = `./img/sprites/player/male/walk-down.png`
 
-export const itemSprite = {};
-itemSprite.default = new Image();
+const directions = ['up', 'down', 'left', 'right'];
+
+function SpriteObj (type, gender) {
+    this.walk = {};
+    for (let direction of directions) {
+        this.walk[direction] = new Image();
+        this.walk[direction].src = `./img/sprites/${this.type}/${this.gender}/walk-${direction}.png`;
+    }
+}
+
+// export const defaultSprites = SpriteObj ()

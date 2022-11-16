@@ -103,7 +103,6 @@ export class DefaultScript extends Script {
 
 export class WaterScript extends Script {
     run (thisObj, player) {
-        // if (!this.isActive) return;
         switch (this.tracker) {
             case 0:
                 if (player.party.find(mon => mon.type.includes('Water'))) {
