@@ -1,5 +1,5 @@
 import {Map} from './src/map.js';
-import {MapObj, Trainer, Player, Character} from './src/player.js';
+import {BasicMapObj, Trainer, Player, Character} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from './src/textbox.js';
 import {CharacterScript, Script, WaterScript} from './src/script.js';
@@ -159,14 +159,22 @@ window.addEventListener('keydown', (e) => {
         switch (e.key) {
             case 'e':
                 console.log(player.tileFacing)
-                console.log(testObj.spawnTile)
+                
 
                 if (player.tileFacing.x === testObj.spawnTile.x && player.tileFacing.y === testObj.spawnTile.y) {
                     currentObj = testObj;
+                    if (!testObj.script.isActive) {
+                        testObj.script.reset()
+                    };
                 }
 
+            
+
                 if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
-                    currentObj.script = new WaterScript;
+                    currentObj = new BasicMapObj ({
+                        script: new WaterScript ()
+                    });
+
                 }
                 break;
             case 'Shift':
@@ -191,10 +199,10 @@ window.addEventListener('keydown', (e) => {
                 currentObj.script.tracker += 1;
                 break;
             case 'w':
-                currentObj.menu.choiceIndex -= 1;
+                currentObj.script.menu.choiceIndex -= 1;
                 break;
             case 's':
-                currentObj.menu.choiceIndex += 1;
+                currentObj.script.menu.choiceIndex += 1;
                 break;
 
             }
@@ -204,6 +212,7 @@ window.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'q':
             currentObj.script.isActive = false;
+            // currentObj = null;
             break;
     }
 

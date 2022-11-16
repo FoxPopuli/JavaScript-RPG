@@ -16,16 +16,19 @@ export class Script {
         // this.menu = new Menu (['Yes', 'No']);
         
     }
-}
 
-function battle(a, b) {
-    console.log(`${b.name} wants to battle!`);
-    console.log(`${a.prefix} ${a.name} sent out ${a.party}`)
+    reset () {
+        this.menu = null;
+        this.textbox = null;
+        this.choice = null;
+        this.isActive = true;
+        this.tracker = 0;
+    }
 }
 
 export class CharacterScript extends Script {
-    run(thisObj, player) {
 
+    runPrescript (thisObj, player) {
         switch (player.direction) {
             case 'up':
                 thisObj.direction = 'down';
@@ -35,15 +38,18 @@ export class CharacterScript extends Script {
                 break;
             case 'left':
                 thisObj.direction = 'right';
-                console.log(thisObj.direction)
 
                 break;
             case 'right':
                 thisObj.direction = 'left';
-                console.log(thisObj.direction)
                 break;
 
         }
+    }
+
+    run(thisObj, player) {
+
+        this.runPrescript(thisObj, player);
 
         thisObj.updateTileFacing();
         switch (this.tracker) {
@@ -100,8 +106,7 @@ export class DefaultScript extends Script {
 }
 
 export class WaterScript extends Script {
-
-    run (player) {
+    run (thisObj, player) {
         // if (!this.isActive) return;
         switch (this.tracker) {
             case 0:

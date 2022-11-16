@@ -4,8 +4,22 @@ import {roll} from './useful-functions.js';
 const tileW = 16*4;
 const tileH = 16*4;
 
-export class MapObj {
+export class BasicMapObj {
+    constructor({script}) {
+        this.script = script;
+    }
+
+    runScript (player) {
+        console.log(this.script)
+        console.log(player)
+        this.script.run(this, player);
+    }
+}
+
+
+export class MapObj extends BasicMapObj {
     constructor ({spawnTile, script, sprites, currentMap}) {
+        super({script});
         this.spawnTile = spawnTile;
         this.position = {
             x: spawnTile.x * tileH,
@@ -13,15 +27,13 @@ export class MapObj {
         }
         this.currentMap = currentMap;
         this.viewport = this.currentMap.viewport;
-        this.script = script;
+
         this.sprites = sprites;
         this.currentSprite = this.sprites.default;
         this.isSolid = true;
     }
 
-    runScript (player) {
-        this.script.run(this, player);
-    }
+
 
     draw () {
 
