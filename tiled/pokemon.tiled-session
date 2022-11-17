@@ -63,8 +63,8 @@
             "scale": 2,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 324,
-                "y": 274
+                "x": 481.25,
+                "y": 291.75
             }
         },
         "maps/tutorial-town.tmx": {
@@ -202,12 +202,12 @@
     },
     "last.exportedFilePath": "/home/john/repos/pokemon/src",
     "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/spites/sprite-tilesets",
-    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/textbox",
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites/schoolBoy",
     "map.height": 20,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 2,
-    "map.tileWidth": 2,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
     "map.width": 20,
     "openFiles": [
         "maps/the-clearing-demo.tmx"
@@ -223,8 +223,8 @@
     "tileset.lastUsedFormat": "tsx",
     "tileset.spacing": 0,
     "tileset.tileSize": {
-        "height": 2,
-        "width": 2
+        "height": 16,
+        "width": 16
     },
     "tileset.transparentColor": "#ff00ff",
     "tileset.useTransparentColor": true

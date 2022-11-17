@@ -56,7 +56,7 @@ const jimmy = {
         y: 15
     },
     script: jimmyScript,
-    sprites: allSprites.malePlayer
+    sprites: allSprites.schoolBoy
     
 }
 
