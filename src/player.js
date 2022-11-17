@@ -369,10 +369,10 @@ export class NPC extends Character {
     
 
             this.position.x + this.currentMap.viewport.offset.x + offset.x,
-            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+            this.position.y + this.currentMap.viewport.offset.y + offset.y,
 
             scaleWidth,
-            this.currentSprite.height / 2
+            this.currentSprite.height
         );
     }
 }
