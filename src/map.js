@@ -73,7 +73,6 @@ export class Map {
 
     genEncounter = function (type) {
 
-
         const encounterId = this.encounters[type + 'Arr'][roll(100)] 
         const encounter = this.encounterObj[type].find( element => element.id === encounterId)
         const encounterLvl = encounter.levelRange[roll(encounter.levelRange.length)]
@@ -129,9 +128,7 @@ export class Map {
     }
 
     drawObj () {
-        this.mapObjs.forEach (obj => {
-            obj.draw();
-        })
+        this.mapObjs.forEach ( obj => obj.draw() );
     }
 
     toMatrix = function (array) {

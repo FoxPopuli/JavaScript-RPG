@@ -1,7 +1,7 @@
 import { Character } from "../src/player.js";
 import { CharacterScript } from "../src/script.js"
 import { Textbox, Menu } from "../src/textbox.js";
-import { malePlayerSprites } from "../src/sprites.js";
+import { allSprites } from "../src/sprites.js";
 import { Pokemon } from "../src/pokemon.js";
 
 
@@ -13,17 +13,11 @@ jimmyScript.run = function (thisObj, player) {
     if (!this.flag1) {
         switch (this.tracker) {
             case 0:
-                this.textbox = new Textbox(`Hi! Did you know that you`);
-                break;
-            case 1:
-                this.textbox = new Textbox ('can cross bodies of water'); 
-                break;
-            case 2:
-                this.textbox = new Textbox ('if you have a water type?');
+                this.textbox = new Textbox(`Hi! Did you know that you can cross bodies of water if you have a water type Pokemon?`);
                 if (!this.menu) this.menu = new Menu (['Yes', 'No']);
                 break;
-            case 3:
-    
+
+            case 1:
                 switch (this.choice) {
                     case 'Yes':
                         this.textbox = new Textbox("Ah, you're a smart one!");
@@ -55,14 +49,14 @@ jimmyScript.run = function (thisObj, player) {
 
 const jimmy = {
     name: 'Jimmy',
-    prefix: 'My man',
+    prefix: 'My Man',
     currentMap: null,
     spawnTile: {
         x: 21,
         y: 15
     },
     script: jimmyScript,
-    sprites: malePlayerSprites
+    sprites: allSprites.malePlayer
     
 }
 
@@ -132,7 +126,7 @@ const johnny = {
         x: 23,
         y: 12
     },
-    sprites: malePlayerSprites,
+    sprites: allSprites.malePlayer,
     script: johnnyScript
 }
 

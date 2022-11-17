@@ -3,7 +3,7 @@ import {BasicMapObj, Trainer, Player, Character} from './src/player.js';
 import {Pokemon} from './src/pokemon.js';
 import {Textbox, Menu} from './src/textbox.js';
 import {CharacterScript, Script, WaterScript} from './src/script.js';
-import {malePlayerSprites} from './src/sprites.js';
+import {allSprites} from './src/sprites.js';
 import { clearingMapObjs } from './data/mapObjs.js';
 
 // mapFiles
@@ -100,7 +100,7 @@ const testMon2 = new Pokemon ({
 
 const testObj = new Character ({
     spawnTile: {x: 21, y: 15},
-    sprites: malePlayerSprites,
+    sprites: allSprites.malePlayer,
     script: new CharacterScript (),
     currentMap: clearing
 })
@@ -111,7 +111,7 @@ export const player = new Player ({
     prefix:         'Pokemon God ',
     currentMap:     clearing,
     spawnTile:      clearing.spawnTile,
-    sprites:        malePlayerSprites
+    sprites:        allSprites.malePlayer
 })  
 
 

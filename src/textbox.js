@@ -5,7 +5,28 @@ export class Textbox {
     constructor (text) {
         this.text = text;
 
-        this.textOffset = {x: 30, y: 300};
+        let splitText = text.split(' ');
+        this.text1 = '';
+        this.text2 = '';
+        this.text3 = '';
+
+        this.charPerLine = 34
+        this.lineSpacing = 40;
+        splitText.forEach (word => {
+            
+            if (this.text1.length <= this.charPerLine) {
+                this.text1 += (word + ' ');
+
+            } else if (this.text2.length <= this.charPerLine){
+                this.text2 += (word + ' ');
+            } else if (this.text3.length <= this.charPerLine){
+                this.text3 += (word + ' ');
+            } else {
+                throw 'TEXTBOX ERROR: Text too long.'
+            }
+        })
+
+        this.textOffset = {x: 30, y: 290};
 
         this.img = new Image();
         this.img.src = `../img/textboxes/type-1.png`;
@@ -23,11 +44,29 @@ export class Textbox {
 
         ctx.font = '24pt sans-serif';
         ctx.fillText(
-            this.text,
+            this.text1,
 
             this.drawFrom.x + this.textOffset.x,
             this.drawFrom.y + this.textOffset.y
         )
+
+        if (this.text2) {
+            ctx.fillText(
+                this.text2,
+    
+                this.drawFrom.x + this.textOffset.x,
+                this.drawFrom.y + this.textOffset.y + this.lineSpacing
+            )
+        }
+
+        if (this.text3) {
+            ctx.fillText(
+                this.text3,
+    
+                this.drawFrom.x + this.textOffset.x,
+                this.drawFrom.y + this.textOffset.y +this.lineSpacing * 2
+            )
+        }
     }
 }
 
