@@ -293,8 +293,8 @@ export class Trainer extends Character {
 
 
 export class NPC extends Character {
-    constructor ({name, prefix, currentMap, spawnTile, sprites}) {
-        super({name, prefix, currentMap, spawnTile, sprites});
+    constructor ({name, prefix, currentMap, spawnTile, sprites, script}) {
+        super({name, prefix, currentMap, spawnTile, sprites, script});
 
     }
 
