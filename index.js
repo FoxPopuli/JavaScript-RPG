@@ -1,16 +1,14 @@
-import {Map} from './src/map.js';
-import {BasicMapObj, Trainer, Player, Character} from './src/player.js';
-import {Pokemon} from './src/pokemon.js';
-import {Textbox, Menu} from './src/textbox.js';
-import {CharacterScript, Script, WaterScript} from './src/script.js';
-import {allSprites} from './src/sprites.js';
+import { Map } from './src/map.js';
+import { BasicMapObj, Player, Character } from './src/player.js';
+import { Pokemon } from './src/pokemon.js';
+import { CharacterScript, WaterScript } from './src/script.js';
+import { allSprites } from './src/sprites.js';
 import { clearingMapObjs } from './data/mapObjs.js';
 
 // mapFiles
 import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
 // Map Data
 import allMapData from './json/map-data.json' assert {type: 'json'};
-
 
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
@@ -32,10 +30,7 @@ let frameCount = 0;
 let framesLastSecond = 0;
 let lastFrameTime = 0;
 
-
-
 // VIEWPORT
-
 const viewport = {
     screen:     {x: canvas.width, y: canvas.height},
     startTile:  {x: 0, y: 0},
@@ -73,16 +68,12 @@ const viewport = {
 }
 
 // MAP
-
 const clearing = new Map({
     mapData: allMapData.theClearing,
     mapFile: clearingMapFile,
     viewport: viewport,
     mapObjData: clearingMapObjs
 })
-
-
-
 
 const testMon = new Pokemon ({
     id:         'charmander', 
@@ -170,8 +161,6 @@ window.addEventListener('keydown', (e) => {
                     };
                 }
 
-            
-
                 if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
                     currentObj = new BasicMapObj ({
                         script: new WaterScript ()
@@ -206,22 +195,16 @@ window.addEventListener('keydown', (e) => {
             case 's':
                 currentObj.script.menu.choiceIndex += 1;
                 break;
-
             }
-    
     }
 
     switch (e.key) {
         case 'q':
             currentObj.script.isActive = false;
-            // currentObj = null;
             break;
     }
 
 })
-
-
-
 
 window.addEventListener( 'keyup', (e) => {
 
@@ -230,19 +213,13 @@ window.addEventListener( 'keyup', (e) => {
 
     } else if (Object.values(binds.movement).includes(e.key)) {
         moveArr.splice(moveArr.indexOf(e.key), 1);
-    }
-
-    
+    }    
 })
-
-
-
 
 
 // Initialization
 let currentMap = player.currentMap;
-player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
-
+player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y);
 
 function animate() {
 
@@ -280,19 +257,12 @@ function animate() {
     currentMap.drawObjBG();
     player.draw();
     currentMap.drawFG();
-
-    // testObj.draw()
     currentMap.drawObjFG();
 
     if (currentObj.script.isActive) {
         currentObj.runScript(player)
     }
 
-    // let obj = new NPC ({
-    //     name: 'Jack',
-    //     prefix: 'That guy ',
-    //     currentMap: currentMap
-    // });
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);
 }
