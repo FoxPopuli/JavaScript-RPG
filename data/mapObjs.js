@@ -14,7 +14,7 @@ jimmyScript.run = function (thisObj, player) {
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox(`Hi! Did you know that you can cross bodies of water if you have a water type Pokemon?`);
-                if (!this.menu) this.menu = new Menu (['Yes', 'No']);
+                if (!this.menu) this.menu = new Menu ();
                 break;
 
             case 1:
@@ -69,7 +69,7 @@ johnnyScript.run = function (thisObj, player) {
         switch (this.tracker) {
             case 0:
                 this.textbox = new Textbox('Yo! Want this water type?');
-                if (!this.menu) this.menu = new Menu (['Yes', 'No']);
+                if (!this.menu) this.menu = new Menu ();
                 break;
             case 1:
                 switch (this.choice) {

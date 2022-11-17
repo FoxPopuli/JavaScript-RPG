@@ -292,9 +292,90 @@ export class Trainer extends Character {
 }
 
 
-// export class Trainer extends NPC {
+export class NPC extends Character {
+    constructor ({name, prefix, currentMap, spawnTile, sprites}) {
+        super({name, prefix, currentMap, spawnTile, sprites});
 
-// }
+    }
+
+    drawFG () {
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+        
+        let scaleWidth = this.currentSprite.width / scale;
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            0,
+    
+            scaleWidth,
+            this.currentSprite.height / 2,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height / 2
+        );
+    }
+
+    drawBG () {
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+        
+        let scaleWidth = this.currentSprite.width / scale;
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            this.currentSprite.height / 2,
+    
+            scaleWidth,
+            this.currentSprite.height,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height / 2
+        );
+    }
+}
 
 export class Player extends Character {
     constructor ({name, prefix, currentMap, spawnTile, sprites}) {

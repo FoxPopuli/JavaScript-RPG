@@ -277,11 +277,12 @@ function animate() {
     );
 
     currentMap.drawBG();
+    currentMap.drawObjBG();
     player.draw();
     currentMap.drawFG();
 
     // testObj.draw()
-    currentMap.drawObj();
+    currentMap.drawObjFG();
 
     if (currentObj.script.isActive) {
         currentObj.runScript(player)

@@ -71,10 +71,9 @@ export class Textbox {
 }
 
 export class Menu {
-    constructor(choices) {
-
+    constructor() {
         this.textOffset = {x: 150, y: 300};
-        this.choices = choices;
+        this.choices = ['Yes', 'No'];
         this.isMenu = true;
 
         this.choiceIndex = 0;
@@ -117,8 +116,6 @@ export class Menu {
 
             this.drawFrom.x + this.textOffset.x - this.cursorImg.width + 90,
             this.drawFrom.y + this.textOffset.y - 50 + 35*this.choiceIndex
-            
         )
-
     }
 }

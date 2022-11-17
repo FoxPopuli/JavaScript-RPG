@@ -2,7 +2,7 @@ import {ctx} from '../index.js';
 import { Textbox, Menu } from './textbox.js';
 import { roll } from './useful-functions.js';
 import {Pokemon} from './pokemon.js';
-import { Character } from './player.js';
+import { Character, NPC } from './player.js';
 
 export class Map {
     constructor({mapData, mapFile, viewport, mapObjData}) {
@@ -55,7 +55,7 @@ export class Map {
 
         this.mapObjs = this.mapObjData.map (obj => {
             obj.currentMap = this;
-            return new Character (obj);
+            return new NPC (obj);
         })
 
         // console.log(this.map)
@@ -127,8 +127,12 @@ export class Map {
 
     }
 
-    drawObj () {
-        this.mapObjs.forEach ( obj => obj.draw() );
+    drawObjFG () {
+        this.mapObjs.forEach ( obj => obj.drawFG() );
+    }
+
+    drawObjBG () {
+        this.mapObjs.forEach ( obj => obj.drawBG() );
     }
 
     toMatrix = function (array) {

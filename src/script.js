@@ -55,7 +55,7 @@ export class CharacterScript extends Script {
                 break;
             case 2:
                 this.textbox = new Textbox ('Make a choice.');
-                if (!this.menu) this.menu = new Menu (['Yes', 'No']);
+                if (!this.menu) this.menu = new Menu ();
                 break;
             case 3:
     
@@ -107,7 +107,7 @@ export class WaterScript extends Script {
             case 0:
                 if (player.party.find(mon => mon.type.includes('Water'))) {
                     this.textbox = new Textbox( 'Would you like to surf?');
-                    if (!this.menu) this.menu = new Menu (['Yes', 'No']);
+                    if (!this.menu) this.menu = new Menu ();
 
             
                 } else {
