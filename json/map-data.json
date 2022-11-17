@@ -1,0 +1,41 @@
+{
+    "theClearing": {
+        "name": "The Clearing",
+        "imgPathBG": "./img/maps/the-clearing-demo-grid.png",
+        "imgPathFG": "./img/maps/the-clearing-demo-foreground.png",
+        "spawnTile": {
+            "x": 15,
+            "y": 15
+        },
+        "encounterRates": {
+            "grass": 5,
+            "water": 1
+        }, 
+        "encounterObj": {
+            "grass": [
+                {
+                    "id": "charmander", 
+                    "rate": 50,
+                    "levelRange": [2, 3, 4, 5]
+                },
+        
+                {
+                    "id": "squirtle",
+                    "rate": 50,
+                    "levelRange": [2, 3, 4, 5]
+                }
+            ],
+        
+            "water": [
+                {
+                    "id": "squirtle",
+                    "rate": 100,
+                    "levelRange": [2, 3, 4, 5]
+
+                }
+            ]
+        
+        }
+
+    }
+}

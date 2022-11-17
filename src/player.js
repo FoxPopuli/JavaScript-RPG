@@ -1,65 +1,90 @@
-import { canvas } from '../index.js';
 import {ctx} from '../index.js';
+import {roll} from './useful-functions.js';
 
 const tileW = 16*4;
 const tileH = 16*4;
-export class Player {
-    constructor ({name, isPlayer, prefix, gender, currentMap}) {
-        this.name = name;
-        this.party = [];
-        this.currency = 0;
-        this.inventory = [];
-        this.isPlayer = isPlayer;
-        this.prefix = prefix;
-        this.gender = gender;
-        this.currentMap = currentMap;
-        
-        this.sprites = this.genSprites();
-        this.currentSprite = this.sprites.walk.down;
 
-        this.steps = 0;
+export class BasicMapObj {
+    // Only runs a script, used for water logic
+    constructor({script}) {
+        this.script = script;
+    }
+
+    runScript (player) {
+        this.script.run(this, player);
+    }
+}
+
+
+export class MapObj extends BasicMapObj {
+    // Overworld object with a sprite
+    constructor ({spawnTile, script, sprites, currentMap}) {
+        super({script});
+        this.spawnTile = spawnTile;
+        this.position = {
+            x: spawnTile.x * tileH,
+            y: spawnTile.y * tileW
+        }
+        this.currentMap = currentMap;
+        this.viewport = this.currentMap.viewport;
+
+        this.sprites = sprites;
+        this.currentSprite = this.sprites.default;
+        this.isSolid = true;
+    }
+
+
+
+    draw () {
+
+        const drawFrom = {
+            x: this.position.x - this.viewport.px + this.viewport.screen.x / 2,
+            y: this.position.y - this.viewport.py + this.viewport.screen.y / 2
+        }
+
+        ctx.drawImage (
+            this.currentSprite,
+            
+            drawFrom.x,
+            drawFrom.y
+            
+        )
+    }
+
+}
+
+
+export class Character extends MapObj {
+    constructor ({name, prefix, currentMap, spawnTile, script, sprites}) {
+        
+        super({spawnTile, script, sprites, currentMap});
+        
+        this.name = name;
+        this.prefix = prefix;
+        this.currentMap = currentMap;
 
 
         // Movement props
+        this.steps = 0;
         this.moveFrame = 1;
         this.direction = 'down';
         this.moveType = 'walk';
-        this.isRunning = false;
 
-
-        this.tileFrom = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
-        this.tileTo = {x: this.currentMap.spawnTile.x, y: this.currentMap.spawnTile.y}
+        this.tileFrom = {x: spawnTile.x, y: spawnTile.y}
+        this.tileTo = {x: spawnTile.x, y: spawnTile.y}
         
         this.timeMoved = 0;
         this.dimensions = {x: tileW, y: tileH};   // pixels
-        this.position = {
-            // in pixels
-            x: this.currentMap.spawnTile.x * tileW, 
-            y: this.currentMap.spawnTile.y * tileH
-        }; 
 
         this.delayMove = 300;                   // ms
 
-
         // Other props
-        this.isSurfing = false;
         this.updateTileFacing();
-        // this.facingTile = {
-        //     x: this.tileFrom.x,
-        //     y: this.tileFrom.y + 1
-        // }
-
-    }
-
-
-    showPos = function () {
-        console.log(`Position\nx: ${this.position.x} y: ${this.position.y}\ntileFrom\nx: ${this.tileFrom.x} y: ${this.tileFrom.y}
-        \ntileTo\nx: ${this.tileTo.x} y: ${this.tileTo.y}`);
     }
 
     placeAt = function (x, y) {
-
         // Places character at the specified tile
+        
         this.tileFrom.x = x;
         this.tileFrom.y = y;
 
@@ -69,31 +94,19 @@ export class Player {
         // Position in pixels relative to top left of canvas
         this.position.x = tileW*x
         this.position.y = tileH*y
-
-
-        if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
-            console.log('Leaving water');
-            this.moveType = 'walk';
-        }
-
     }
-
 
     processMovement = function (t) {
         // t - time elapsed currently in game
         // Will return true if character is moving, else return false
 
-
         if (this.tileFrom.x === this.tileTo.x && this.tileFrom.y === this.tileTo.y) {
             return false;
         }
 
-
-        // Choose sprite
         switch (this.moveType) {
             case 'run':
                 this.delayMove = 100;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -106,7 +119,6 @@ export class Player {
                 break;
             case 'walk':
                 this.delayMove = 200;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
                 if ((t - this.timeMoved) / this.delayMove < 0.5) {
                     if (this.steps % 2 === 0) {
                         this.moveFrame = 0;
@@ -120,17 +132,12 @@ export class Player {
 
             case 'surf':
                 this.delayMove = 100;
-                this.currentSprite = this.sprites[this.moveType][this.direction];
                 break;
-
         }
-
-
 
         // Check if time elapsed is less than time to move (arrived or travelling)
         if (t - this.timeMoved >= this.delayMove) {
             // Arrived
-
             this.placeAt(this.tileTo.x, this.tileTo.y);
 
         } else {
@@ -153,55 +160,82 @@ export class Player {
                 this.position.y += (this.tileTo.y < this.tileFrom.y ? 0 - diff : diff);
             }
 
-
             // round
             this.position.x = Math.round(this.position.x);
             this.position.y = Math.round(this.position.y);
-
-            
         }
+
         return true;
     }
 
+    move = function (currentKey) {
+        let nextTile = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        }
 
-    genSprites = function() {
-        const sprites = {};
-        
-        // Walk
-        sprites.walk = {};
-        sprites.walk.left = new Image();
-        sprites.walk.left.src = `./img/sprites/player/${this.gender}/walk-left.png`
-        sprites.walk.up = new Image();
-        sprites.walk.up.src = `./img/sprites/player/${this.gender}/walk-up.png`
-        sprites.walk.down = new Image();
-        sprites.walk.down.src = `./img/sprites/player/${this.gender}/walk-down.png`
-        sprites.walk.right = new Image();
-        sprites.walk.right.src = `./img/sprites/player/${this.gender}/walk-right.png`
-        
+        switch (currentKey) {
+            case 'up':
+            case 'w':
+                nextTile.y -= 1;
+                this.direction = 'up';
+                break;
+            case 'down':
+            case 's':
+                nextTile.y += 1;
+                this.direction = 'down';
+                break;
+            case 'left':
+            case 'a':
+                nextTile.x -= 1;
+                this.direction = 'left';
+                break;
+            case 'right':
+            case 'd':
+                nextTile.x += 1;
+                this.direction = 'right';
+                break;
+        }
 
-        // Run
-        sprites.run = {};
-        sprites.run.left = new Image();
-        sprites.run.left.src = `./img/sprites/player/${this.gender}/run-left.png`
-        sprites.run.up = new Image();
-        sprites.run.up.src = `./img/sprites/player/${this.gender}/run-up.png`
-        sprites.run.down = new Image();
-        sprites.run.down.src = `./img/sprites/player/${this.gender}/run-down.png`
-        sprites.run.right = new Image();
-        sprites.run.right.src = `./img/sprites/player/${this.gender}/run-right.png`
+        this.currentSprite = this.sprites[this.moveType][this.direction];
 
-        // Surf
-        sprites.surf = {};
-        sprites.surf.left = new Image();
-        sprites.surf.left.src = `./img/sprites/player/${this.gender}/surf-left.png`
-        sprites.surf.up = new Image();
-        sprites.surf.up.src = `./img/sprites/player/${this.gender}/surf-up.png`
-        sprites.surf.down = new Image();
-        sprites.surf.down.src = `./img/sprites/player/${this.gender}/surf-down.png`
-        sprites.surf.right = new Image();
-        sprites.surf.right.src = `./img/sprites/player/${this.gender}/surf-right.png`
+        // Reset to idle walk if player isn't moving or surfing
+        if (!currentKey && this.moveType === 'run') {
+            this.currentSprite = this.sprites.walk[this.direction]
+        }
 
-        return sprites;
+        this.updateTileFacing();
+
+        // Movement gates
+        if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
+        if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
+        if (this.currentMap.objMatrix[nextTile.y][nextTile.x] !== 0) return;
+
+        this.tileTo = nextTile;
+        this.steps++;
+        this.updateTileFacing();
+
+    }
+
+    updateTileFacing = function () {
+        this.tileFacing = {
+            x: this.tileFrom.x,
+            y: this.tileFrom.y
+        }
+        switch (this.direction) {
+            case 'up': 
+                this.tileFacing.y -= 1;
+                break;
+            case 'left':
+                this.tileFacing.x -= 1;
+                break;
+            case 'down':
+                this.tileFacing.y += 1;
+                break;
+            case 'right':
+                this.tileFacing.x += 1;
+                break;
+        }
     }
 
     draw() {
@@ -220,9 +254,193 @@ export class Player {
                 offset.x = 0 - 32;
                 offset.y = 8;
                 break;
+        }
+        
+        let scaleWidth = this.currentSprite.width / scale;
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            0,
+    
+            scaleWidth,
+            this.currentSprite.height,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height
+        );
+    }
+}
+
+export class Trainer extends Character {
+    constructor ({name, prefix, currentMap, spawnTile, script, party}) {
+        super({name, prefix, currentMap, spawnTile, script});
+        this.party = party;
+        this.currency = 1000;
+        this.inventory = [];
+
+        this.hasBattled = false;
+    }
+
+
+}
+
+
+export class NPC extends Character {
+    constructor ({name, prefix, currentMap, spawnTile, sprites, script}) {
+        super({name, prefix, currentMap, spawnTile, sprites, script});
+
+    }
+
+    drawFG () {
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+        
+        let scaleWidth = this.currentSprite.width / scale;
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            0,
+    
+            scaleWidth,
+            this.currentSprite.height / 2,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y - this.currentSprite.height / 2 + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height / 2
+        );
+    }
+
+    drawBG () {
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+        
+        let scaleWidth = this.currentSprite.width / scale;
+
+        this.currentSprite = this.sprites[this.moveType][this.direction];
+        ctx.drawImage(
+            this.currentSprite,
+    
+            scaleWidth * this.moveFrame,
+            this.currentSprite.height / 2,
+    
+            scaleWidth,
+            this.currentSprite.height,
+    
+
+            this.position.x + this.currentMap.viewport.offset.x + offset.x,
+            this.position.y + this.currentMap.viewport.offset.y + offset.y,
+
+            scaleWidth,
+            this.currentSprite.height
+        );
+    }
+}
+
+export class Player extends Character {
+    constructor ({name, prefix, currentMap, spawnTile, sprites}) {
+        super({name, prefix, currentMap, spawnTile, sprites});
+        this.party = [];
+        this.inventory = [];
+
+        this.position = {
+            // in pixels
+            x: this.currentMap.spawnTile.x * tileW, 
+            y: this.currentMap.spawnTile.y * tileH
+        }; 
+
+    }
+
+
+    placeAt = function (x, y) {
+        // Places character at the specified tile
+        
+        this.tileFrom.x = x;
+        this.tileFrom.y = y;
+
+        this.tileTo.x = x;
+        this.tileTo.y = y;
+
+        // Position in pixels relative to top left of canvas
+        this.position.x = tileW*x
+        this.position.y = tileH*y
+
+
+        // Surf check
+        if (this.moveType === 'surf' && this.currentMap.waterMat[this.tileFrom.y][this.tileFrom.x] === 0) {
+            this.moveType = 'walk';
+        };
+
+        // Grass check
+        if (this.currentMap.grassMat[this.tileFrom.y][this.tileFrom.x] !== 0) {
+            if (roll(100) <= this.currentMap.encounterRates.grass) {
+                console.log(this.currentMap.genEncounter('grass'));
+            }
 
         }
-        // scale = this.moveType === 'surf' ? 2 : 3;
+
+
+    } 
+
+
+    draw() {
+
+        let scale;
+        let offset = {x: 0, y: 0};
+        switch (this.moveType) {
+            case 'walk':
+            case 'run':
+                scale = 3;
+                break;
+            case 'surf':
+                scale = 2;
+
+                // pixels
+                offset.x = 0 - 32;
+                offset.y = 8;
+                break;
+        }
+
         let scaleWidth = this.currentSprite.width / scale;
 
         ctx.drawImage(
@@ -278,92 +496,5 @@ export class Player {
         return availableMon[partyIndex];
     }
 
-    updateTileFacing = function () {
-        this.tileFacing = {
-            x: this.tileFrom.x,
-            y: this.tileFrom.y
-        }
-        switch (this.direction) {
-            case 'up': 
-                this.tileFacing.y -= 1;
-                break;
-            case 'left':
-                this.tileFacing.x -= 1;
-                break;
-            case 'down':
-                this.tileFacing.y += 1;
-                break;
-            case 'right':
-                this.tileFacing.x += 1;
-                break;
-        }
-
-
-    }
-
-  
-    move = function (currentKey) {
-            
-        let nextTile = {
-            x: this.tileFrom.x,
-            y: this.tileFrom.y
-        }
-
-        switch (currentKey) {
-            case 'up':
-            case 'w':
-                nextTile.y -= 1;
-                this.direction = 'up';
-                break;
-            case 'down':
-            case 's':
-                nextTile.y += 1;
-                this.direction = 'down';
-                break;
-            case 'left':
-            case 'a':
-                nextTile.x -= 1;
-                this.direction = 'left';
-                break;
-            case 'right':
-            case 'd':
-                nextTile.x += 1;
-                this.direction = 'right';
-                break;
-        }
-
-        this.currentSprite = this.sprites[this.moveType][this.direction];
-
-        // Reset to idle walk if player isn't moving or surfing
-        if (!currentKey && this.moveType === 'run') {
-            this.currentSprite = this.sprites.walk[this.direction]
-        }
-
-        this.updateTileFacing();
-
-        // Movement gates
-        if (this.currentMap.waterMat[nextTile.y][nextTile.x] !== 0 && this.moveType !== 'surf') return;
-        if (this.currentMap.colMat[nextTile.y][nextTile.x] !== 0) return;
-
-
-
-
-        this.tileTo = nextTile;
-        this.steps++;
-        this.updateTileFacing();
-
-    }
-
-    interact() {
-        if (this.currentMap.waterMat[this.tileFacing.y][this.tileFacing.x] !== 0 && !this.isSurfing) {
-            const waterMon = this.party.filter( obj => obj.type.includes('Water') )
-
-            if (waterMon.length > 0) {
-                this.moveType = 'surf';
-                this.move(this.direction);
-            }
-
-        }
-    }
 
 }

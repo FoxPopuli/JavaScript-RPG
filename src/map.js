@@ -1,38 +1,95 @@
 import {ctx} from '../index.js';
+import { Textbox, Menu } from './textbox.js';
+import { roll } from './useful-functions.js';
+import {Pokemon} from './pokemon.js';
+import { Character, NPC } from './player.js';
 
 export class Map {
-    constructor({ position, imgPath, mapFile, viewport}) {
-        this.position = position;
-        this.imgPath = imgPath;
-        this.img = new Image();
-        this.img.src = imgPath;
-        this.mapFile = mapFile;
-        this.viewport = viewport;
+    constructor({mapData, mapFile, viewport, mapObjData}) {
+
+
+        this.mapObjData = mapObjData;
+
+        this.background = new Image();
+        this.background.src = mapData.imgPathBG;
 
         this.foreground = new Image();
-        this.foreground.src = './img/maps/the-clearing-demo-foreground.png';
+        this.foreground.src = mapData.imgPathFG;
 
-        this.spawnTile = {x: 15, y: 15};
+
+        this.mapFile = mapFile;
+        this.viewport = viewport;
+        this.encounterObj = mapData.encounterObj;
+        this.encounterRates = mapData.encounterRates;
+        this.spawnTile = mapData.spawnTile;
 
         this.width = this.mapFile.width;
         this.height = this.mapFile.height;
         
-        this.collisionArr = this.mapFile.layers.find(obj => {
-            return obj.name === 'collision-tiles';
+        // Extract mapFile data
+        const collisionArr = this.mapFile.layers.find(obj => {return obj.name === 'collision-tiles';})
+        this.colMat = this.toMatrix(collisionArr.data);
+
+        const waterArr = this.mapFile.layers.find(obj => {return obj.name === 'water';}) 
+        this.waterMat = this.toMatrix(waterArr.data);
+
+        const grassArr = this.mapFile.layers.find (obj => {return obj.name === 'battle-grass';})
+        this.grassMat = this.toMatrix(grassArr.data);
+
+        // Generate encounter array
+        this.encounters = {}
+        for (const [encType, encMons] of Object.entries(this.encounterObj)) {
+            this.encounters[encType + 'Arr'] = [];
+            encMons.forEach ( mon => {
+                for (let i = 0; i < mon.rate; i++) {
+                    this.encounters[encType + 'Arr'].push(mon.id);
+                }
+            })
+        }
+
+        // Generate mapObj array
+        let mapObjMatrix = [];
+        for (let i = 0; i < this.height; i++) {
+            mapObjMatrix.push(new Array(this.width).fill(0))
+        }
+
+        this.mapObjs = this.mapObjData.map (obj => {
+            obj.currentMap = this;
+            return new NPC (obj);
         })
 
-        const waterArr = this.mapFile.layers.find(obj => {
-            return obj.name === 'water';
-        }) 
+        // console.log(this.map)
 
-        this.colMat = this.toMatrix(this.collisionArr.data);
-        this.waterMat = this.toMatrix(waterArr.data);
+        this.mapObjs.forEach( obj => {
+            mapObjMatrix[obj.spawnTile.y][obj.spawnTile.x] = obj; 
+        })
+
+        this.objMatrix = mapObjMatrix;
+
     }
 
-    draw () {
+
+
+
+    genEncounter = function (type) {
+
+        const encounterId = this.encounters[type + 'Arr'][roll(100)] 
+        const encounter = this.encounterObj[type].find( element => element.id === encounterId)
+        const encounterLvl = encounter.levelRange[roll(encounter.levelRange.length)]
+        return new Pokemon ({
+            id: encounterId, 
+            level: encounterLvl, 
+            moves: [], 
+            isPlayer: false
+        })
+
+        
+    }
+
+    drawBG () {
         
         ctx.drawImage(
-            this.img,
+            this.background,
             
             this.viewport.px - this.viewport.screen.x / 2,
             this.viewport.py - this.viewport.screen.y / 2,
@@ -51,7 +108,6 @@ export class Map {
     }
 
     drawFG () {
-        // console.log(typeof this.foreground)
         ctx.drawImage(
             this.foreground,
             
@@ -71,8 +127,16 @@ export class Map {
 
     }
 
+    drawObjFG () {
+        this.mapObjs.forEach ( obj => obj.drawFG() );
+    }
+
+    drawObjBG () {
+        this.mapObjs.forEach ( obj => obj.drawBG() );
+    }
+
     toMatrix = function (array) {
-        let mapWidth = this.mapFile.width;
+        let mapWidth = this.width;
         let matrix = [];
         
         for (let i = 0; i < array.length; i += mapWidth) {

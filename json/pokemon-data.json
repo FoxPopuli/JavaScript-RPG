@@ -1,0 +1,91 @@
+{
+    "bulbasaur": {
+        "name": "Bulbasaur",
+        "types": ["Grass", "Poison"],
+        "baseStats": {
+            "hp": 45,
+            "atk": 49,
+            "def": 49,
+            "spatk": 65,
+            "spdef": 65,
+            "spd": 45
+        },
+
+        "learnSet": {
+            "Growl": 1,
+            "Tackle": 1,
+            "Vine Whip": 3
+        },
+
+        "levelAt": 10
+
+    },
+
+    "charmander": {
+        "name": "Charmander",
+        "types": ["Fire"],
+        "baseStats": {
+            "hp": 39,
+            "atk": 52,
+            "def": 43,
+            "spatk": 60,
+            "spdef": 50,
+            "spd": 65
+        },
+
+        "learnSet": {
+            "1": 1,
+            "Tackle": 1,
+            "Ember": 3
+        },
+
+        "levelAt": 10
+
+    },
+
+    "squirtle": {
+        "name": "Squirtle",
+        "types": ["Water"],
+        "baseStats": {
+            "hp": 44,
+            "atk": 48,
+            "def": 65,
+            "spatk": 50,
+            "spdef": 64,
+            "spd": 43
+        },
+
+        "learnSet": {
+            "Growl": 1,
+            "Tackle": 1,
+            "Water Gun": 3
+        },
+
+        "levelAt": 10
+
+    },
+
+    "pikachu": {
+        "name": "Pikachu",
+        "types": ["Electric"],
+        "baseStats": {
+            "hp": 35,
+            "atk": 55,
+            "def": 40,
+            "spatk": 50,
+            "spdef": 50,
+            "spd": 90
+        },
+
+        "learnSet": {
+            "Growl": 1,
+            "Tackle": 1,
+            "Thundershock": 3
+        },
+
+        "levelAt": 10
+
+    }
+
+
+}

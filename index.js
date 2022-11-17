@@ -1,14 +1,19 @@
 import {Map} from './src/map.js';
-import {Player} from './src/player.js';
-import {Pokemon} from './src/pokemon.js'
-// import {toIndex} from './src/useful-functions.js';
+import {BasicMapObj, Trainer, Player, Character} from './src/player.js';
+import {Pokemon} from './src/pokemon.js';
+import {Textbox, Menu} from './src/textbox.js';
+import {CharacterScript, Script, WaterScript} from './src/script.js';
+import {allSprites} from './src/sprites.js';
+import { clearingMapObjs } from './data/mapObjs.js';
 
 // mapFiles
-import clearingMapFile from './src/the-clearing-demo-mapfile.json' assert {type: 'json'};
+import clearingMapFile from './json/the-clearing-demo-mapfile.json' assert {type: 'json'};
+// Map Data
+import allMapData from './json/map-data.json' assert {type: 'json'};
+
 
 export const canvas = document.querySelector('#game-screen');
 export const ctx = canvas.getContext('2d');
-ctx.font = 'bold 10pt sans-serif';
 
 // 16:9
 canvas.height = 720;
@@ -36,12 +41,6 @@ const viewport = {
     startTile:  {x: 0, y: 0},
     endTile:    {x: 0, y: 0},
     offset:     {x: 0, y: 0},
-
-    report:     function () {
-        console.log('Report')
-        console.log(this.startTile);
-        console.log(this.endTile);
-    },
 
     update:     function (px, py) {
         // px, py : pixel coords of the center of the viewport
@@ -73,43 +72,52 @@ const viewport = {
     }
 }
 
-
-
-
+// MAP
 
 const clearing = new Map({
-    position: {x: 0, y: 0},
-    imgPath: './img/maps/the-clearing-demo-grid.png',
+    mapData: allMapData.theClearing,
     mapFile: clearingMapFile,
-    viewport: viewport
+    viewport: viewport,
+    mapObjData: clearingMapObjs
 })
 
-const sampleStats = {
-    hp:     10,
-    atk:    10,
-    def:    10,
-    spatk:  10,
-    spdef:  10,
-    spd:    10
-}
-const mon = new Pokemon ({
-    name:       'Charmander', 
+
+
+
+const testMon = new Pokemon ({
+    id:         'charmander', 
     level:      5, 
-    type:       ['Fire', 'Water'], 
-    baseStats:  sampleStats, 
-    // moves: [tackle, growl, megaBeam, hypnosis], 
+    moves:      ['tackle', 'growl', 'megaBeam', 'hypnosis'], 
     isPlayer:   true
 })
 
-const player = new Player ({
-    name:       'Vox',
-    isPlayer:   true,
-    prefix:     'Pokemon God ',
-    gender:     'male',
-    currentMap:  clearing
+const testMon2 = new Pokemon ({
+    id:         'squirtle',
+    level:      5,
+    moves:      ['tackle', 'growl', 'megaBeam', 'hypnosis'], 
+    isPlayer:   true
 })
 
-player.party.push(mon)
+const testObj = new Character ({
+    spawnTile: {x: 21, y: 15},
+    sprites: allSprites.malePlayer,
+    script: new CharacterScript (),
+    currentMap: clearing
+})
+
+
+export const player = new Player ({
+    name:           'Vox',
+    prefix:         'Pokemon God ',
+    currentMap:     clearing,
+    spawnTile:      clearing.spawnTile,
+    sprites:        allSprites.malePlayer
+})  
+
+
+player.party.push(testMon)
+// player.party.push(testMon2)
+
 // OVERWORLD CONTROLS
 
 // Keybinds
@@ -133,52 +141,110 @@ const binds = {
 
 // Pushes the key to the array if the last element in the array isn't already that key
 Array.prototype.pushOnce = function(key) {
-    if (this[this.length - 1] !== key) {
-        this.push(key);
-    }
+    if (this[this.length - 1] !== key) this.push(key);
 }
 
-const moveArr = [];
+let moveArr = [];
+let currentObj = {};
+currentObj.script = {};
+currentObj.script.isActive = false;
+
 window.addEventListener('keydown', (e) => {
-    if (Object.values(binds.movement).includes(e.key)) {
-        moveArr.pushOnce(e.key);
+    if (!currentObj.script.isActive) {
+        
+        // Overworld controls
+        if (Object.values(binds.movement).includes(e.key)) {
+            moveArr.pushOnce(e.key);
+        }
+
+        switch (e.key) {
+            case 'e':
+                console.log(player.tileFacing)
+                
+                let objFacing = currentMap.objMatrix[player.tileFacing.y][player.tileFacing.x];
+
+                if (objFacing) {
+                    currentObj = objFacing;
+                    if (!currentObj.script.isActive) {
+                        currentObj.script.reset()
+                    };
+                }
+
+            
+
+                if (currentMap.waterMat[player.tileFacing.y][player.tileFacing.x]) {
+                    currentObj = new BasicMapObj ({
+                        script: new WaterScript ()
+                    });
+
+                }
+                break;
+            case 'Shift':
+                if (player.moveType !== 'surf' || player.moveType !== 'cycle') {
+                    player.moveType = player.moveType === 'run' ? 'walk' : 'run';
+                }
+                break;
+               
+            case 't': {
+                // For testing
+                console.log(player.party)
+            }
+        }
+
+    } else {
+        // Menu controls
+        switch (e.key) {
+            case 'e':
+                if (currentObj.script.menu) {
+                    currentObj.script.choice = currentObj.script.menu.choices[currentObj.script.menu.choiceIndex];
+                }
+                currentObj.script.tracker += 1;
+                break;
+            case 'w':
+                currentObj.script.menu.choiceIndex -= 1;
+                break;
+            case 's':
+                currentObj.script.menu.choiceIndex += 1;
+                break;
+
+            }
+    
     }
 
     switch (e.key) {
-        case 'e':
-            player.interact();
-            break
+        case 'q':
+            currentObj.script.isActive = false;
+            // currentObj = null;
+            break;
     }
+
 })
+
+
+
 
 window.addEventListener( 'keyup', (e) => {
-    if (Object.values(binds.movement).includes(e.key)) {
+
+    if (currentObj.isActive) {
+        moveArr = [];
+
+    } else if (Object.values(binds.movement).includes(e.key)) {
         moveArr.splice(moveArr.indexOf(e.key), 1);
     }
-})
 
-window.addEventListener ('keydown', (e) => {
-    if (e.key !== 'Shift') return;
-
-    if (player.moveType === 'surf' || player.moveType === 'cycle') return;
-
-    if (player.moveType === 'run') {
-        player.moveType = 'walk';
-    } else {
-        player.moveType = 'run';
-    }
+    
 })
 
 
 
 
+
+// Initialization
 let currentMap = player.currentMap;
 player.placeAt(currentMap.spawnTile.x, currentMap.spawnTile.y)
 
 
-
 function animate() {
-
 
     let currentFrameTime = Date.now();
     let timeElapsed = currentFrameTime - lastFrameTime;
@@ -195,6 +261,8 @@ function animate() {
 
     // Movement
     let currentKey = moveArr[moveArr.length - 1];
+
+    // Use something similar to this for menus
     if (!player.processMovement(currentFrameTime)) {
         player.move(currentKey);
         if (player.tileFrom.x !== player.tileTo.x || player.tileFrom.y !== player.tileTo.y) {
@@ -208,12 +276,23 @@ function animate() {
         player.position.y + (player.dimensions.y / 2)
     );
 
-    currentMap.draw();
+    currentMap.drawBG();
+    currentMap.drawObjBG();
     player.draw();
     currentMap.drawFG();
 
-    // console.log(player.tileFacing)
+    // testObj.draw()
+    currentMap.drawObjFG();
 
+    if (currentObj.script.isActive) {
+        currentObj.runScript(player)
+    }
+
+    // let obj = new NPC ({
+    //     name: 'Jack',
+    //     prefix: 'That guy ',
+    //     currentMap: currentMap
+    // });
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(animate);
 }

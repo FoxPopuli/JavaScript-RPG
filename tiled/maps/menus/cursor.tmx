@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="3" height="5" tilewidth="2" tileheight="2" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="../../spites/sprite-maps/cursor.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="3" height="5">
+  <data encoding="csv">
+1,2,3,
+4,5,6,
+7,8,9,
+10,11,12,
+13,14,15
+</data>
+ </layer>
+</map>

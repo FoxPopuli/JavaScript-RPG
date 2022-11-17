@@ -9,7 +9,7 @@
         "tilesets",
         "."
     ],
-    "exportAsImage.drawTileGrid": true,
+    "exportAsImage.drawTileGrid": false,
     "exportAsImage.useCurrentScale": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -40,6 +40,14 @@
                 "y": 68.75
             }
         },
+        "maps/menus/yes-or-no.tmx": {
+            "scale": 7.398124999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 80.02027540762019,
+                "y": 80.02027540762019
+            }
+        },
         "maps/pallet-town-bg.tsx": {
             "scaleInDock": 1
         },
@@ -55,8 +63,8 @@
             "scale": 4,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 88.375,
-                "y": 236
+                "x": 481.25,
+                "y": 291.75
             }
         },
         "maps/tutorial-town.tmx": {
@@ -194,7 +202,7 @@
     },
     "last.exportedFilePath": "/home/john/repos/pokemon/src",
     "last.externalTilesetPath": "/home/john/repos/pokemon/tiled/spites/sprite-tilesets",
-    "last.imagePath": "/home/john/repos/pokemon/tiled/maps",
+    "last.imagePath": "/home/john/repos/pokemon/tiled/resources/firered/sprites/schoolBoy",
     "map.height": 20,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
@@ -213,6 +221,7 @@
         "tilesets/rpg-tileset.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
+    "tileset.spacing": 0,
     "tileset.tileSize": {
         "height": 16,
         "width": 16
