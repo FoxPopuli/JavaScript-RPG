@@ -1,7 +1,7 @@
 import { Map } from './src/map.js';
-import { BasicMapObj, Player, Character } from './src/player.js';
+import { BasicMapObj, Player } from './src/player.js';
 import { Pokemon } from './src/pokemon.js';
-import { CharacterScript, WaterScript } from './src/script.js';
+import { WaterScript } from './src/script.js';
 import { allSprites } from './src/sprites.js';
 import { clearingMapObjs } from './data/mapObjs.js';
 
@@ -75,6 +75,7 @@ const clearing = new Map({
     mapObjData: clearingMapObjs
 })
 
+// PLAYER INNIT
 const testMon = new Pokemon ({
     id:         'charmander', 
     level:      5, 
@@ -88,14 +89,6 @@ const testMon2 = new Pokemon ({
     moves:      ['tackle', 'growl', 'megaBeam', 'hypnosis'], 
     isPlayer:   true
 })
-
-const testObj = new Character ({
-    spawnTile: {x: 21, y: 15},
-    sprites: allSprites.malePlayer,
-    script: new CharacterScript (),
-    currentMap: clearing
-})
-
 
 export const player = new Player ({
     name:           'Vox',

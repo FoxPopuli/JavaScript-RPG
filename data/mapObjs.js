@@ -113,7 +113,6 @@ johnnyScript.run = function (thisObj, player) {
         this.textbox.draw();
     }
 
-
     if (this.menu) {
         this.menu.draw();
     }
@@ -126,7 +125,7 @@ const johnny = {
         x: 23,
         y: 12
     },
-    sprites: allSprites.malePlayer,
+    sprites: allSprites.superNerd,
     script: johnnyScript
 }
 

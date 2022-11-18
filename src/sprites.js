@@ -17,11 +17,12 @@ function SpriteObj (spriteID, moveTypes) {
 
 const malePlayerSprites = new SpriteObj('malePlayer', ['walk', 'run', 'surf']);
 const schoolBoySprites = new SpriteObj('schoolBoy', ['walk']);
-
+const superNerdSprites = new SpriteObj('superNerd', ['walk']);
 // export const defaultSprites = SpriteObj ()
 
 export const allSprites = {
     malePlayer: malePlayerSprites,
-    schoolBoy: schoolBoySprites
+    schoolBoy: schoolBoySprites,
+    superNerd: superNerdSprites
 
 }
