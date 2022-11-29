@@ -129,4 +129,38 @@ const johnny = {
     script: johnnyScript
 }
 
+const guardScript = new CharacterScript();
+guardScript.run = function (thisObj, player) {
+    this.runPrescript(thisObj, player);
+
+    switch (this.tracker) {
+        case 0:
+            this.textbox = new Textbox('This building is under construction. Please move along, sir.');
+            break;
+        default:
+            this.isActive = false;
+            break;
+    }
+
+    if (this.textbox) {
+        this.textbox.draw();
+    }
+
+    if (this.menu) {
+        this.menu.draw();
+    }
+
+}
+
+const guard1 = {
+    name: 'Guard 1',
+    prefix: 'Guard',
+    spawnTile: {
+        x: 19, 
+        y: 9
+    },
+    sprites: allSprites.superNerd,
+    script: guardScript
+}
+
 export const clearingMapObjs = [jimmy, johnny];
