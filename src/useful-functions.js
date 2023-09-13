@@ -1,5 +1,5 @@
 export function roll(n) {
-    return Math.floor(Math.random()*n)
+  return Math.floor(Math.random() * n);
 }
 
 // export function toIndex(x, y, map) {
