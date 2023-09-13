@@ -464,7 +464,7 @@ export class Player extends Character {
     console.log("switchMon() called");
     let availableMon = this.party.filter((mon) => mon.status !== "Faint");
 
-    if (availableMon === []) {
+    if (availableMon.length === 0) {
       return null;
     }
 
